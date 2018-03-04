@@ -7,14 +7,31 @@ rust:
 cache:
   cargo: true
 
+sudo: required
+
+addons:
+  apt:
+    packages:
+      - libcurl4-openssl-dev
+      - libelf-dev
+      - libdw-dev
+      - cmake
+      - gcc
+      - binutils-dev
+      - libiberty-dev
+
+env:
+  global:
+  - RUSTFLAGS="-C link-dead-code"
+
 script:
   - cargo build --verbose --all
   - cargo test --verbose --all
 
-matrix:
-  fast_finish: true
+jobs:
   include:
-    - rust: nightly-2018-03-03
+    - stage: clippy lints
+      rust: nightly-2018-03-03
       env:
         - NIGHTLY=nightly-2018-03-03
         - CLIPPY=0.0.187
@@ -22,6 +39,11 @@ matrix:
         - travis_wait ./.ci/travis-install-clippy.sh
       script:
         - cargo +$NIGHTLY clippy --verbose --all -- -D warnings
+
+    - stage: coverage
+      rust: stable
+      script:
+        - ./.ci/travis-upload-coverage.sh
 
 branches:
   only:
