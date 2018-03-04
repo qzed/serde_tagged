@@ -1,0 +1,33 @@
+language: rust
+
+rust:
+  - stable
+  - nightly
+
+cache:
+  cargo: true
+
+script:
+  - cargo build --verbose --all
+  - cargo test --verbose --all
+
+matrix:
+  fast_finish: true
+  include:
+    - rust: nightly-2018-03-03
+      env:
+        - NIGHTLY=nightly-2018-03-03
+        - CLIPPY=0.0.187
+      before_install:
+        - travis_wait ./.ci/travis-install-clippy.sh
+      script:
+        - cargo +$NIGHTLY clippy --verbose --all -- -D warnings
+
+branches:
+  only:
+    - master
+    - develop
+
+notifications:
+  email:
+    on_success: never
