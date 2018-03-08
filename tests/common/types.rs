@@ -13,26 +13,26 @@ use serde::{Serialize, Serializer};
 
 
 /// A simple unit-struct.
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct UnitStruct;
 
 /// A simple newtype-struct.
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct NewtypeStruct<V>(pub V);
 
 /// A simple tuple-struct.
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct TupleStruct<A, B, C, D>(pub A, pub B, pub C, pub D);
 
 /// A simple struct with one field.
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Struct<V> {
     pub foo: V,
 }
 
 
 /// An externally tagged enum.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum EnumTaggedExternal {
     Unit,
     NewtypeP(i32),
@@ -42,7 +42,7 @@ pub enum EnumTaggedExternal {
 }
 
 /// An internally tagged enum.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "t")]
 pub enum EnumTaggedInternal {
     Unit,
@@ -51,7 +51,7 @@ pub enum EnumTaggedInternal {
 }
 
 /// An adjacently tagged enum.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "t", content = "c")]
 pub enum EnumTaggedAdjacent {
     Unit,
@@ -62,7 +62,7 @@ pub enum EnumTaggedAdjacent {
 }
 
 /// An untagged tagged enum.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum EnumUntagged {
     Unit,
