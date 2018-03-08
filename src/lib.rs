@@ -21,7 +21,10 @@
 //! are somewhat similar to the way enums can be tagged in `serde`. The
 //! currently supported formats are:
 //! 
-//! - [externally tagged](ser::external), as in `{ <tag>: <value> }`
+//! - [externally tagged](::ser::external), as in `{ <tag>: <value> }`
+//! 
+//! ## Examples
+//! For some examples have a look at the examples directory in the repository.
 //! 
 //! ## Hint
 //! Tagged serialization requires access to a `Serializer`, however some data
@@ -32,6 +35,10 @@
 
 extern crate serde;
 
-pub mod ser;
+#[cfg(feature = "erased")]
+extern crate erased_serde;
 
-mod util;
+
+pub mod de;
+pub mod ser;
+pub mod util;

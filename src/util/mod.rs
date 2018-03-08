@@ -1,3 +1,6 @@
 //! Utilities for de-/serialization.
 
-pub mod ser;
+#[cfg(feature = "erased")]
+pub mod erased;
+
+pub(crate) mod ser;
