@@ -29,6 +29,8 @@ script:
   - cargo test --verbose --all
 
 jobs:
+  allow_failures:
+    - rust: nightly-2018-03-03
   include:
     - stage: clippy lints
       rust: nightly-2018-03-03
