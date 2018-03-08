@@ -19,6 +19,26 @@ This crate is currently under development, thus it is not on `crates.io` yet.
 Further documentation and examples will follow.
 
 
+## Tag formats
+
+`serde_tagged` currently only supports external tagging.
+Further formats are planned.
+
+Below is a short overview of the supported formats.
+More details on those can be found in the API documentation.
+
+### External tagging
+
+The external tagging format applies tags using a map with a single entry, where a tag is the key and the value the value of the entry. In JSON this would yield
+
+```json
+{ "tag": "value" }
+```
+
+where `"value"` can be any valid (JSON) value, `"tag"` however must be a string due to the JSON format being used.
+Other formats may allow more types as map-key and thus more types as tag in this particular tagging format.
+
+
 ## License
 
 Licensed under either of
