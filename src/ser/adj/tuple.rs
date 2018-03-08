@@ -1,3 +1,61 @@
+//! Serialization of adjacently tagged values using tuples.
+//! 
+//! Tagging a value adjacently using this strategy will create a tuple with
+//! two elements, where the first element will be the tag and the second
+//! element the value.
+//! 
+//! # Examples serializing to JSON
+//! 
+//! Serializing a value
+//!
+//! ```
+//! # extern crate serde_json;
+//! # extern crate serde_tagged;
+//! #
+//! # fn main() {
+//! let foo: i32 = 42;
+//!
+//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
+//! serde_tagged::ser::adj::tuple::serialize(&mut serializer, "bar", &foo).unwrap();
+//! # }
+//! ```
+//!
+//! with a tag value of `"bar"` will produce
+//!
+//! ```json
+//! [ "bar", 42 ]
+//! ```
+//!
+//! ## A Simple struct
+//!
+//! Serializing a value `foo` with
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate serde_derive;
+//! # extern crate serde_json;
+//! # extern crate serde_tagged;
+//! #
+//! #[derive(Serialize)]
+//! struct Foo {
+//!     bar: &'static str,
+//! }
+//!
+//! # fn main() {
+//! let foo = Foo { bar: "baz" };
+//!
+//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
+//! serde_tagged::ser::adj::tuple::serialize(&mut serializer, "my-tag", &foo).unwrap();
+//! # }
+//! ```
+//!
+//! with a tag-value of `"my-tag"` will produce the following JSON output:
+//!
+//! ```json
+//! [ "my-tag", { "bar": "baz" } ]
+//! ```
+//!
+
 use std::fmt::Display;
 
 use serde;
@@ -6,6 +64,16 @@ use util::ser::content::{Content, ContentSerializer};
 use util::ser::forward;
 
 
+/// Serializes the specified tag and value as tuple.
+/// 
+/// The tag-value pair will be serialized as tuple where the first element will
+/// be the tag and the second element the tuple. The specified serializer
+/// performs the actual serialization and thus controls the data format. For
+/// more information on this tag-format, see the [module
+/// documentation](::ser::adj::tuple).
+///
+/// # Note
+/// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
     tag: &T,
@@ -46,6 +114,19 @@ where
 }
 
 
+/// A serializer that serializes the specified tag and value as tuple.
+/// 
+/// The tag-value pair will be serialized as tuple where the first element will
+/// be the tag and the second element the tuple. The specified serializer
+/// performs the actual serialization and thus controls the data format. For
+/// more information on this tag-format, see the [module
+/// documentation](::ser::adj::tuple).
+/// 
+/// # Warning
+/// You should prefer the [`serialize`](serialize) function over this serializer
+/// implementation. To serialize a tuple, the serializer implementation may need
+/// to allocate memory on the heap. This can be avoided in the
+/// [`serialize`](serialize) function.
 pub struct Serializer<'a, S, T: ?Sized + 'a> {
     delegate: S,
     tag:      &'a T,

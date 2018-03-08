@@ -128,10 +128,10 @@ where
 /// [module documentation](::ser::external).
 ///
 /// # Warning
-/// You should prefer the [`serialize`](::ser::external::serialize) function
-/// over this serializer implementation. To serialize key-value pairs, the
-/// serializer implementation may need to allocate memory on the heap. This can
-/// be avoided in the [`serialize`](::ser::external::serialize) function.
+/// You should prefer the [`serialize`](serialize) function over this serializer
+/// implementation. To serialize key-value pairs, the serializer implementation
+/// may need to allocate memory on the heap. This can be avoided in the
+/// [`serialize`](serialize) function.
 pub struct Serializer<'a, S, T: ?Sized + 'a> {
     delegate: S,
     tag:      &'a T,

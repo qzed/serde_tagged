@@ -19,9 +19,10 @@
 //! 
 //! This library provides multiple formats to store (and retreive) tags, that
 //! are somewhat similar to the way enums can be tagged in `serde`. The
-//! currently supported formats are:
+//! (currently) supported formats are:
 //! 
-//! - [externally tagged](::ser::external), as in `{ <tag>: <value> }`
+//! - [externally tagged](::ser::external), as in `{ <tag> => <value> }`
+//! - [adjacently tagged using tuples](::ser::adj::tuple), as in `( <tag>, <value> )`
 //! 
 //! ## Examples
 //! For some examples have a look at the examples directory in the repository.
