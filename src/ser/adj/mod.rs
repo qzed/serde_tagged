@@ -1,3 +1,3 @@
-//! Adjacently tagged serialization.
+//! Serialization of adjacently tagged values.
 
 pub mod tuple;
