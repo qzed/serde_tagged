@@ -1207,4 +1207,115 @@ mod de {
             let (_t, _v) = de::<_, (&str, &str), _, _>(value, WithTag::new()).unwrap();
         }
     }
+
+    /// Tests for deserialization of tuple-based adjacently-tagged values.
+    mod adj_tuple {
+        use common::types::*;
+        use serde_value::Value;
+
+        #[test]
+        fn without_tag_phantom() {
+            use serde_tagged::de::adj::tuple::deserialize as de;
+            use std::marker::PhantomData;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v = de::<String, Struct<String>, _, _>(value, PhantomData).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn without_tag() {
+            use serde_tagged::de::WithoutTag;
+            use serde_tagged::de::adj::tuple::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v = de::<String, Struct<String>, _, _>(value, WithoutTag::new()).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn with_tag() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::tuple::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v) = de::<_, (String, Struct<String>), _, _>(value, WithTag::new()).unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_tuple_empty() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::tuple::deserialize as de;
+
+            let value = Value::Seq(vec![]);
+
+            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_tuple_len() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::tuple::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("a".to_owned()),
+                Value::String("b".to_owned()),
+                Value::String("c".to_owned()),
+                Value::String("d".to_owned()),
+            ]);
+
+            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_type() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::tuple::deserialize as de;
+
+            let value = Value::I32(42);
+
+            let (_t, _v) = de::<_, (&str, &str), _, _>(value, WithTag::new()).unwrap();
+        }
+    }
 }
