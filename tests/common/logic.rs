@@ -3,7 +3,10 @@
 
 /// Create a new `BTreeMap` from the specified `key => value` pairs.
 macro_rules! map {
-    ($($key:expr => $val:expr),*$(,)*) => {
+    () => {
+        ::std::collections::BTreeMap::new()
+    };
+    ($($key:expr => $val:expr),+$(,)*) => {
         {
             let mut map = ::std::collections::BTreeMap::new();
             $(
