@@ -558,3 +558,113 @@ mod ser {
         }
     }
 }
+
+/// Tests for deserialization of tagged values.
+mod de {
+
+    /// Tests for deserialization of externally-tagged values.
+    mod external {
+        use common::types::*;
+        use serde_value::Value;
+
+        #[test]
+        fn without_tag_phantom() {
+            use serde_tagged::de::external::deserialize as de;
+            use std::marker::PhantomData;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v = de::<String, Struct<String>, _, _>(value, PhantomData).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn without_tag() {
+            use serde_tagged::de::WithoutTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v = de::<String, Struct<String>, _, _>(value, WithoutTag::new()).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn with_tag() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v) = de::<_, (String, Struct<String>), _, _>(value, WithTag::new()).unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_map_empty() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let value = Value::Map(map![]);
+
+            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_map_len() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("a".to_owned()) => Value::String("b".to_owned()),
+                Value::String("c".to_owned()) => Value::String("d".to_owned()),
+            ]);
+
+            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_type() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let value = Value::I32(42);
+
+            let (_t, _v) = de::<_, (&str, &str), _, _>(value, WithTag::new()).unwrap();
+        }
+    }
+}

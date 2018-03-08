@@ -468,3 +468,125 @@ mod ser {
         }
     }
 }
+
+/// Tests for deserialization of tagged values.
+mod de {
+
+    /// Tests for deserialization of externally-tagged values.
+    mod external {
+        use common::types::*;
+        use serde_json;
+
+        #[test]
+        fn without_tag_phantom() {
+            use serde_tagged::de::external::deserialize as de;
+            use std::marker::PhantomData;
+
+            let json = r###"
+            {
+                "tag": {
+                    "foo": "bar"
+                }
+            }
+            "###;
+
+            let mut jde = serde_json::Deserializer::from_str(json);
+            let v = de::<&str, Struct<String>, _, _>(&mut jde, PhantomData).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn without_tag() {
+            use serde_tagged::de::WithoutTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let json = r###"
+            {
+                "tag": {
+                    "foo": "bar"
+                }
+            }
+            "###;
+
+            let mut jde = serde_json::Deserializer::from_str(json);
+            let v = de::<&str, Struct<String>, _, _>(&mut jde, WithoutTag::new()).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn with_tag() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let json = r###"
+            {
+                "tag": {
+                    "foo": "bar"
+                }
+            }
+            "###;
+
+            let mut jde = serde_json::Deserializer::from_str(json);
+            let (t, v) = de::<_, (&str, Struct<String>), _, _>(&mut jde, WithTag::new()).unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_map_empty() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let json = "{}";
+
+            let mut jde = serde_json::Deserializer::from_str(json);
+            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_map_len() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let json = r###"{
+                "a": "b",
+                "c": "d",
+            }"###;
+
+            let mut jde = serde_json::Deserializer::from_str(json);
+            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_type() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::external::deserialize as de;
+
+            let json = "[]";
+
+            let mut jde = serde_json::Deserializer::from_str(json);
+            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+        }
+    }
+}

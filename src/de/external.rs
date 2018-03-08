@@ -76,6 +76,12 @@ where
     where
         A: serde::de::MapAccess<'de>,
     {
+        // try to validate the length
+        match map.size_hint() {
+            Some(n) if n != 1 => Err(serde::de::Error::invalid_length(n, &self))?,
+            _ => {},
+        }
+
         let tag: T = map.next_key()?
             .ok_or_else(|| serde::de::Error::invalid_length(0, &self))?;
 
