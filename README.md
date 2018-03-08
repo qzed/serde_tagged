@@ -1,4 +1,9 @@
-# Serde Tagged
+# Serde Tagged [![Build Status]][travis] [![Coverage]][codecov]
+
+[Build Status]: https://api.travis-ci.org/qzed/serde_tagged.svg?branch=master
+[travis]: https://travis-ci.org/qzed/serde_tagged
+[Coverage]: https://codecov.io/gh/qzed/serde_tagged/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/qzed/serde_tagged
 
 Tag values during serialization, retreive tags during deserialization.
 
