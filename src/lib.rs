@@ -23,6 +23,8 @@
 //! 
 //! - [externally tagged](::ser::external), as in `{ <tag> => <value> }`
 //! - [adjacently tagged using tuples](::ser::adj::tuple), as in `( <tag>, <value> )`
+//! - [adjacently tagged using maps](::ser::adj::map), as in
+//!   `{ <tag-key> => <tag>, <value-key> => <value> }`
 //! 
 //! ## Examples
 //! For some examples have a look at the examples directory in the repository.
