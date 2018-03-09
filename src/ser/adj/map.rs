@@ -1,66 +1,4 @@
-//! Serialization of externally tagged values.
-//! 
-//! Tagging values externally will apply the tag via a mapping from tag to
-//! value, thus serializing a tagged value with the functionality provided in
-//! this module will always result in a map-object with a single entry.
-//! 
-//! This format is similar to the externally-tagged enum format provided by
-//! serde, however allows for various tag types (not only `str` and `u32`).
-//!
-//!
-//! # Examples serializing to JSON
-//!
-//! ## A primitive
-//!
-//! Serializing a value
-//!
-//! ```
-//! # extern crate serde_json;
-//! # extern crate serde_tagged;
-//! #
-//! # fn main() {
-//! let foo: i32 = 42;
-//!
-//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
-//! serde_tagged::ser::external::serialize(&mut serializer, "bar", &foo).unwrap();
-//! # }
-//! ```
-//!
-//! with a tag value of `"bar"` will produce
-//!
-//! ```json
-//! { "bar": 42 }
-//! ```
-//!
-//! ## A Simple struct
-//!
-//! Serializing a value `foo` with
-//!
-//! ```
-//! # #[macro_use]
-//! # extern crate serde_derive;
-//! # extern crate serde_json;
-//! # extern crate serde_tagged;
-//! #
-//! #[derive(Serialize)]
-//! struct Foo {
-//!     bar: &'static str,
-//! }
-//!
-//! # fn main() {
-//! let foo = Foo { bar: "baz" };
-//!
-//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
-//! serde_tagged::ser::external::serialize(&mut serializer, "my-tag", &foo).unwrap();
-//! # }
-//! ```
-//!
-//! with a tag-value of `"my-tag"` will produce the following JSON output:
-//!
-//! ```json
-//! { "my-tag": { "bar": "baz" } }
-//! ```
-//!
+//! Serialization of adjacently tagged values using maps.
 
 use std::fmt::Display;
 
@@ -69,41 +7,45 @@ use serde;
 use util::ser::content::{Content, ContentSerializer};
 use util::ser::forward;
 
-/// Applies a tag externally to the specified value and serializes them using
-/// the provided serializer.
-/// 
-/// The tag-value pair will be serialized as a map with one entry, where the tag
-/// will be the key. The specified serializer performs the actual serialization
-/// and thus controls the data format. For more information on this tag-format,
-/// see the [module documentation](::ser::external).
-///
-/// # Note
-/// You should prefer this method to the [`Serializer`](Serializer).
-pub fn serialize<S, T: ?Sized, V: ?Sized>(
+
+pub fn serialize<S, Tk, Tv, Vk, V>(
     serializer: S,
-    tag: &T,
+    tag_key: &Tk,
+    tag_value: &Tv,
+    value_key: &Vk,
     value: &V,
 ) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
-    T: serde::Serialize,
-    V: serde::Serialize,
+    Tk: serde::Serialize + ?Sized,
+    Tv: serde::Serialize + ?Sized,
+    Vk: serde::Serialize + ?Sized,
+    V: serde::Serialize + ?Sized,
 {
     use serde::Serialize;
 
-    let tagged = Tagged { tag, value };
+    let tagged = Tagged {
+        tag_key,
+        tag_value,
+        value_key,
+        value,
+    };
     tagged.serialize(serializer)
 }
 
-struct Tagged<'a, V: ?Sized + 'a, T: ?Sized + 'a> {
-    tag:   &'a T,
-    value: &'a V,
+struct Tagged<'a, Tk: ?Sized + 'a, Tv: ?Sized + 'a, Vk: ?Sized + 'a, V: ?Sized + 'a> {
+    tag_key:   &'a Tk,
+    tag_value: &'a Tv,
+    value_key: &'a Vk,
+    value:     &'a V,
 }
 
-impl<'a, V: ?Sized, T: ?Sized> serde::Serialize for Tagged<'a, V, T>
+impl<'a, Tk, Tv, Vk, V> serde::Serialize for Tagged<'a, Tk, Tv, Vk, V>
 where
-    T: serde::Serialize,
-    V: serde::Serialize,
+    Tk: serde::Serialize + ?Sized,
+    Tv: serde::Serialize + ?Sized,
+    Vk: serde::Serialize + ?Sized,
+    V: serde::Serialize + ?Sized,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -111,41 +53,42 @@ where
     {
         use serde::ser::SerializeMap;
 
-        let mut state = serializer.serialize_map(Some(1))?;
-        state.serialize_entry(self.tag, self.value)?;
+        let mut state = serializer.serialize_map(Some(2))?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_entry(self.value_key, self.value)?;
         state.end()
     }
 }
 
 
-/// A serializer that applies a tag externally to the provided value and
-/// serializes them as key-value pair.
-///
-/// The tag-value pair will be serialized as a map with one entry, where the tag
-/// will be the key. This serializer will simply call the appropriate functions
-/// on the underlying `Serializer` that is responsible for the data format. For
-/// more information on this tag-format, see the
-/// [module documentation](::ser::external).
-///
-/// # Warning
-/// You should prefer the [`serialize`](serialize) function over this serializer
-/// implementation. To serialize key-value pairs, the serializer implementation
-/// may need to allocate memory on the heap. This can be avoided in the
-/// [`serialize`](serialize) function.
-pub struct Serializer<'a, S, T: ?Sized + 'a> {
-    delegate: S,
-    tag:      &'a T,
+pub struct Serializer<'a, S, Tk: ?Sized + 'a, Tv: ?Sized + 'a, Vk: ?Sized + 'a> {
+    delegate:  S,
+    tag_key:   &'a Tk,
+    tag_value: &'a Tv,
+    value_key: &'a Vk,
 }
 
-impl<'a, S, T: ?Sized> Serializer<'a, S, T>
+impl<'a, S, Tk, Tv, Vk> Serializer<'a, S, Tk, Tv, Vk>
 where
     S: serde::Serializer,
-    T: serde::Serialize + 'a,
+    Tk: serde::Serialize + ?Sized,
+    Tv: serde::Serialize + ?Sized,
+    Vk: serde::Serialize + ?Sized,
 {
-    /// Creates a new Serializer with the specified tag and underlying
-    /// serializer.
-    pub fn new(delegate: S, tag: &'a T) -> Self {
-        Serializer { delegate, tag }
+    /// Creates a new Serializer with the specified tag-key, tag-value,
+    /// value-key, and underlying serializer.
+    pub fn new(
+        delegate: S,
+        tag_key: &'a Tk,
+        tag_value: &'a Tv,
+        value_key: &'a Vk,
+    ) -> Self {
+        Serializer {
+            delegate,
+            tag_key,
+            tag_value,
+            value_key,
+        }
     }
 
     fn serialize_as_map_value<V: ?Sized>(self, value: &V) -> Result<S::Ok, S::Error>
@@ -154,16 +97,19 @@ where
     {
         use serde::ser::SerializeMap;
 
-        let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_entry(self.tag, value)?;
+        let mut state = self.delegate.serialize_map(Some(2))?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_entry(self.value_key, value)?;
         state.end()
     }
 }
 
-impl<'a, S, T: ?Sized> serde::Serializer for Serializer<'a, S, T>
+impl<'a, S, Tk, Tv, Vk> serde::Serializer for Serializer<'a, S, Tk, Tv, Vk>
 where
     S: serde::Serializer,
-    T: serde::Serialize + 'a,
+    Tk: serde::Serialize + ?Sized,
+    Tv: serde::Serialize + ?Sized,
+    Vk: serde::Serialize + ?Sized,
 {
     type Ok = S::Ok;
     type Error = S::Error;
@@ -293,7 +239,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeSeqAsMapValue::new(state, len))
     }
@@ -302,7 +249,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeTupleAsMapValue::new(state, len))
     }
@@ -315,7 +263,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeTupleStructAsMapValue::new(state, name, len))
     }
@@ -330,7 +279,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeTupleVariantAsMapValue::new(
             state,
@@ -345,7 +295,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeMapAsMapValue::new(state, len))
     }
@@ -358,7 +309,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeStructAsMapValue::new(state, name, len))
     }
@@ -373,7 +325,8 @@ where
         use serde::ser::SerializeMap;
 
         let mut state = self.delegate.serialize_map(Some(1))?;
-        state.serialize_key(self.tag)?;
+        state.serialize_entry(self.tag_key, self.tag_value)?;
+        state.serialize_key(self.value_key)?;
 
         Ok(SerializeStructVariantAsMapValue::new(
             state,
