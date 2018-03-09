@@ -23,23 +23,37 @@ macro_rules! map {
 /// For serialization functions with a signature `fn (tag, value) -> Result`.
 macro_rules! generate_tests_ser_1 {
     (
-        using : $serialize:path,
-        $({
+        $(use $serialize:path : $modname:ident),+$(,)*
+        with
+        $args:tt
+    ) => {
+        $(
+            generate_tests_ser_1!(@mod $serialize, $modname, $args);
+        )*
+    };
+    (@mod
+        $serialize:path,
+        $modname:ident,
+        {$({
             case: $name:ident,
             tag: $tag:expr,
             value: $value:expr,
             expect: $expect:expr
             $(,)*
-        }),*$(,)*
+        }),*$(,)*}
     ) => {
-        $(
-            #[test]
-            fn $name() {
-                let value = $serialize(&$tag, &$value).unwrap();
-                assert_eq!(value, $expect);
-            }
-        )*
-    };
+        mod $modname {
+            use super::*;
+
+            $(
+                #[test]
+                fn $name() {
+                    let value = $serialize(&$tag, &$value).unwrap();
+                    assert_eq!(value, $expect);
+                }
+            )*
+        }
+    }
 }
 
 /// Generate tests for the specified values.
@@ -49,35 +63,18 @@ macro_rules! generate_tests_ser_1 {
 #[allow(unused)] // will be used later
 macro_rules! generate_tests_ser_2 {
     (
-        using : $serialize:path,
-        $({
-            case: $name:ident,
-            tag_k: $tag_key:expr,
-            tag_v: $tag_val:expr,
-            value: $value:expr,
-            expect: $expect:expr
-            $(,)*
-        }),*$(,)*
+        $(use $serialize:path : $modname:ident),+$(,)*
+        with
+        $args:tt
     ) => {
         $(
-            #[test]
-            fn $name() {
-                let value = $serialize(&$tag_key, &$tag_val, &$value).unwrap();
-                assert_eq!(value, $expect);
-            }
+            generate_tests_ser_1!(@mod $serialize, $modname, $args);
         )*
     };
-}
-
-/// Generate tests for the specified values.
-///
-/// For serialization functions with a signature
-/// `fn (tag_key, tag_value, value_key, value) -> Result`.
-#[allow(unused)] // will be used later
-macro_rules! generate_tests_ser_3 {
-    (
-        using : $serialize:path,
-        $({
+    (@mod
+        $serialize:path,
+        $modname:ident,
+        {$({
             case: $name:ident,
             tag_k: $tag_key:expr,
             tag_v: $tag_val:expr,
@@ -85,14 +82,59 @@ macro_rules! generate_tests_ser_3 {
             value: $value:expr,
             expect: $expect:expr
             $(,)*
-        }),*$(,)*
+        }),*$(,)*}
+    ) => {
+        mod $modname {
+            use super::*;
+
+            $(
+                #[test]
+                fn $name() {
+                    let value = $serialize(&$tag_key, &$tag_val, &$value).unwrap();
+                    assert_eq!(value, $expect);
+                }
+            )*
+        }
+    }
+}
+
+/// Generate tests for the specified values.
+///
+/// For serialization functions with a signature
+/// `fn (tag_key, tag_value, value_key, value) -> Result`.
+macro_rules! generate_tests_ser_3 {
+    (
+        $(use $serialize:path : $modname:ident),+$(,)*
+        with
+        $args:tt
     ) => {
         $(
-            #[test]
-            fn $name() {
-                let value = $serialize(&$tag_key, &$tag_val, &$val_key, &$value).unwrap();
-                assert_eq!(value, $expect);
-            }
+            generate_tests_ser_3!(@mod $serialize, $modname, $args);
         )*
     };
+    (@mod
+        $serialize:path,
+        $modname:ident,
+        {$({
+            case: $name:ident,
+            tag_k: $tag_key:expr,
+            tag_v: $tag_val:expr,
+            key: $val_key:expr,
+            value: $value:expr,
+            expect: $expect:expr
+            $(,)*
+        }),*$(,)*}
+    ) => {
+        mod $modname {
+            use super::*;
+
+            $(
+                #[test]
+                fn $name() {
+                    let value = $serialize(&$tag_key, &$tag_val, &$val_key, &$value).unwrap();
+                    assert_eq!(value, $expect);
+                }
+            )*
+        }
+    }
 }
