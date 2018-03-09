@@ -1,11 +1,11 @@
 //! Serialization of adjacently tagged values using tuples.
-//! 
+//!
 //! Tagging a value adjacently using this strategy will create a tuple with
 //! two elements, where the first element will be the tag and the second
 //! element the value.
-//! 
+//!
 //! # Examples serializing to JSON
-//! 
+//!
 //! Serializing a value
 //!
 //! ```
@@ -65,7 +65,7 @@ use util::ser::forward;
 
 
 /// Serializes the specified tag and value as tuple.
-/// 
+///
 /// The tag-value pair will be serialized as tuple where the first element will
 /// be the tag and the second element the tuple. The specified serializer
 /// performs the actual serialization and thus controls the data format. For
@@ -115,13 +115,13 @@ where
 
 
 /// A serializer that serializes the specified tag and value as tuple.
-/// 
+///
 /// The tag-value pair will be serialized as tuple where the first element will
 /// be the tag and the second element the tuple. The specified serializer
 /// performs the actual serialization and thus controls the data format. For
 /// more information on this tag-format, see the [module
 /// documentation](::ser::adj::tuple).
-/// 
+///
 /// # Warning
 /// You should prefer the [`serialize`](serialize) function over this serializer
 /// implementation. To serialize a tuple, the serializer implementation may need
@@ -137,6 +137,8 @@ where
     S: serde::Serializer,
     T: serde::Serialize + 'a,
 {
+    /// Creates a new Serializer with the specified tag and underlying
+    /// serializer.
     pub fn new(delegate: S, tag: &'a T) -> Self {
         Serializer { delegate, tag }
     }
