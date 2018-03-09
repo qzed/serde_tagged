@@ -4,8 +4,10 @@
 //! format.
 //!
 //! # Warning
-//! Deserialization of map-based adjacently tagged values is only supported
-//! for self-describing formats.
+//! When the deserialization-process depends on the tag (i.e. with
+//! [`deserialize`](`deserialize`) and/or [`Visitor`](`Visitor)),
+//! deserialization of map-based adjacently tagged values is only supported for
+//! self-describing formats.
 
 use de::seed::SeedFactory;
 use util::de::content::{Content, ContentDeserializer};
@@ -16,6 +18,19 @@ use std::marker::PhantomData;
 use serde;
 
 
+/// Deserialize a map-based adjacently tagged value.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
+///
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer [`deserialize_known`](deserialize_known) to this
+/// method.
 pub fn deserialize<'de, T, V, K, Kc, D, F>(
     deserializer: D,
     tag_key: Kc,
@@ -30,10 +45,33 @@ where
     D: serde::Deserializer<'de>,
     F: SeedFactory<'de, T, Value = V>,
 {
-    deserializer.deserialize_map(Visitor::<T, V, K, Kc, F>::new(tag_key, value_key, seed_factory))
+    deserializer.deserialize_map(Visitor::<T, V, K, Kc, F>::new(
+        tag_key,
+        value_key,
+        seed_factory,
+    ))
 }
 
 
+/// A visitor that can be used to deserialize a map-based adjacently tagged
+/// value.
+///
+/// This visitor handles a map-based adjacently tagged value, which is
+/// represented by a map containing exactly two entries. One entry of this tuple
+/// is a mapping from tag-key to tag, the other entry contains a mapping from
+/// value-key to value. Thus this visitor will return an error if the visited
+/// type is not a map with two entries.
+///
+/// The [`SeedFactory`](::de::seed::SeedFactory) provided to this visitor
+/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
+/// which then determines how the value is going to be deserialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
+/// 
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer [`KnownVisitor`](KnownVisitor) to this visitor.
 pub struct Visitor<T, V, K, Kc, F> {
     seed_factory: F,
     tag_key:      Kc,
@@ -44,6 +82,8 @@ pub struct Visitor<T, V, K, Kc, F> {
 }
 
 impl<T, V, K, Kc, F> Visitor<T, V, K, Kc, F> {
+    /// Creates a new visitor with the given
+    /// [`SeedFactory`](::de::seed::SeedFactory), tag-key and value-key.
     pub fn new(tag_key: Kc, value_key: Kc, seed_factory: F) -> Self {
         Visitor {
             seed_factory,
@@ -127,6 +167,18 @@ where
 }
 
 
+/// Deserialize a map-based adjacently tagged value of known type.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
+///
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer this method to [`deserialize`](deserialize).
 pub fn deserialize_known<'de, T, V, K, Kc, D>(
     deserializer: D,
     tag_key: Kc,
@@ -142,6 +194,23 @@ where
     deserializer.deserialize_map(KnownVisitor::<T, V, K, Kc>::new(tag_key, value_key))
 }
 
+
+/// A visitor that can be used to deserialize a map-based adjacently tagged
+/// value of known type.
+///
+/// This visitor handles a map-based adjacently tagged value, which is
+/// represented by a map containing exactly two entries. One entry of this tuple
+/// is a mapping from tag-key to tag, the other entry contains a mapping from
+/// value-key to value. Thus this visitor will return an error if the visited
+/// type is not a map with two entries.
+///
+/// This visitor is intended for use of known values, i.e. when no tag-specific
+/// deserialization mehtod is required. Thus it does not need to cache values
+/// which can improve the performance.
+///
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer this visitor to [`Visitor`](Visitor).
 pub struct KnownVisitor<T, V, K, Kc> {
     tag_key:    Kc,
     value_key:  Kc,
@@ -151,6 +220,7 @@ pub struct KnownVisitor<T, V, K, Kc> {
 }
 
 impl<T, V, K, Kc> KnownVisitor<T, V, K, Kc> {
+    /// Creates a new visitor with the given tag-key and value-key.
     pub fn new(tag_key: Kc, value_key: Kc) -> Self {
         KnownVisitor {
             tag_key,
