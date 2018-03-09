@@ -3,6 +3,81 @@
 //! Tagging a value adjacently using this strategy will create a struct with two
 //! fields, where the first field will be the tag and the second field the
 //! value.
+//!
+//! The representation of this tagging format depends largely on the
+//! underlying data format, e.g. in JSON, this is equivalent to the map-based
+//! adjacent tagging format, whereas with msgpack, it would be similar to the
+//! tuple-based format.
+//!
+//! # Examples serializing to JSON
+//!
+//! Serializing a value
+//!
+//! ```
+//! # extern crate serde_json;
+//! # extern crate serde_tagged;
+//! #
+//! # fn main() {
+//! let foo: i32 = 42;
+//!
+//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
+//! serde_tagged::ser::adj::struc::serialize(
+//!     &mut serializer,
+//!     "Tagged",
+//!     "t", "bar",
+//!     "c", &foo,
+//! ).unwrap();
+//! # }
+//! ```
+//!
+//! with a struct-name of `"Tagged"`, a tag-key of `"t"`, a tag value of
+//! `"bar"`, and a value-key of `"c"` will produce
+//!
+//! ```json
+//! {
+//!     "t": "bar",
+//!     "c": 42
+//! }
+//! ```
+//!
+//! ## A Simple struct
+//!
+//! Serializing a value `foo` with
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate serde_derive;
+//! # extern crate serde_json;
+//! # extern crate serde_tagged;
+//! #
+//! #[derive(Serialize)]
+//! struct Foo {
+//!     bar: &'static str,
+//! }
+//!
+//! # fn main() {
+//! let foo = Foo { bar: "baz" };
+//!
+//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
+//! serde_tagged::ser::adj::struc::serialize(
+//!     &mut serializer,
+//!     "Tagged",
+//!     "t", "my-tag",
+//!     "c", &foo,
+//! ).unwrap();
+//! # }
+//! ```
+//!
+//! with a struct-name of `"Tagged"`, a tag-key of `"t"`, a tag value of
+//! `"my-tag"`, and a value-key of `"c"` will produce
+//!
+//! ```json
+//! {
+//!     "t": "my-tag",
+//!     "c": { "bar": "baz" }
+//! }
+//! ```
+//!
 
 use std::fmt::Display;
 
@@ -12,6 +87,18 @@ use util::ser::content::{Content, ContentSerializer};
 use util::ser::forward;
 
 
+/// Serializes the specified tag-key, tag, value-key and value as struct.
+///
+/// The specified parameters will be serialized as a struct with with the given
+/// name containing two fields. The first field is named according to the given
+/// tag-key and contains the tag, the second field is named according to the
+/// value-key and contains the given value. The specified serializer performs
+/// the actual serialization and thus controls the data format. For more
+/// information on this tag-format, see the [module
+/// documentation](::ser::adj::struc).
+///
+/// # Note
+/// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
     name: &'static str,
@@ -64,6 +151,22 @@ where
 }
 
 
+/// A serializer that Serializes the specified tag-key, tag, value-key and value
+/// as struct.
+///
+/// The specified parameters will be serialized as a struct with with the given
+/// name containing two fields. The first field is named according to the given
+/// tag-key and contains the tag, the second field is named according to the
+/// value-key and contains the given value. The specified serializer performs
+/// the actual serialization and thus controls the data format. For more
+/// information on this tag-format, see the [module
+/// documentation](::ser::adj::struc).
+/// 
+/// # Warning
+/// You should prefer the [`serialize`](serialize) function over this serializer
+/// implementation. To serialize struct-entries, the serializer implementation
+/// may need to allocate memory on the heap. This can be avoided in the
+/// [`serialize`](serialize) function.
 pub struct Serializer<'a, S, T: ?Sized + 'a> {
     delegate:  S,
     name:      &'static str,
