@@ -11,6 +11,14 @@ use std::marker::PhantomData;
 use serde;
 
 
+/// Deserialize a tuple-based adjacently tagged value.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
 pub fn deserialize<'de, T, V, D, F>(deserializer: D, seed_factory: F) -> Result<V, D::Error>
 where
     T: serde::Deserialize<'de>,
@@ -21,6 +29,21 @@ where
 }
 
 
+/// A visitor that can be used to deserialize a tuple-based adjacently tagged
+/// value.
+///
+/// This visitor handles a tuple-based adjacently tagged value, which is
+/// represented by a tuple containing exactly two elements. The first element of
+/// this tuple is the tag, the second element the value. Thus this visitor will
+/// return an error if the visited type is not a tuple (i.e. sequence) with two
+/// elements.
+///
+/// The [`SeedFactory`](::de::seed::SeedFactory) provided to this visitor
+/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
+/// which then determines how the value is going to be deserialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
 pub struct Visitor<T, V, F> {
     seed_factory: F,
     _phantom_t:   PhantomData<T>,
