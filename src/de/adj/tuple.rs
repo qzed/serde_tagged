@@ -51,6 +51,8 @@ pub struct Visitor<T, V, F> {
 }
 
 impl<T, V, F> Visitor<T, V, F> {
+    /// Creates a new visitor with the given
+    /// [`SeedFactory`](::de::seed::SeedFactory).
     pub fn new(seed_factory: F) -> Self {
         Visitor {
             seed_factory,
