@@ -1,4 +1,66 @@
 //! Serialization of adjacently tagged values using maps.
+//!
+//! Tagging a value adjacently using this strategy will create a map with two
+//! entries, one entry contains a mapping from the tag-key to the tag and the
+//! other entry contains a mapping from the value-key to the value.
+//!
+//! # Examples serializing to JSON
+//!
+//! Serializing a value
+//!
+//! ```
+//! # extern crate serde_json;
+//! # extern crate serde_tagged;
+//! #
+//! # fn main() {
+//! let foo: i32 = 42;
+//!
+//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
+//! serde_tagged::ser::adj::map::serialize(&mut serializer, "t", "bar", "c", &foo).unwrap();
+//! # }
+//! ```
+//!
+//! with a tag-key of `"t"`, a tag value of `"bar"`, and a value-key of `"c"` will produce
+//!
+//! ```json
+//! {
+//!     "t": "bar",
+//!     "c": 42
+//! }
+//! ```
+//!
+//! ## A Simple struct
+//!
+//! Serializing a value `foo` with
+//!
+//! ```
+//! # #[macro_use]
+//! # extern crate serde_derive;
+//! # extern crate serde_json;
+//! # extern crate serde_tagged;
+//! #
+//! #[derive(Serialize)]
+//! struct Foo {
+//!     bar: &'static str,
+//! }
+//!
+//! # fn main() {
+//! let foo = Foo { bar: "baz" };
+//!
+//! let mut serializer = serde_json::Serializer::new(std::io::stdout());
+//! serde_tagged::ser::adj::map::serialize(&mut serializer, "t", "my-tag", "c", &foo).unwrap();
+//! # }
+//! ```
+//!
+//! with a tag-key of `"t"`, a tag value of `"my-tag"`, and a value-key of `"c"` will produce
+//!
+//! ```json
+//! {
+//!     "t": "my-tag",
+//!     "c": { "bar": "baz" }
+//! }
+//! ```
+//!
 
 use std::fmt::Display;
 
@@ -8,6 +70,17 @@ use util::ser::content::{Content, ContentSerializer};
 use util::ser::forward;
 
 
+/// Serializes the specified tag-key, tag, value-key and value as map.
+///
+/// The specified parameters will be serialized as map with two entries, where
+/// one entry contains a mapping from the tag-key to the tag and the second
+/// entry contains a mapping from the value-key to the value. The specified
+/// serializer performs the actual serialization and thus controls the data
+/// format. For more information on this tag-format, see the
+/// [module documentation](::ser::adj::map).
+///
+/// # Note
+/// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, Tk, Tv, Vk, V>(
     serializer: S,
     tag_key: &Tk,
@@ -61,6 +134,21 @@ where
 }
 
 
+/// A serializer that Serializes the specified tag-key, tag, value-key and value
+/// as map.
+///
+/// The specified parameters will be serialized as map with two entries, where
+/// one entry contains a mapping from the tag-key to the tag and the second
+/// entry contains a mapping from the value-key to the value. The specified
+/// serializer performs the actual serialization and thus controls the data
+/// format. For more information on this tag-format, see the
+/// [module documentation](::ser::adj::map).
+///
+/// # Warning
+/// You should prefer the [`serialize`](serialize) function over this serializer
+/// implementation. To serialize map-entries, the serializer implementation may
+/// need to allocate memory on the heap. This can be avoided in the
+/// [`serialize`](serialize) function.
 pub struct Serializer<'a, S, Tk: ?Sized + 'a, Tv: ?Sized + 'a, Vk: ?Sized + 'a> {
     delegate:  S,
     tag_key:   &'a Tk,
@@ -77,12 +165,7 @@ where
 {
     /// Creates a new Serializer with the specified tag-key, tag-value,
     /// value-key, and underlying serializer.
-    pub fn new(
-        delegate: S,
-        tag_key: &'a Tk,
-        tag_value: &'a Tv,
-        value_key: &'a Vk,
-    ) -> Self {
+    pub fn new(delegate: S, tag_key: &'a Tk, tag_value: &'a Tv, value_key: &'a Vk) -> Self {
         Serializer {
             delegate,
             tag_key,
