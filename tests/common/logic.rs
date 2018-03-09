@@ -90,7 +90,7 @@ macro_rules! generate_tests_ser_3 {
         $(
             #[test]
             fn $name() {
-                let value = $serialize(&$tag_key, &$tag_val, &val_key, &$value).unwrap();
+                let value = $serialize(&$tag_key, &$tag_val, &$val_key, &$value).unwrap();
                 assert_eq!(value, $expect);
             }
         )*
