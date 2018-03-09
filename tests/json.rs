@@ -915,6 +915,1048 @@ mod ser {
             }
         }
     }
+
+    /// Tests for serialization of map-based adjacently-tagged values.
+    mod adj_map {
+
+        /// Tests for serialization of map-based adjacently-tagged values
+        /// using the wrapper-struct.
+        mod wrapped {
+            use common::types::*;
+            use serde_bytes::Bytes;
+
+            generate_tests_ser_3! {
+                using: ::common::formats::json::ser::adj_map::serialize_wrapped,
+
+                {
+                    case:   bool,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  true,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": true
+                    }),
+                },
+
+                {
+                    case:   i8,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -56_i8,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": -56
+                    }),
+                },{
+                    case:   i16,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -197_i16,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": -197
+                    }),
+                },{
+                    case:   i32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  49206_i32,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 49206
+                    }),
+                },{
+                    case:   i64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -817696_i64,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c":  -817696
+                    }),
+                },
+
+                {
+                    case:   u8,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  234_u8,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 234
+                    }),
+                },{
+                    case:   u16,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  25507_u16,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 25507
+                    }),
+                },{
+                    case:   u32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2051984_u32,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 2051984
+                    }),
+                },{
+                    case:   u64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  3331520_u64,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 3331520
+                    }),
+                },
+
+                {
+                    case:   f32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2.0_f32,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 2.0
+                    }),
+                },{
+                    case:   f64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2.0_f64,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 2.0
+                    }),
+                },
+
+                {
+                    case:   char,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  'c',
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 'c'
+                    }),
+                },{
+                    case:   str,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  "foobar",
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": "foobar"
+                    }),
+                },
+
+                {
+                    case:   bytes,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Bytes::new(&[0, 1, 2, 3]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [0, 1, 2, 3]
+                    }),
+                },
+
+                {
+                    case:   none,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  None as Option<i32>,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },{
+                    case:   some,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Some(361) as Option<i32>,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 361
+                    }),
+                },{
+                    case:   unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  (),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },
+
+                {
+                    case:   tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  (1_i32, 2_i32, 3_i32),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3]
+                    }),
+                },{
+                    case:   seq,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeSeq(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3]
+                    }),
+                },{
+                    case:   seq_len_hidden,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeSeqLenHidden(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3]
+                    }),
+                },{
+                    case:   map,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeMap(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": {"a": 1, "b": 2, "c": 3}
+                    }),
+                },{
+                    case:   map_len_hidden,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeMapLenHidden(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": {"a": 1, "b": 2, "c": 3}
+                    }),
+                },
+
+                {
+                    case:   struct_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  UnitStruct,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },{
+                    case:   struct_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  NewtypeStruct(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 42
+                    }),
+                },{
+                    case:   struct_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },{
+                    case:   struct_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  TupleStruct(1, 2, 3, 4),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3, 4]
+                    }),
+                },{
+                    case:   struct_normal,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Struct { foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },
+
+                {
+                    case:   enum_external_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": "Unit"
+                    }),
+                },{
+                    case:   enum_external_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::NewtypeP(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "NewtypeP": 42 }
+                    }),
+                },{
+                    case:   enum_external_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "NewtypeC": { "foo": "bar" }}
+                    }),
+                },{
+                    case:   enum_external_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::Tuple(3, 2, 1),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "Tuple": [3, 2, 1]}
+                    }),
+                },{
+                    case:   enum_external_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "Struct": { "foo": "bar" }}
+                    }),
+                },
+
+                {
+                    case:   enum_internal_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Unit" }
+                    }),
+                },{
+                    case:   enum_internal_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "NewtypeC", "foo": "bar" }
+                    }),
+                },{
+                    case:   enum_internal_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Struct", "foo": "bar" }
+                    }),
+                },
+
+                {
+                    case:   enum_adjacent_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Unit" }
+                    }),
+                },{
+                    case:   enum_adjacent_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::NewtypeP(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "NewtypeP", "c": 42 }
+                    }),
+                },{
+                    case:   enum_adjacent_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "NewtypeC", "c": { "foo": "bar" }}
+                    }),
+                },{
+                    case:   enum_adjacent_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Tuple(3, 2, 1),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Tuple", "c": [3, 2, 1]}
+                    }),
+                },{
+                    case:   enum_adjacent_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Struct", "c": { "foo": "bar" }}
+                    }),
+                },
+
+                {
+                    case:   enum_untagged_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },{
+                    case:   enum_untagged_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::NewtypeP(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 42
+                    }),
+                },{
+                    case:   enum_untagged_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },{
+                    case:   enum_untagged_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Tuple(3, 2, 1),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [3, 2, 1]
+                    }),
+                },{
+                    case:   enum_untagged_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },
+
+                {
+                    case:   collect_seq,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectSeq(vec![1, 2, 3, 4]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3, 4]
+                    }),
+                },{
+                    case:   collect_map,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectMap(map!["a" => 1, "b" => 2, "c" => 3]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": {"a": 1, "b": 2, "c": 3}
+                    }),
+                },{
+                    case:   collect_str,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectStr("foobar"),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": "foobar"
+                    }),
+                },
+            }
+        }
+
+        /// Tests for serialization of map-based adjacently-tagged values
+        /// using the Serializer.
+        mod with_serializer {
+            use common::types::*;
+            use serde_bytes::Bytes;
+
+            generate_tests_ser_3! {
+                using: ::common::formats::json::ser::adj_map::serialize_with_serializer,
+
+                {
+                    case:   bool,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  true,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": true
+                    }),
+                },
+
+                {
+                    case:   i8,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -56_i8,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": -56
+                    }),
+                },{
+                    case:   i16,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -197_i16,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": -197
+                    }),
+                },{
+                    case:   i32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  49206_i32,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 49206
+                    }),
+                },{
+                    case:   i64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -817696_i64,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c":  -817696
+                    }),
+                },
+
+                {
+                    case:   u8,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  234_u8,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 234
+                    }),
+                },{
+                    case:   u16,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  25507_u16,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 25507
+                    }),
+                },{
+                    case:   u32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2051984_u32,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 2051984
+                    }),
+                },{
+                    case:   u64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  3331520_u64,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 3331520
+                    }),
+                },
+
+                {
+                    case:   f32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2.0_f32,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 2.0
+                    }),
+                },{
+                    case:   f64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2.0_f64,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 2.0
+                    }),
+                },
+
+                {
+                    case:   char,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  'c',
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 'c'
+                    }),
+                },{
+                    case:   str,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  "foobar",
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": "foobar"
+                    }),
+                },
+
+                {
+                    case:   bytes,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Bytes::new(&[0, 1, 2, 3]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [0, 1, 2, 3]
+                    }),
+                },
+
+                {
+                    case:   none,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  None as Option<i32>,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },{
+                    case:   some,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Some(361) as Option<i32>,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 361
+                    }),
+                },{
+                    case:   unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  (),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },
+
+                {
+                    case:   tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  (1_i32, 2_i32, 3_i32),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3]
+                    }),
+                },{
+                    case:   seq,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeSeq(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3]
+                    }),
+                },{
+                    case:   seq_len_hidden,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeSeqLenHidden(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3]
+                    }),
+                },{
+                    case:   map,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeMap(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": {"a": 1, "b": 2, "c": 3}
+                    }),
+                },{
+                    case:   map_len_hidden,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeMapLenHidden(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": {"a": 1, "b": 2, "c": 3}
+                    }),
+                },
+
+                {
+                    case:   struct_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  UnitStruct,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },{
+                    case:   struct_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  NewtypeStruct(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 42
+                    }),
+                },{
+                    case:   struct_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },{
+                    case:   struct_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  TupleStruct(1, 2, 3, 4),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3, 4]
+                    }),
+                },{
+                    case:   struct_normal,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Struct { foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },
+
+                {
+                    case:   enum_external_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": "Unit"
+                    }),
+                },{
+                    case:   enum_external_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::NewtypeP(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "NewtypeP": 42 }
+                    }),
+                },{
+                    case:   enum_external_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "NewtypeC": { "foo": "bar" }}
+                    }),
+                },{
+                    case:   enum_external_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::Tuple(3, 2, 1),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "Tuple": [3, 2, 1]}
+                    }),
+                },{
+                    case:   enum_external_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedExternal::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "Struct": { "foo": "bar" }}
+                    }),
+                },
+
+                {
+                    case:   enum_internal_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Unit" }
+                    }),
+                },{
+                    case:   enum_internal_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "NewtypeC", "foo": "bar" }
+                    }),
+                },{
+                    case:   enum_internal_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Struct", "foo": "bar" }
+                    }),
+                },
+
+                {
+                    case:   enum_adjacent_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Unit" }
+                    }),
+                },{
+                    case:   enum_adjacent_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::NewtypeP(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "NewtypeP", "c": 42 }
+                    }),
+                },{
+                    case:   enum_adjacent_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "NewtypeC", "c": { "foo": "bar" }}
+                    }),
+                },{
+                    case:   enum_adjacent_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Tuple(3, 2, 1),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Tuple", "c": [3, 2, 1]}
+                    }),
+                },{
+                    case:   enum_adjacent_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "t": "Struct", "c": { "foo": "bar" }}
+                    }),
+                },
+
+                {
+                    case:   enum_untagged_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Unit,
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": null
+                    }),
+                },{
+                    case:   enum_untagged_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::NewtypeP(42),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": 42
+                    }),
+                },{
+                    case:   enum_untagged_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },{
+                    case:   enum_untagged_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Tuple(3, 2, 1),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [3, 2, 1]
+                    }),
+                },{
+                    case:   enum_untagged_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": { "foo": "bar" }
+                    }),
+                },
+
+                {
+                    case:   collect_seq,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectSeq(vec![1, 2, 3, 4]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": [1, 2, 3, 4]
+                    }),
+                },{
+                    case:   collect_map,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectMap(map!["a" => 1, "b" => 2, "c" => 3]),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": {"a": 1, "b": 2, "c": 3}
+                    }),
+                },{
+                    case:   collect_str,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectStr("foobar"),
+                    expect: json!({
+                        "t": "<tag>",
+                        "c": "foobar"
+                    }),
+                },
+            }
+        }
+    }
 }
 
 /// Tests for deserialization of tagged values.
