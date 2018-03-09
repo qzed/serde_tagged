@@ -968,6 +968,411 @@ mod ser {
             }
         }
     }
+
+    /// Tests for serialization of struct-based adjacently-tagged values.
+    mod adj_struc {
+        use common::types::*;
+        use serde_bytes;
+        use serde_value::Value;
+        use serde_value::Value::*;
+        use std::option;
+
+        /// Apply a string as external tag to the specified value.
+        fn ts(
+            tag_key: &'static str,
+            tag_value: &'static str,
+            value_key: &'static str,
+            value: Value,
+        ) -> Value {
+            Value::Map(map![
+                Value::String(tag_key.to_owned()) => Value::String(tag_value.to_owned()),
+                Value::String(value_key.to_owned()) => value,
+            ])
+        }
+
+        generate_tests_ser_3! {
+            use ::common::formats::value::ser::adj_struc::serialize_wrapped : wrapped,
+            use ::common::formats::value::ser::adj_struc::serialize_with_serializer : with_serializer,
+
+            with {
+                {
+                    case:   bool,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  true,
+                    expect: ts("t", "<tag>", "c", Bool(true)),
+                },
+
+                {
+                    case:   i8,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -56_i8,
+                    expect: ts("t", "<tag>", "c", I8(-56)),
+                },{
+                    case:   i16,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -197_i16,
+                    expect: ts("t", "<tag>", "c", I16(-197)),
+                },{
+                    case:   i32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  49206_i32,
+                    expect: ts("t", "<tag>", "c", I32(49206)),
+                },{
+                    case:   i64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  -817696_i64,
+                    expect: ts("t", "<tag>", "c", I64(-817696)),
+                },
+
+                {
+                    case:   u8,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  234_u8,
+                    expect: ts("t", "<tag>", "c", U8(234))
+                },{
+                    case:   u16,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  25507_u16,
+                    expect: ts("t", "<tag>", "c", U16(25507))
+                },{
+                    case:   u32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2051984_u32,
+                    expect: ts("t", "<tag>", "c", U32(2051984))
+                },{
+                    case:   u64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  3331520_u64,
+                    expect: ts("t", "<tag>", "c", U64(3331520))
+                },
+
+                {
+                    case:   f32,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2.0_f32,
+                    expect: ts("t", "<tag>", "c", F32(2.0)),
+                },{
+                    case:   f64,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  2.0_f64,
+                    expect: ts("t", "<tag>", "c", F64(2.0)),
+                },
+
+                {
+                    case:   char,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  'c',
+                    expect: ts("t", "<tag>", "c", Char('c')),
+                },{
+                    case:   str,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  "foobar",
+                    expect: ts("t", "<tag>", "c", String("foobar".to_owned())),
+                },
+
+                {
+                    case:   bytes,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  serde_bytes::Bytes::new(&[0, 1, 2, 3]),
+                    expect: ts("t", "<tag>", "c", Bytes(vec![0, 1, 2, 3])),
+                },
+
+                {
+                    case:   none,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  option::Option::None::<i32>,
+                    expect: ts("t", "<tag>", "c", Option(option::Option::None)),
+                },{
+                    case:   some,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  option::Option::Some(361_i32),
+                    expect: ts("t", "<tag>", "c", Option(option::Option::Some(Box::new(I32(361))))),
+                },{
+                    case:   unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  (),
+                    expect: ts("t", "<tag>", "c", Unit),
+                },
+
+                {
+                    case:   tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  (1_i32, 2_i32, 3_i32),
+                    expect: ts("t", "<tag>", "c", Seq(vec![I32(1), I32(2), I32(3)])),
+                },{
+                    case:   seq,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeSeq(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: ts("t", "<tag>", "c", Seq(vec![I32(1), I32(2), I32(3)])),
+                },{
+                    case:   seq_len_hidden,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeSeqLenHidden(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: ts("t", "<tag>", "c", Seq(vec![I32(1), I32(2), I32(3)])),
+                },{
+                    case:   map,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeMap(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("a".to_owned()) => I32(1),
+                        String("b".to_owned()) => I32(2),
+                        String("c".to_owned()) => I32(3),
+                    ])),
+                },{
+                    case:   map_len_hidden,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  SerializeMapLenHidden(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: ts("t", "<tag>", "c", Map(map!{
+                        String("a".to_owned()) => I32(1),
+                        String("b".to_owned()) => I32(2),
+                        String("c".to_owned()) => I32(3),
+                    })),
+                },
+
+                {
+                    case:   struct_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  UnitStruct,
+                    expect: ts("t", "<tag>", "c", Unit),
+                },{
+                    case:   struct_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  NewtypeStruct(42),
+                    expect: ts("t", "<tag>", "c", Newtype(Box::new(I32(42)))),
+                },{
+                    case:   struct_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    expect: ts("t", "<tag>", "c", Newtype(Box::new(Map(map![
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ])))),
+                },{
+                    case:   struct_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  TupleStruct(1, 2, 3, 4),
+                    expect: ts("t", "<tag>", "c", Seq(vec![I32(1), I32(2), I32(3), I32(4)])),
+                },{
+                    case:   struct_normal,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  Struct { foo: "bar" },
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ])),
+                },
+
+                // TODO: tests for externally tagged enums
+                //       missing due to https://github.com/arcnmx/serde-value/issues/18
+
+                {
+                    case:   enum_internal_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::Unit,
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("Unit".to_owned()),
+                    ])),
+                },{
+                    case:   enum_internal_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("NewtypeC".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ])),
+                },{
+                    case:   enum_internal_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("Struct".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ])),
+                },
+
+                {
+                    case:   enum_adjacent_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Unit,
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("Unit".to_owned())
+                    ])),
+                },{
+                    case:   enum_adjacent_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::NewtypeP(42),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("NewtypeP".to_owned()),
+                        String("c".to_owned()) => I32(42),
+                    ])),
+                },{
+                    case:   enum_adjacent_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("NewtypeC".to_owned()),
+                        String("c".to_owned()) => Map(map![
+                            String("foo".to_owned()) => String("bar".to_owned()),
+                        ]),
+                    ])),
+                },{
+                    case:   enum_adjacent_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Tuple(3, 2, 1),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("Tuple".to_owned()),
+                        String("c".to_owned()) => Seq(vec![I32(3), I32(2), I32(1)]),
+                    ])),
+                },{
+                    case:   enum_adjacent_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("t".to_owned()) => String("Struct".to_owned()),
+                        String("c".to_owned()) => Map(map![
+                            String("foo".to_owned()) => String("bar".to_owned()),
+                        ]),
+                    ])),
+                },
+
+                {
+                    case:   enum_untagged_unit,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Unit,
+                    expect: ts("t", "<tag>", "c", Unit),
+                },{
+                    case:   enum_untagged_newtype_primitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::NewtypeP(42),
+                    expect: ts("t", "<tag>", "c", I32(42)),
+                },{
+                    case:   enum_untagged_newtype_nonprimitive,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ])),
+                },{
+                    case:   enum_untagged_tuple,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Tuple(3, 2, 1),
+                    expect: ts("t", "<tag>", "c", Seq(vec![I32(3), I32(2), I32(1)])),
+                },{
+                    case:   enum_untagged_struct,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ])),
+                },
+
+                {
+                    case:   collect_seq,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectSeq(vec![1_i32, 2_i32, 3_i32, 4_i32]),
+                    expect: ts("t", "<tag>", "c", Seq(vec![I32(1), I32(2), I32(3), I32(4)])),
+                },{
+                    case:   collect_map,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectMap(map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: ts("t", "<tag>", "c", Map(map![
+                        String("a".to_owned()) => I32(1),
+                        String("b".to_owned()) => I32(2),
+                        String("c".to_owned()) => I32(3),
+                    ])),
+                },{
+                    case:   collect_str,
+                    tag_k:  "t",
+                    tag_v:  "<tag>",
+                    key:    "c",
+                    value:  CollectStr("foobar"),
+                    expect: ts("t", "<tag>", "c", String("foobar".into())),
+                },
+            }
+        }
+    }
 }
 
 /// Tests for deserialization of tagged values.
