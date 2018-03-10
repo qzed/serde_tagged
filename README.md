@@ -104,6 +104,12 @@ Illustrated, this yields
 The representation of this tagging format in the data format largely depends on the latter, thus it can be either compact (msgpack, bincode) or verbose (JSON).
 
 
+## Optional features
+
+By default, this crate is built with the `erased` feature enabled (which requires `erased-serde` as dependency).
+This feature is intended to simplify the deserialization of type-erased trait objects by providing types and traits to simplify interactions with `erased-serde`.
+
+
 ## License
 
 Licensed under either of
