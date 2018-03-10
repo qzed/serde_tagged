@@ -1,4 +1,6 @@
-# Serde Tagged [![Build Status]][travis] [![Coverage]][codecov]
+# Serde Tagged
+
+[![Build Status]][travis] [![Coverage]][codecov]
 
 [Build Status]: https://api.travis-ci.org/qzed/serde_tagged.svg?branch=master
 [travis]: https://travis-ci.org/qzed/serde_tagged
@@ -18,30 +20,88 @@ The tagging-formats are largely similar to the [enum tagging-formats already use
 <a name="myfootnote1">[1]</a>:
 Some data formats may however impose restrictions, e.g. JSON objects can only contain strings as keys, which in turn restricts the tag type that can be used with the external tagging-format to strings for a JSON backend.
 
+
 ## Currently under development
 
 This crate is currently under development, thus it is not on `crates.io` yet.
 Further documentation and examples will follow.
 
+If you still want to try this crate, just add the following line under `[dependencies]` in your `Cargo.toml` file.
 
-## Tag formats
+```toml
+serde_tagged = { git = "https://github.com/qzed/serde_tagged", branch = "master" }
+```
 
-`serde_tagged` currently only supports external tagging.
-Further formats are planned.
+For some examples, have a look at the `examples` directory.
 
-Below is a short overview of the supported formats.
-More details on those can be found in the API documentation.
+
+## Tagging formats
+
+`serde_tagged` supports multiple tagging formats.
+Here is a short overview:
 
 ### External tagging
 
-The external tagging format applies tags using a map with a single entry, where a tag is the key and the value the value of the entry. In JSON this would yield
+The external tagging format applies tags using a map with a single entry, where a tag is the key and the value the value of the entry. In a somewhat illustrative form, this would yield
 
-```json
-{ "tag": "value" }
+```
+{ <tag> => <value> }
 ```
 
-where `"value"` can be any valid (JSON) value, `"tag"` however must be a string due to the JSON format being used.
-Other formats may allow more types as map-key and thus more types as tag in this particular tagging format.
+where `value` can be any de-/serializable value, `tag` however may be limited by the format being used (e.g. JSON would only allow strings).
+A benefit of this format is that it is somewhat readable when serialized to a human-readable data format but can also be compact when serialized to a binary format.
+Furthermore, due to the clear order (tag before value), deserialization can be faster than with some of the other formats (such as internal and non-tuple-based adjacent tagging).
+However, for configuration files and primarily text based data formats you might want to look at the internal tagging format.
+
+### Internal tagging
+
+(currently in development)
+
+This format tags values internally, meaning that the tag is embedded into the value.
+Embedding a tag does however not work with all value types (e.g. primitives such as `i32`) thus this format requires a fallback for those types.
+
+A big benefit of this format is that it is (subjectively) more readable in configuration files.
+A TOML configuration file using this tagging scheme could look somewhat like this:
+
+```toml
+[log]
+type = "terminal"   # this is the tag
+level = "trace"     # this is a value-specific entry
+color = "auto"      # this is another value-specific entry
+```
+
+Parsing this format, however, requires allocations so you might want to choose another format when the data format you are using is binary and/or you care about performance.
+
+### Adjacent tagging using tuples
+
+The tuple-based adjacent format is similar to the external format compact, easy to deserialize due to its predefined tag value order, however, arguably less readable.
+Tag and value pairs are stored as tuples, i.e.
+
+```
+( <tag>, <value> )
+```
+
+### Adjacent tagging using maps
+
+The map-based adjacent tagging format applies tags using two map entries, where one entry contains a mapping from tag-key to tag and the other entry a mapping from value-key to value.
+Illustrated, this yields
+
+```
+{ <tag-key> => <tag>, <value-key> => <value> }
+```
+
+This format again makes more sense when used in a human-readable data format, however also requires potential heap allocations for deserialization due to the order of tag and value being undefined.
+
+### Adjacent tagging using structs
+
+The struct-based adjacent tagging format is similar to the map-based adjacent tagging format, however, here the tagged value is serialized as struct where the keys are the names of the struct fields.
+Illustrated, this yields
+
+```
+{ <tag-key>: <tag>, <value-key>: <value> }
+```
+
+The representation of this tagging format in the data format largely depends on the latter, thus it can be either compact (msgpack, bincode) or verbose (JSON).
 
 
 ## License
