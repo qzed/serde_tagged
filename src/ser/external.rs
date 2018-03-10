@@ -1,9 +1,9 @@
 //! Serialization of externally tagged values.
-//! 
+//!
 //! Tagging values externally will apply the tag via a mapping from tag to
 //! value, thus serializing a tagged value with the functionality provided in
 //! this module will always result in a map-object with a single entry.
-//! 
+//!
 //! This format is similar to the externally-tagged enum format provided by
 //! serde, however allows for various tag types (not only `str` and `u32`).
 //!
@@ -66,12 +66,13 @@ use std::fmt::Display;
 
 use serde;
 
+use ser::HasDelegate;
 use util::ser::content::{Content, ContentSerializer};
 use util::ser::forward;
 
 /// Applies a tag externally to the specified value and serializes them using
 /// the provided serializer.
-/// 
+///
 /// The tag-value pair will be serialized as a map with one entry, where the tag
 /// will be the key. The specified serializer performs the actual serialization
 /// and thus controls the data format. For more information on this tag-format,
@@ -157,6 +158,20 @@ where
         let mut state = self.delegate.serialize_map(Some(1))?;
         state.serialize_entry(self.tag, value)?;
         state.end()
+    }
+}
+
+impl<'a, S, T: ?Sized> HasDelegate for Serializer<'a, S, T>
+where
+    S: serde::Serializer,
+    T: serde::Serialize + 'a,
+{
+    type Ok = S::Ok;
+    type Error = S::Error;
+    type Delegate = S;
+
+    fn delegate(self) -> S {
+        self.delegate
     }
 }
 
