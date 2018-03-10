@@ -1800,4 +1800,322 @@ mod de {
             let (_t, _v) = de::<String, String, String, _, _>(value, "t", "c").unwrap();
         }
     }
+
+    /// Tests for deserialization of struct-based adjacently-tagged values.
+    mod adj_struc {
+        use common::types::*;
+        use serde_value::Value;
+
+        #[test]
+        fn without_tag_phantom() {
+            use serde_tagged::de::adj::struc::deserialize as de;
+            use std::marker::PhantomData;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("tag".to_owned()),
+                Value::String("c".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v =
+                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", PhantomData).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn without_tag_phantom_seq() {
+            use serde_tagged::de::adj::struc::deserialize as de;
+            use std::marker::PhantomData;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v =
+                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", PhantomData).unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn without_tag() {
+            use serde_tagged::de::WithoutTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("tag".to_owned()),
+                Value::String("c".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v =
+                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", WithoutTag::new())
+                    .unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn without_tag_seq() {
+            use serde_tagged::de::WithoutTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let v =
+                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", WithoutTag::new())
+                    .unwrap();
+
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn with_tag() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("tag".to_owned()),
+                Value::String("c".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v) =
+                de::<_, (String, Struct<String>), _, _>(value, "Tagged", "t", "c", WithTag::new())
+                    .unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn with_tag_seq() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v) =
+                de::<_, (String, Struct<String>), _, _>(value, "Tagged", "t", "c", WithTag::new())
+                    .unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_map_empty() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Map(map![]);
+
+            let (_t, _v) =
+                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_seq_empty() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Seq(vec![]);
+
+            let (_t, _v) =
+                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_map_len() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("b".to_owned()),
+                Value::String("c".to_owned()) => Value::String("d".to_owned()),
+                Value::String("e".to_owned()) => Value::String("f".to_owned()),
+            ]);
+
+            let (_t, _v) =
+                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_keys() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("b".to_owned()),
+                Value::String("c".to_owned()) => Value::String("d".to_owned()),
+            ]);
+
+            let (_t, _v) =
+                de::<_, (String, String), _, _>(value, "Tagged", "a", "b", WithTag::new()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn error_type() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::adj::struc::deserialize as de;
+
+            let value = Value::I32(1);
+
+            let (_t, _v) =
+                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+        }
+
+        #[test]
+        fn known() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("tag".to_owned()),
+                Value::String("c".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v) = de::<String, Struct<String>, _>(value, "Tagged", "t", "c").unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn known_seq() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::Seq(vec![
+                Value::String("tag".to_owned()),
+                Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v) = de::<String, Struct<String>, _>(value, "Tagged", "t", "c").unwrap();
+
+            assert_eq!(t, "tag");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        #[should_panic]
+        fn known_error_map_empty() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::Map(map![]);
+
+            let (_t, _v) = de::<String, String, _>(value, "Tagged", "t", "c").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn known_error_seq_empty() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::Seq(vec![]);
+
+            let (_t, _v) = de::<String, String, _>(value, "Tagged", "t", "c").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn known_error_map_len() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("b".to_owned()),
+                Value::String("c".to_owned()) => Value::String("d".to_owned()),
+                Value::String("e".to_owned()) => Value::String("f".to_owned()),
+            ]);
+
+            let (_t, _v) = de::<String, String, _>(value, "Tagged", "t", "c").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn known_error_keys() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::Map(map![
+                Value::String("t".to_owned()) => Value::String("b".to_owned()),
+                Value::String("c".to_owned()) => Value::String("d".to_owned()),
+            ]);
+
+            let (_t, _v) = de::<String, String, _>(value, "Tagged", "a", "b").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn known_error_type() {
+            use serde_tagged::de::adj::struc::deserialize_known as de;
+
+            let value = Value::I32(1);
+
+            let (_t, _v) = de::<String, String, _>(value, "Tagged", "t", "c").unwrap();
+        }
+    }
 }
