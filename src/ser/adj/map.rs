@@ -66,6 +66,7 @@ use std::fmt::Display;
 
 use serde;
 
+use ser::HasDelegate;
 use util::ser::content::{Content, ContentSerializer};
 use util::ser::forward;
 
@@ -184,6 +185,22 @@ where
         state.serialize_entry(self.tag_key, self.tag_value)?;
         state.serialize_entry(self.value_key, value)?;
         state.end()
+    }
+}
+
+impl<'a, S, Tk, Tv, Vk> HasDelegate for Serializer<'a, S, Tk, Tv, Vk>
+where
+    S: serde::Serializer,
+    Tk: serde::Serialize + ?Sized,
+    Tv: serde::Serialize + ?Sized,
+    Vk: serde::Serialize + ?Sized,
+{
+    type Ok = S::Ok;
+    type Error = S::Error;
+    type Delegate = S;
+
+    fn delegate(self) -> S {
+        self.delegate
     }
 }
 
