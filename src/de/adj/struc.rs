@@ -5,7 +5,7 @@
 //!
 //! # Warning
 //! If the deserialization-process depends on the tag (i.e. with
-//! [`deserialize`](`deserialize`) and/or [`Visitor`](`Visitor)),
+//! [`deserialize`](deserialize) and/or [`Visitor`](Visitor)),
 //! deserialization of struct-based adjacently tagged values is only supported
 //! for self-describing formats.
 
@@ -18,6 +18,21 @@ use std::marker::PhantomData;
 use serde;
 
 
+/// Deserialize a struct-based adjacently tagged value.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+/// 
+/// `name` is the name with which the struct that will be serialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
+///
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer [`deserialize_known`](deserialize_known) to this
+/// method.
 pub fn deserialize<'de, T, V, D, F>(
     deserializer: D,
     name: &'static str,
@@ -38,6 +53,29 @@ where
     )
 }
 
+
+/// A visitor that can be used to deserialize a struct-based adjacently tagged
+/// value.
+///
+/// This visitor handles a struct-based adjacently tagged value, which is
+/// represented by a struct containing exactly two fields. The first field of
+/// this tuple is named according to tag-key and contains tag, the second field
+/// is named according to value-key and contains the value. Thus this visitor
+/// will return an error if the visited type is not a map or sequence with two
+/// entries.
+/// 
+/// `name` is the name with which the struct that will be serialized.
+///
+/// The [`SeedFactory`](::de::seed::SeedFactory) provided to this visitor
+/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
+/// which then determines how the value is going to be deserialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
+/// 
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer [`KnownVisitor`](KnownVisitor) to this visitor.
 pub struct Visitor<T, V, F> {
     seed_factory: F,
     tag_key:      &'static str,
@@ -132,6 +170,20 @@ where
 }
 
 
+/// Deserialize a struct-based adjacently tagged value of known type.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+/// 
+/// `name` is the name with which the struct that will be serialized.
+///
+/// See [`de::seed`](::de::seed) for more information on
+/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
+///
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer this method to [`deserialize`](deserialize).
 pub fn deserialize_known<'de, T, V, D>(
     deserializer: D,
     name: &'static str,
@@ -150,6 +202,26 @@ where
     )
 }
 
+
+/// A visitor that can be used to deserialize a struct-based adjacently tagged
+/// value of known type.
+///
+/// This visitor handles a struct-based adjacently tagged value, which is
+/// represented by a struct containing exactly two fields. The first field of
+/// this tuple is named according to tag-key and contains tag, the second field
+/// is named according to value-key and contains the value. Thus this visitor
+/// will return an error if the visited type is not a map or sequence with two
+/// entries.
+/// 
+/// `name` is the name with which the struct that will be serialized.
+///
+/// This visitor is intended for use of known values, i.e. when no tag-specific
+/// deserialization mehtod is required. Thus it does not need to cache values
+/// which can improve the performance.
+/// 
+/// # Note
+/// If you do not need to choose a specific deserialization-method based on the
+/// tag, you should prefer this visitor to [`Visitor`](Visitor).
 pub struct KnownVisitor<T, V> {
     tag_key:    &'static str,
     value_key:  &'static str,
