@@ -1534,7 +1534,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, PhantomData).unwrap();
+            let v: Struct<String> = de::<&str, _, _>(&mut jde, PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1558,7 +1558,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, WithoutTag::new()).unwrap();
+            let v: Struct<String> = de::<&str, _, _>(&mut jde, WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1582,7 +1582,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) = de::<_, (&str, Struct<String>), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (t, v): (&str, Struct<String>) = de(&mut jde, WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1602,7 +1602,7 @@ mod de {
             let json = "{}";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1617,7 +1617,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1629,7 +1629,7 @@ mod de {
             let json = "[]";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, WithTag::new()).unwrap();
         }
     }
 
@@ -1653,7 +1653,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, PhantomData).unwrap();
+            let v: Struct<String> = de::<&str, _, _>(&mut jde, PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1678,7 +1678,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, WithoutTag::new()).unwrap();
+            let v: Struct<String> = de::<&str, _, _>(&mut jde, WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1703,7 +1703,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) = de::<_, (&str, Struct<String>), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (t, v): (&str, Struct<String>) = de(&mut jde, WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1723,7 +1723,7 @@ mod de {
             let json = "[]";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1737,7 +1737,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1749,7 +1749,7 @@ mod de {
             let json = "{}";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<_, (&str, &str), _, _>(&mut jde, WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, WithTag::new()).unwrap();
         }
     }
 
@@ -1771,8 +1771,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, &str, _, _, _>(&mut jde, "t", "c", PhantomData).unwrap();
+            let v: Struct<String> =
+                de::<&str, &str, _, _, _>(&mut jde, "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1795,8 +1795,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, &str, _, _, _>(&mut jde, "t", "c", PhantomData).unwrap();
+            let v: Struct<String> =
+                de::<&str, &str, _, _, _>(&mut jde, "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1819,9 +1819,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, &str, _, _, _>(&mut jde, "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<&str, &str, _, _, _>(&mut jde, "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1844,9 +1843,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, &str, _, _, _>(&mut jde, "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<&str, &str, _, _, _>(&mut jde, "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1869,9 +1867,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) =
-                de::<_, (&str, Struct<String>), &str, _, _, _>(&mut jde, "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (&str, Struct<String>) =
+                de::<_, &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1895,9 +1892,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) =
-                de::<_, (&str, Struct<String>), &str, _, _, _>(&mut jde, "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (&str, Struct<String>) =
+                de::<_, &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1917,8 +1913,8 @@ mod de {
             let json = "{}";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) =
+                de::<_, &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1934,8 +1930,8 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) =
+                de::<_, &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1950,8 +1946,8 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), &str, _, _, _>(&mut jde, "a", "b", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) =
+                de::<_, &str, _, _, _>(&mut jde, "a", "b", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1963,8 +1959,8 @@ mod de {
             let json = "[]";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) =
+                de::<_, &str, _, _, _>(&mut jde, "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2002,7 +1998,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) = de::<&str, Struct<String>, &str, _, _>(&mut jde, "t", "c").unwrap();
+            let (t, v): (&str, Struct<String>) =
+                de::<_, _, &str, _, _>(&mut jde, "t", "c").unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2021,7 +2018,7 @@ mod de {
             let json = "{}";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, &str, _, _>(&mut jde, "t", "c").unwrap();
+            let (_t, _v): (&str, &str) = de::<_, _, &str, _, _>(&mut jde, "t", "c").unwrap();
         }
 
         #[test]
@@ -2036,7 +2033,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, &str, _, _>(&mut jde, "t", "c").unwrap();
+            let (_t, _v): (&str, &str) = de::<_, _, &str, _, _>(&mut jde, "t", "c").unwrap();
         }
 
         #[test]
@@ -2050,7 +2047,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, &str, _, _>(&mut jde, "a", "b").unwrap();
+            let (_t, _v): (&str, &str) = de::<_, _, &str, _, _>(&mut jde, "a", "b").unwrap();
         }
 
         #[test]
@@ -2061,7 +2058,7 @@ mod de {
             let json = "[]";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, &str, _, _>(&mut jde, "t", "c").unwrap();
+            let (_t, _v): (&str, &str) = de::<_, _, &str, _, _>(&mut jde, "t", "c").unwrap();
         }
     }
 
@@ -2083,8 +2080,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, "Tagged", "t", "c", PhantomData)
-                .unwrap();
+            let v: Struct<String> =
+                de::<&str, _, _>(&mut jde, "Tagged", "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -2107,8 +2104,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, "Tagged", "t", "c", PhantomData)
-                .unwrap();
+            let v: Struct<String> =
+                de::<&str, _, _>(&mut jde, "Tagged", "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -2128,8 +2125,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v = de::<&str, Struct<String>, _, _>(&mut jde, "Tagged", "t", "c", PhantomData)
-                .unwrap();
+            let v: Struct<String> =
+                de::<&str, _, _>(&mut jde, "Tagged", "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -2152,9 +2149,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, _, _>(&mut jde, "Tagged", "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<&str, _, _>(&mut jde, "Tagged", "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -2177,9 +2173,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, _, _>(&mut jde, "Tagged", "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<&str, _, _>(&mut jde, "Tagged", "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -2199,9 +2194,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let v =
-                de::<&str, Struct<String>, _, _>(&mut jde, "Tagged", "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<&str, _, _>(&mut jde, "Tagged", "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -2224,9 +2218,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) =
-                de::<_, (&str, Struct<String>), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (&str, Struct<String>) =
+                de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2250,9 +2243,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) =
-                de::<_, (&str, Struct<String>), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (&str, Struct<String>) =
+                de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2273,9 +2265,8 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) =
-                de::<_, (&str, Struct<String>), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (&str, Struct<String>) =
+                de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2295,8 +2286,7 @@ mod de {
             let json = "{}";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2308,8 +2298,7 @@ mod de {
             let json = "[]";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2325,8 +2314,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2341,8 +2329,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), _, _>(&mut jde, "Tagged", "a", "b", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "a", "b", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2354,8 +2341,7 @@ mod de {
             let json = "null";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) =
-                de::<_, (&str, &str), _, _>(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2370,7 +2356,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) = de::<&str, Struct<String>, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (t, v): (&str, Struct<String>) = de(&mut jde, "Tagged", "t", "c").unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2393,7 +2379,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) = de::<&str, Struct<String>, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (t, v): (&str, Struct<String>) = de(&mut jde, "Tagged", "t", "c").unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2413,7 +2399,7 @@ mod de {
             "###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (t, v) = de::<&str, Struct<String>, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (t, v): (&str, Struct<String>) = de(&mut jde, "Tagged", "t", "c").unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -2432,7 +2418,7 @@ mod de {
             let json = "{}";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (_t, _v): (&str, Struct<String>) = de(&mut jde, "Tagged", "t", "c").unwrap();
         }
 
         #[test]
@@ -2443,7 +2429,7 @@ mod de {
             let json = "[]";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c").unwrap();
         }
 
         #[test]
@@ -2458,7 +2444,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c").unwrap();
         }
 
         #[test]
@@ -2472,7 +2458,7 @@ mod de {
             }"###;
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, _>(&mut jde, "Tagged", "a", "b").unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c").unwrap();
         }
 
         #[test]
@@ -2483,7 +2469,7 @@ mod de {
             let json = "null";
 
             let mut jde = serde_json::Deserializer::from_str(json);
-            let (_t, _v) = de::<&str, &str, _>(&mut jde, "Tagged", "t", "c").unwrap();
+            let (_t, _v): (&str, &str) = de(&mut jde, "Tagged", "t", "c").unwrap();
         }
     }
 }

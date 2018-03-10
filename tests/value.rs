@@ -1394,7 +1394,7 @@ mod de {
                 ]),
             ]);
 
-            let v = de::<String, Struct<String>, _, _>(value, PhantomData).unwrap();
+            let v: Struct<String> = de::<String, _, _>(value, PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1415,7 +1415,7 @@ mod de {
                 ]),
             ]);
 
-            let v = de::<String, Struct<String>, _, _>(value, WithoutTag::new()).unwrap();
+            let v: Struct<String> = de::<String, _, _>(value, WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1436,7 +1436,7 @@ mod de {
                 ]),
             ]);
 
-            let (t, v) = de::<_, (String, Struct<String>), _, _>(value, WithTag::new()).unwrap();
+            let (t, v): (String, Struct<String>) = de(value, WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1455,7 +1455,7 @@ mod de {
 
             let value = Value::Map(map![]);
 
-            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1469,7 +1469,7 @@ mod de {
                 Value::String("c".to_owned()) => Value::String("d".to_owned()),
             ]);
 
-            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1480,7 +1480,7 @@ mod de {
 
             let value = Value::I32(42);
 
-            let (_t, _v) = de::<_, (&str, &str), _, _>(value, WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, WithTag::new()).unwrap();
         }
     }
 
@@ -1501,7 +1501,7 @@ mod de {
                 ]),
             ]);
 
-            let v = de::<String, Struct<String>, _, _>(value, PhantomData).unwrap();
+            let v: Struct<String> = de::<String, _, _>(value, PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1523,7 +1523,7 @@ mod de {
                 ]),
             ]);
 
-            let v = de::<String, Struct<String>, _, _>(value, WithoutTag::new()).unwrap();
+            let v: Struct<String> = de::<String, _, _>(value, WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1545,7 +1545,7 @@ mod de {
                 ]),
             ]);
 
-            let (t, v) = de::<_, (String, Struct<String>), _, _>(value, WithTag::new()).unwrap();
+            let (t, v): (String, Struct<String>) = de(value, WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1564,7 +1564,7 @@ mod de {
 
             let value = Value::Seq(vec![]);
 
-            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1580,7 +1580,7 @@ mod de {
                 Value::String("d".to_owned()),
             ]);
 
-            let (_t, _v) = de::<_, (String, String), _, _>(value, WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1591,7 +1591,7 @@ mod de {
 
             let value = Value::I32(42);
 
-            let (_t, _v) = de::<_, (&str, &str), _, _>(value, WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, WithTag::new()).unwrap();
         }
     }
 
@@ -1612,8 +1612,8 @@ mod de {
                 ]),
             ]);
 
-            let v = de::<String, Struct<String>, String, _, _, _>(value, "t", "c", PhantomData)
-                .unwrap();
+            let v: Struct<String> =
+                de::<String, String, _, _, _>(value, "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1635,9 +1635,8 @@ mod de {
                 ]),
             ]);
 
-            let v =
-                de::<String, Struct<String>, String, _, _, _>(value, "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<String, String, _, _, _>(value, "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1659,9 +1658,8 @@ mod de {
                 ]),
             ]);
 
-            let (t, v) =
-                de::<_, (String, Struct<String>), String, _, _, _>(value, "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (String, Struct<String>) =
+                de::<_, String, _, _, _>(value, "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1680,9 +1678,8 @@ mod de {
 
             let value = Value::Map(map![]);
 
-            let (_t, _v) =
-                de::<_, (String, String), String, _, _, _>(value, "t", "c", WithTag::new())
-                    .unwrap();
+            let (_t, _v): (String, String) =
+                de::<_, String, _, _, _>(value, "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1697,9 +1694,8 @@ mod de {
                 Value::String("e".to_owned()) => Value::String("f".to_owned()),
             ]);
 
-            let (_t, _v) =
-                de::<_, (String, String), String, _, _, _>(value, "t", "c", WithTag::new())
-                    .unwrap();
+            let (_t, _v): (String, String) =
+                de::<_, String, _, _, _>(value, "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1713,9 +1709,8 @@ mod de {
                 Value::String("c".to_owned()) => Value::String("d".to_owned()),
             ]);
 
-            let (_t, _v) =
-                de::<_, (String, String), String, _, _, _>(value, "a", "b", WithTag::new())
-                    .unwrap();
+            let (_t, _v): (String, String) =
+                de::<_, String, _, _, _>(value, "a", "b", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1726,9 +1721,8 @@ mod de {
 
             let value = Value::Seq(vec![]);
 
-            let (_t, _v) =
-                de::<_, (String, String), String, _, _, _>(value, "t", "c", WithTag::new())
-                    .unwrap();
+            let (_t, _v): (String, String) =
+                de::<_, String, _, _, _>(value, "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1742,7 +1736,8 @@ mod de {
                 ]),
             ]);
 
-            let (t, v) = de::<String, Struct<String>, String, _, _>(value, "t", "c").unwrap();
+            let (t, v): (String, Struct<String>) =
+                de::<_, _, String, _, _>(value, "t", "c").unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1760,7 +1755,7 @@ mod de {
 
             let value = Value::Map(map![]);
 
-            let (_t, _v) = de::<String, String, String, _, _>(value, "t", "c").unwrap();
+            let (_t, _v): (String, String) = de::<_, _, String, _, _>(value, "t", "c").unwrap();
         }
 
         #[test]
@@ -1774,7 +1769,7 @@ mod de {
                 Value::String("e".to_owned()) => Value::String("f".to_owned()),
             ]);
 
-            let (_t, _v) = de::<String, String, String, _, _>(value, "t", "c").unwrap();
+            let (_t, _v): (String, String) = de::<_, _, String, _, _>(value, "t", "c").unwrap();
         }
 
         #[test]
@@ -1787,7 +1782,7 @@ mod de {
                 Value::String("c".to_owned()) => Value::String("d".to_owned()),
             ]);
 
-            let (_t, _v) = de::<String, String, String, _, _>(value, "a", "b").unwrap();
+            let (_t, _v): (String, String) = de::<_, _, String, _, _>(value, "a", "b").unwrap();
         }
 
         #[test]
@@ -1797,7 +1792,7 @@ mod de {
 
             let value = Value::Seq(vec![]);
 
-            let (_t, _v) = de::<String, String, String, _, _>(value, "t", "c").unwrap();
+            let (_t, _v): (String, String) = de::<_, _, String, _, _>(value, "t", "c").unwrap();
         }
     }
 
@@ -1818,8 +1813,8 @@ mod de {
                 ]),
             ]);
 
-            let v =
-                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", PhantomData).unwrap();
+            let v: Struct<String> =
+                de::<String, _, _>(value, "Tagged", "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1841,8 +1836,8 @@ mod de {
                 ]),
             ]);
 
-            let v =
-                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", PhantomData).unwrap();
+            let v: Struct<String> =
+                de::<String, _, _>(value, "Tagged", "t", "c", PhantomData).unwrap();
 
             assert_eq!(
                 v,
@@ -1864,9 +1859,8 @@ mod de {
                 ]),
             ]);
 
-            let v =
-                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<String, _, _>(value, "Tagged", "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1888,9 +1882,8 @@ mod de {
                 ]),
             ]);
 
-            let v =
-                de::<String, Struct<String>, _, _>(value, "Tagged", "t", "c", WithoutTag::new())
-                    .unwrap();
+            let v: Struct<String> =
+                de::<String, _, _>(value, "Tagged", "t", "c", WithoutTag::new()).unwrap();
 
             assert_eq!(
                 v,
@@ -1912,9 +1905,8 @@ mod de {
                 ]),
             ]);
 
-            let (t, v) =
-                de::<_, (String, Struct<String>), _, _>(value, "Tagged", "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (String, Struct<String>) =
+                de(value, "Tagged", "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1937,9 +1929,8 @@ mod de {
                 ]),
             ]);
 
-            let (t, v) =
-                de::<_, (String, Struct<String>), _, _>(value, "Tagged", "t", "c", WithTag::new())
-                    .unwrap();
+            let (t, v): (String, Struct<String>) =
+                de(value, "Tagged", "t", "c", WithTag::new()).unwrap();
 
             assert_eq!(t, "tag");
             assert_eq!(
@@ -1958,8 +1949,7 @@ mod de {
 
             let value = Value::Map(map![]);
 
-            let (_t, _v) =
-                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1970,8 +1960,7 @@ mod de {
 
             let value = Value::Seq(vec![]);
 
-            let (_t, _v) =
-                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -1986,8 +1975,7 @@ mod de {
                 Value::String("e".to_owned()) => Value::String("f".to_owned()),
             ]);
 
-            let (_t, _v) =
-                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2001,8 +1989,7 @@ mod de {
                 Value::String("c".to_owned()) => Value::String("d".to_owned()),
             ]);
 
-            let (_t, _v) =
-                de::<_, (String, String), _, _>(value, "Tagged", "a", "b", WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, "Tagged", "a", "b", WithTag::new()).unwrap();
         }
 
         #[test]
@@ -2013,8 +2000,7 @@ mod de {
 
             let value = Value::I32(1);
 
-            let (_t, _v) =
-                de::<_, (String, String), _, _>(value, "Tagged", "t", "c", WithTag::new()).unwrap();
+            let (_t, _v): (String, String) = de(value, "Tagged", "t", "c", WithTag::new()).unwrap();
         }
 
         #[test]

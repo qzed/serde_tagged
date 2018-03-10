@@ -160,7 +160,7 @@ impl<'de> serde::Deserialize<'de> for Box<Stored> {
 // `BoxFnSeed`), for which the necessary traits are already implemented.
 
 // You would probably want to implement your own registry type here. For this
-// you should have a look at the traits provided in `de::seed`.
+// you should have a look at the traits provided in `de`.
 
 /// The type of our `SeedFactory`.
 pub type TypeRegistry = BTreeMap<&'static str, BoxFnSeed<Box<Stored>>>;

@@ -17,15 +17,42 @@ use serde;
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de::seed`](::de::seed) for more information on
-/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
-pub fn deserialize<'de, T, V, D, F>(deserializer: D, seed_factory: F) -> Result<V, D::Error>
+/// See [`de`](::de) for more information on
+/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+///
+/// See [`deserialize_seed`](deserialize_seed) for a version that allows you to
+/// pass a `DeserializeSeed` implementation to deserialize the tag. This version
+/// is equivalent to `deserialize_seed(deserializer, seed_factory,
+/// PhantomData<T>)`
+pub fn deserialize<'de, T, D, F>(deserializer: D, seed_factory: F) -> Result<F::Value, D::Error>
 where
     T: serde::Deserialize<'de>,
     D: serde::Deserializer<'de>,
-    F: SeedFactory<'de, T, Value = V>,
+    F: SeedFactory<'de, T>,
 {
-    deserializer.deserialize_tuple(2, Visitor::<T, V, F>::new(seed_factory))
+    deserialize_seed(deserializer, seed_factory, PhantomData::<T>)
+}
+
+
+/// Deserialize a tuple-based adjacently tagged value with the given tag-seed.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+///
+/// See [`de`](::de) for more information on
+/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+pub fn deserialize_seed<'de, D, F, S>(
+    deserializer: D,
+    seed_factory: F,
+    tag_seed: S,
+) -> Result<F::Value, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    F: SeedFactory<'de, S::Value>,
+    S: serde::de::DeserializeSeed<'de>,
+{
+    deserializer.deserialize_tuple(2, Visitor::new(seed_factory, tag_seed))
 }
 
 
@@ -38,36 +65,34 @@ where
 /// return an error if the visited type is not a tuple (i.e. sequence) with two
 /// elements.
 ///
-/// The [`SeedFactory`](::de::seed::SeedFactory) provided to this visitor
+/// The [`SeedFactory`](::de::SeedFactory) provided to this visitor
 /// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
 /// which then determines how the value is going to be deserialized.
 ///
-/// See [`de::seed`](::de::seed) for more information on
-/// [`SeedFactory`](::de::seed::SeedFactory) and implementations thereof.
-pub struct Visitor<T, V, F> {
+/// See [`de`](::de) for more information on
+/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+pub struct Visitor<F, S> {
     seed_factory: F,
-    _phantom_t:   PhantomData<T>,
-    _phantom_v:   PhantomData<V>,
+    tag_seed:     S,
 }
 
-impl<T, V, F> Visitor<T, V, F> {
+impl<F, S> Visitor<F, S> {
     /// Creates a new visitor with the given
-    /// [`SeedFactory`](::de::seed::SeedFactory).
-    pub fn new(seed_factory: F) -> Self {
+    /// [`SeedFactory`](::de::SeedFactory).
+    pub fn new(seed_factory: F, tag_seed: S) -> Self {
         Visitor {
             seed_factory,
-            _phantom_t: PhantomData,
-            _phantom_v: PhantomData,
+            tag_seed,
         }
     }
 }
 
-impl<'de, T, V, F> serde::de::Visitor<'de> for Visitor<T, V, F>
+impl<'de, F, S> serde::de::Visitor<'de> for Visitor<F, S>
 where
-    T: serde::Deserialize<'de>,
-    F: SeedFactory<'de, T, Value = V>,
+    F: SeedFactory<'de, S::Value>,
+    S: serde::de::DeserializeSeed<'de>,
 {
-    type Value = V;
+    type Value = F::Value;
 
     fn expecting(&self, fmtr: &mut fmt::Formatter) -> fmt::Result {
         write!(fmtr, "a tuple with exactly two elements")
@@ -85,8 +110,8 @@ where
             _ => {},
         }
 
-        let tag: T = seq.next_element()?
-            .ok_or_else(|| Error::invalid_length(0, &self))?;
+        let tag = seq.next_element_seed(self.tag_seed)?
+            .ok_or_else(|| Error::invalid_length(0, &"a tuple with exactly two elements"))?;
 
         seq.next_element_seed(self.seed_factory.seed(tag)?)?
             .ok_or_else(|| Error::invalid_length(1, &"a tuple with exactly two elements"))

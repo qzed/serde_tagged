@@ -88,11 +88,11 @@ fn main() {
     println!("-- Deserialize known value without tag -----------------------------------------");
 
     let mut de = serde_json::Deserializer::from_slice(&buf_msg);
-    let v = deserialize::<&str, Message, _, _>(&mut de, WithoutTag::new()).unwrap();
+    let v: Message = deserialize::<&str, _, _>(&mut de, WithoutTag::new()).unwrap();
     println!("Deserialized: value: {:?}", v);
 
     let mut de = serde_json::Deserializer::from_slice(&buf_i64);
-    let v = deserialize::<&str, i64, _, _>(&mut de, WithoutTag::new()).unwrap();
+    let v: i64 = deserialize::<&str, _, _>(&mut de, WithoutTag::new()).unwrap();
     println!("Deserialized: value: {:?}", v);
 
 
@@ -103,11 +103,11 @@ fn main() {
     println!("-- Deserialize known value with tag --------------------------------------------");
 
     let mut de = serde_json::Deserializer::from_slice(&buf_msg);
-    let (t, v) = deserialize::<_, (&str, Message), _, _>(&mut de, WithTag::new()).unwrap();
+    let (t, v): (&str, Message) = deserialize(&mut de, WithTag::new()).unwrap();
     println!("Deserialized: tag: {:?}, value: {:?}", t, v);
 
     let mut de = serde_json::Deserializer::from_slice(&buf_i64);
-    let (t, v) = deserialize::<_, (&str, i64), _, _>(&mut de, WithTag::new()).unwrap();
+    let (t, v): (&str, i64) = deserialize(&mut de, WithTag::new()).unwrap();
     println!("Deserialized: tag: {:?}, value: {:?}", t, v);
 
 
