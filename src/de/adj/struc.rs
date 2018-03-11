@@ -446,4 +446,36 @@ impl<'de> serde::de::Visitor<'de> for KeySeed {
             )))
         }
     }
+
+    fn visit_i64<E>(self, value: i64) -> Result<Key, E>
+    where
+        E: serde::de::Error,
+    {
+        if value == 0 {
+            Ok(Key::Tag)
+        } else if value == 1 {
+            Ok(Key::Value)
+        } else {
+            Err(serde::de::Error::custom(format_args!(
+                "invalid field id `{}`",
+                value
+            )))
+        }
+    }
+
+    fn visit_u64<E>(self, value: u64) -> Result<Key, E>
+    where
+        E: serde::de::Error,
+    {
+        if value == 0 {
+            Ok(Key::Tag)
+        } else if value == 1 {
+            Ok(Key::Value)
+        } else {
+            Err(serde::de::Error::custom(format_args!(
+                "invalid field id `{}`",
+                value
+            )))
+        }
+    }
 }
