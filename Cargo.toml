@@ -2,7 +2,16 @@
 name = "serde_tagged"
 version = "0.1.0"
 authors = ["qzed <qzed@users.noreply.github.com>"]
+description = "Tag values during serialization, retreive tags during deserialization."
+repository = "https://github.com/qzed/serde_tagged"
+readme = "README.md"
+keywords = ["serde", "trait-objects", "serialization", "deserialization"]
+categories = ["encoding"]
 license = "MIT OR Apache-2.0"
+
+[badges]
+travis-ci = { repository = "qzed/serde_tagged", branch = "master" }
+codecov = { repository = "qzed/serde_tagged", branch = "master", service = "github" }
 
 [dependencies]
 serde = "1.0.27"
