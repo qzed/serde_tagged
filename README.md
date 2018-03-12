@@ -1,13 +1,15 @@
 # Serde Tagged
 
-[![Build Status]][travis] [![Coverage]][codecov] [![crates.io]][crates.io] [![docs.rs]][docs.rs]
+[![Build Status]][travis] [![Coverage]][codecov] [![crates.io]][crates-io] [![docs.rs]][docs-rs]
 
 [Build Status]: https://api.travis-ci.org/qzed/serde_tagged.svg?branch=master
 [travis]: https://travis-ci.org/qzed/serde_tagged
 [Coverage]: https://codecov.io/gh/qzed/serde_tagged/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/qzed/serde_tagged
 [crates.io]: https://img.shields.io/crates/v/serde_tagged.svg
+[crates-io]: https://crates.io/crates/serde_tagged
 [docs.rs]: https://docs.rs/serde_tagged/badge.svg
+[docs-rs]: https://docs.rs/serde_tagged
 
 Tag values during serialization, retreive tags during deserialization.
 
