@@ -22,6 +22,7 @@
 //! (currently) supported formats are:
 //! 
 //! - [externally tagged](::ser::external), as in `{ <tag> => <value> }`
+//! - [internally tagged](::ser::internal) (i.e. embedded in the value)
 //! - [adjacently tagged using tuples](::ser::adj::tuple), as in `( <tag>, <value> )`
 //! - [adjacently tagged using maps](::ser::adj::map), as in
 //!   `{ <tag-key> => <tag>, <value-key> => <value> }`
