@@ -4,6 +4,13 @@
 //! entries, one entry contains a mapping from the tag-key to the tag and the
 //! other entry contains a mapping from the value-key to the value.
 //!
+//! # Warning
+//!
+//! If the deserialization-process depends on the tag (i.e. with
+//! [`deserialize`](::de::adj::map::deserialize) and/or
+//! [`Visitor`](::de::adj::map::Visitor)), deserialization of map-based
+//! adjacently tagged values is only supported for self-describing formats.
+//!
 //! # Examples serializing to JSON
 //!
 //! Serializing a value
@@ -81,6 +88,7 @@ use util::ser::forward;
 /// [module documentation](::ser::adj::map).
 ///
 /// # Note
+///
 /// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, Tk, Tv, Vk, V>(
     serializer: S,
@@ -146,6 +154,7 @@ where
 /// [module documentation](::ser::adj::map).
 ///
 /// # Warning
+///
 /// You should prefer the [`serialize`](serialize) function over this serializer
 /// implementation. To serialize map-entries, the serializer implementation may
 /// need to allocate memory on the heap. This can be avoided in the

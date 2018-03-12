@@ -4,6 +4,7 @@
 //! format.
 //!
 //! # Warning
+//!
 //! If the deserialization-process depends on the tag (i.e. with
 //! [`deserialize`](deserialize) and/or [`Visitor`](Visitor)),
 //! deserialization of struct-based adjacently tagged values is only supported
@@ -28,13 +29,14 @@ use serde;
 ///
 /// See [`de`](::de) for more information on
 /// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
-/// 
+///
 /// See [`deserialize_seed`](deserialize_seed) for a version that allows you to
 /// pass a `DeserializeSeed` implementation to deserialize the tag. This version
 /// is equivalent to `deserialize_seed(deserializer, seed_factory,
 /// PhantomData<T>)`
 ///
 /// # Note
+///
 /// If you do not need to choose a specific deserialization-method based on the
 /// tag, you should prefer [`deserialize_known`](deserialize_known) to this
 /// method.
@@ -73,6 +75,7 @@ where
 /// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
 ///
 /// # Note
+///
 /// If you do not need to choose a specific deserialization-method based on the
 /// tag, you should prefer [`deserialize_known_seed`](deserialize_known_seed) to
 /// this method.
@@ -117,6 +120,7 @@ where
 /// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
 ///
 /// # Note
+///
 /// If you do not need to choose a specific deserialization-method based on the
 /// tag, you should prefer [`KnownVisitor`](KnownVisitor) to this visitor.
 pub struct Visitor<F, S> {
@@ -225,7 +229,7 @@ where
 ///
 /// See [`de`](::de) for more information on
 /// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
-/// 
+///
 /// See [`deserialize_known_seed`](deserialize_known_seed) for a version that
 /// allows you to pass `DeserializeSeed` implementations to deserialize the tag
 /// and value. This version is equivalent to
@@ -233,6 +237,7 @@ where
 /// PhantomData<V>)`
 ///
 /// # Note
+///
 /// If you do not need to choose a specific deserialization-method based on the
 /// tag, you should prefer this method to [`deserialize`](deserialize).
 pub fn deserialize_known<'de, T, V, D>(
@@ -267,6 +272,7 @@ where
 /// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
 ///
 /// # Note
+///
 /// If you do not need to choose a specific deserialization-method based on the
 /// tag, you should prefer this method to
 /// [`deserialize_known`](deserialize_known).
@@ -308,6 +314,7 @@ where
 /// which can improve the performance.
 ///
 /// # Note
+///
 /// If you do not need to choose a specific deserialization-method based on the
 /// tag, you should prefer this visitor to [`Visitor`](Visitor).
 pub struct KnownVisitor<T, V> {

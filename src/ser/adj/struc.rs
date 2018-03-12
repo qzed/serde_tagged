@@ -9,6 +9,13 @@
 //! adjacent tagging format, whereas with msgpack, it would be similar to the
 //! tuple-based format.
 //!
+//! # Warning
+//!
+//! If the deserialization-process depends on the tag (i.e. with
+//! [`deserialize`](::de::adj::struc::deserialize) and/or
+//! [`Visitor`](::de::adj::struc::Visitor)), deserialization of struct-based
+//! adjacently tagged values is only supported for self-describing formats.
+//!
 //! # Examples serializing to JSON
 //!
 //! Serializing a value
@@ -99,6 +106,7 @@ use util::ser::forward;
 /// documentation](::ser::adj::struc).
 ///
 /// # Note
+///
 /// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
@@ -162,8 +170,9 @@ where
 /// the actual serialization and thus controls the data format. For more
 /// information on this tag-format, see the [module
 /// documentation](::ser::adj::struc).
-/// 
+///
 /// # Warning
+///
 /// You should prefer the [`serialize`](serialize) function over this serializer
 /// implementation. To serialize struct-entries, the serializer implementation
 /// may need to allocate memory on the heap. This can be avoided in the

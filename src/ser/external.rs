@@ -7,7 +7,6 @@
 //! This format is similar to the externally-tagged enum format provided by
 //! serde, however allows for various tag types (not only `str` and `u32`).
 //!
-//!
 //! # Examples serializing to JSON
 //!
 //! ## A primitive
@@ -79,6 +78,7 @@ use util::ser::forward;
 /// see the [module documentation](::ser::external).
 ///
 /// # Note
+///
 /// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
@@ -129,6 +129,7 @@ where
 /// [module documentation](::ser::external).
 ///
 /// # Warning
+///
 /// You should prefer the [`serialize`](serialize) function over this serializer
 /// implementation. To serialize key-value pairs, the serializer implementation
 /// may need to allocate memory on the heap. This can be avoided in the
