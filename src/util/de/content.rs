@@ -62,6 +62,8 @@
 //   - `InPlaceSeed`
 // - removed unused imports
 // - fixed clippy warnings
+// - add special case for empty `Content::Seq` to `ContentDeserializer::deserialize_unit_struct`
+// - changed visibility of `ContentVisitor` and its `new` function to public
 //
 
 
@@ -173,12 +175,12 @@ impl<'de> Deserialize<'de> for Content<'de> {
     }
 }
 
-struct ContentVisitor<'de> {
+pub struct ContentVisitor<'de> {
     value: PhantomData<Content<'de>>,
 }
 
 impl<'de> ContentVisitor<'de> {
-    fn new() -> Self {
+    pub fn new() -> Self {
         ContentVisitor { value: PhantomData }
     }
 }
@@ -519,6 +521,7 @@ where
             // We want {"topic":"Info"} to deserialize even though
             // ordinarily unit structs do not deserialize from empty map.
             Content::Map(ref v) if v.is_empty() => visitor.visit_unit(),
+            Content::Seq(ref v) if v.is_empty() => visitor.visit_unit(),
             _ => self.deserialize_any(visitor),
         }
     }
