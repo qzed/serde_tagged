@@ -141,7 +141,7 @@ mod ser {
                 },{
                     case:   struct_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    value:  NewtypeStruct(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Newtype(Box::new(Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])))),
@@ -153,7 +153,7 @@ mod ser {
                 },{
                     case:   struct_normal,
                     tag:    "<tag>",
-                    value:  Struct { foo: "bar" },
+                    value:  Struct { foo: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -172,7 +172,7 @@ mod ser {
                 },{
                     case:   enum_internal_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -180,7 +180,7 @@ mod ser {
                 },{
                     case:   enum_internal_struct,
                     tag:    "<tag>",
-                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    value:  EnumTaggedInternal::Struct { foo: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -205,7 +205,7 @@ mod ser {
                 },{
                     case:   enum_adjacent_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -223,7 +223,7 @@ mod ser {
                 },{
                     case:   enum_adjacent_struct,
                     tag:    "<tag>",
-                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    value:  EnumTaggedAdjacent::Struct { foo: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -245,7 +245,7 @@ mod ser {
                 },{
                     case:   enum_untagged_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -257,9 +257,9 @@ mod ser {
                 },{
                     case:   enum_untagged_struct,
                     tag:    "<tag>",
-                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    value:  EnumUntagged::Struct { baz: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
-                        String("foo".to_owned()) => String("bar".to_owned()),
+                        String("baz".to_owned()) => String("bar".to_owned()),
                     ])),
                 },
 
@@ -414,7 +414,7 @@ mod ser {
                 },{
                     case:   struct_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    value:  NewtypeStruct(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Newtype(Box::new(Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])))),
@@ -426,7 +426,7 @@ mod ser {
                 },{
                     case:   struct_normal,
                     tag:    "<tag>",
-                    value:  Struct { foo: "bar" },
+                    value:  Struct { foo: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -445,7 +445,7 @@ mod ser {
                 },{
                     case:   enum_internal_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -453,7 +453,7 @@ mod ser {
                 },{
                     case:   enum_internal_struct,
                     tag:    "<tag>",
-                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    value:  EnumTaggedInternal::Struct { foo: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -478,7 +478,7 @@ mod ser {
                 },{
                     case:   enum_adjacent_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -496,7 +496,7 @@ mod ser {
                 },{
                     case:   enum_adjacent_struct,
                     tag:    "<tag>",
-                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    value:  EnumTaggedAdjacent::Struct { foo: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -518,7 +518,7 @@ mod ser {
                 },{
                     case:   enum_untagged_newtype_nonprimitive,
                     tag:    "<tag>",
-                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("<tag>", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -530,9 +530,9 @@ mod ser {
                 },{
                     case:   enum_untagged_struct,
                     tag:    "<tag>",
-                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    value:  EnumUntagged::Struct { baz: "bar".to_owned() },
                     expect: ts("<tag>", Map(map![
-                        String("foo".to_owned()) => String("bar".to_owned()),
+                        String("baz".to_owned()) => String("bar".to_owned()),
                     ])),
                 },
 
@@ -787,7 +787,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    value:  NewtypeStruct(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Newtype(Box::new(Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])))),
@@ -803,7 +803,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  Struct { foo: "bar" },
+                    value:  Struct { foo: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -826,7 +826,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -836,7 +836,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    value:  EnumTaggedInternal::Struct { foo: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -867,7 +867,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -889,7 +889,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    value:  EnumTaggedAdjacent::Struct { foo: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -917,7 +917,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -933,9 +933,9 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    value:  EnumUntagged::Struct { baz: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
-                        String("foo".to_owned()) => String("bar".to_owned()),
+                        String("baz".to_owned()) => String("bar".to_owned()),
                     ])),
                 },
 
@@ -1192,7 +1192,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  NewtypeStruct(Struct { foo: "bar" }),
+                    value:  NewtypeStruct(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Newtype(Box::new(Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])))),
@@ -1208,7 +1208,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  Struct { foo: "bar" },
+                    value:  Struct { foo: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -1231,7 +1231,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -1241,7 +1241,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedInternal::Struct{ foo: "bar" },
+                    value:  EnumTaggedInternal::Struct { foo: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("foo".to_owned()) => String("bar".to_owned()),
@@ -1272,7 +1272,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("NewtypeC".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -1294,7 +1294,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumTaggedAdjacent::Struct{ foo: "bar" },
+                    value:  EnumTaggedAdjacent::Struct { foo: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("t".to_owned()) => String("Struct".to_owned()),
                         String("c".to_owned()) => Map(map![
@@ -1322,7 +1322,7 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar" }),
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }),
                     expect: ts("t", "<tag>", "c", Map(map![
                         String("foo".to_owned()) => String("bar".to_owned()),
                     ])),
@@ -1338,9 +1338,9 @@ mod ser {
                     tag_k:  "t",
                     tag_v:  "<tag>",
                     key:    "c",
-                    value:  EnumUntagged::Struct{ foo: "bar" },
+                    value:  EnumUntagged::Struct { baz: "bar".to_owned() },
                     expect: ts("t", "<tag>", "c", Map(map![
-                        String("foo".to_owned()) => String("bar".to_owned()),
+                        String("baz".to_owned()) => String("bar".to_owned()),
                     ])),
                 },
 
@@ -1371,6 +1371,381 @@ mod ser {
                     expect: ts("t", "<tag>", "c", String("foobar".into())),
                 },
             }
+        }
+    }
+
+    /// Tests for serialization of internally-tagged values.
+    mod internal {
+        use common::types::*;
+        use serde_bytes;
+        use serde_value::Value::*;
+        use std::option;
+
+        generate_tests_ser_2! {
+            use ::common::formats::value::ser::internal::serialize: serialize,
+
+            with {
+                {
+                    case:   tuple,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  (1_i32, 2_i32, 3_i32),
+                    expect: Seq(vec![String("<tag>".to_owned()), I32(1), I32(2), I32(3)]),
+                },{
+                    case:   seq,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  SerializeSeq(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: Seq(vec![String("<tag>".to_owned()), I32(1), I32(2), I32(3)]),
+                },{
+                    case:   seq_len_hidden,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  SerializeSeqLenHidden(&vec![1_i32, 2_i32, 3_i32]),
+                    expect: Seq(vec![String("<tag>".to_owned()), I32(1), I32(2), I32(3)]),
+                },{
+                    case:   map,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  SerializeMap(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("a".to_owned()) => I32(1),
+                        String("b".to_owned()) => I32(2),
+                        String("c".to_owned()) => I32(3),
+                    ]),
+                },{
+                    case:   map_len_hidden,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  SerializeMapLenHidden(&map!["a" => 1_i32, "b" => 2_i32, "c" => 3_i32]),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("a".to_owned()) => I32(1),
+                        String("b".to_owned()) => I32(2),
+                        String("c".to_owned()) => I32(3),
+                    ]),
+                },
+
+                {
+                    case:   struct_unit,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  UnitStruct,
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                    ]),
+                },{
+                    case:   struct_newtype_nonprimitive,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  NewtypeStruct(Struct { foo: "bar".to_owned() }),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ]),
+                },{
+                    case:   struct_tuple,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  TupleStruct(1, 2, 3, 4),
+                    expect: Seq(vec![String("<tag>".to_owned()), I32(1), I32(2), I32(3), I32(4)]),
+                },{
+                    case:   struct_normal,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  Struct { foo: "bar".to_owned() },
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ]),
+                },
+
+                {
+                    case:   enum_internal_unit,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedInternal::Unit,
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("Unit".to_owned()),
+                    ]),
+                },{
+                    case:   enum_internal_newtype_nonprimitive,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedInternal::NewtypeC(Struct { foo: "bar".to_owned() }),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("NewtypeC".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ]),
+                },{
+                    case:   enum_internal_struct,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedInternal::Struct { foo: "bar".to_owned() },
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("Struct".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ]),
+                },
+
+                {
+                    case:   enum_adjacent_unit,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedAdjacent::Unit,
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("Unit".to_owned()),
+                    ]),
+                },{
+                    case:   enum_adjacent_newtype_primitive,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedAdjacent::NewtypeP(42),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("NewtypeP".to_owned()),
+                        String("c".to_owned()) => I32(42),
+                    ]),
+                },{
+                    case:   enum_adjacent_newtype_nonprimitive,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedAdjacent::NewtypeC(Struct { foo: "bar".to_owned() }),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("NewtypeC".to_owned()),
+                        String("c".to_owned()) => Map(map![
+                            String("foo".to_owned()) => String("bar".to_owned()),
+                        ]),
+                    ]),
+                },{
+                    case:   enum_adjacent_tuple,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedAdjacent::Tuple(3, 2, 1),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("Tuple".to_owned()),
+                        String("c".to_owned()) => Seq(vec![I32(3), I32(2), I32(1)]),
+                    ]),
+                },{
+                    case:   enum_adjacent_struct,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumTaggedAdjacent::Struct { foo: "bar".to_owned() },
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("t".to_owned()) => String("Struct".to_owned()),
+                        String("c".to_owned()) => Map(map![
+                            String("foo".to_owned()) => String("bar".to_owned()),
+                        ]),
+                    ]),
+                },
+
+                {
+                    case:   enum_untagged_newtype_nonprimitive,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }),
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("foo".to_owned()) => String("bar".to_owned()),
+                    ]),
+                },{
+                    case:   enum_untagged_tuple,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumUntagged::Tuple(1, 2, 3),
+                    expect: Seq(vec![String("<tag>".to_owned()), I32(1), I32(2), I32(3)]),
+                },{
+                    case:   enum_untagged_struct,
+                    tag_k:  "tag",
+                    tag_v:  "<tag>",
+                    value:  EnumUntagged::Struct { baz: "bar".to_owned() },
+                    expect: Map(map![
+                        String("tag".to_owned()) => String("<tag>".to_owned()),
+                        String("baz".to_owned()) => String("bar".to_owned()),
+                    ]),
+                },
+            }
+        }
+
+        #[test]
+        #[should_panic]
+        fn i8() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_i8).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn i16() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_i16).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn i32() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_i32).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn i64() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_i64).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn u8() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_u8).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn u16() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_u16).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn u32() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_u32).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn u64() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &42_u64).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn f32() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &2.0_f32).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn f64() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &2.0_f64).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn char() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &('c')).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn str() {
+            use common::formats::json::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", "test").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn bytes() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &serde_bytes::Bytes::new(&[0, 1, 2, 3])).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn none() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &None as &option::Option<i32>).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn some() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &Some(42_i32)).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn unit() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &()).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_external_unit() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &EnumTaggedExternal::Unit).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_external_newtype_primitive() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &EnumTaggedExternal::NewtypeP(42)).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_external_newtype_nonprimitive() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize(
+                "tag",
+                "<tag>",
+                &EnumTaggedExternal::NewtypeC(Struct {
+                    foo: "bar".to_owned(),
+                }),
+            ).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_external_tuple() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &EnumTaggedExternal::Tuple(3, 4, 5)).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_external_struct() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize(
+                "tag",
+                "<tag>",
+                &EnumTaggedExternal::Struct {
+                    foo: "bar".to_owned(),
+                },
+            ).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_untagged_unit() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &EnumUntagged::Unit).unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn enum_untagged_newtype_primitive() {
+            use common::formats::value::ser::internal::serialize;
+            let _v = serialize("tag", "<tag>", &EnumUntagged::NewtypeP(42)).unwrap();
         }
     }
 }
@@ -2102,6 +2477,359 @@ mod de {
             let value = Value::I32(1);
 
             let (_t, _v) = de::<String, String, _>(value, "Tagged", "t", "c").unwrap();
+        }
+    }
+
+    /// Tests for deserialization of internally-tagged values.
+    mod internal {
+        use common::types::*;
+        use serde_value::Value;
+        use std::collections::BTreeMap;
+
+        #[test]
+        fn seq() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("foo".to_owned()),
+                Value::I32(1),
+                Value::I32(2),
+                Value::I32(3),
+                Value::I32(4),
+            ]);
+
+            let (t, v): (String, Vec<i32>) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, [1, 2, 3, 4]);
+        }
+
+        #[test]
+        fn map() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("a".to_owned()) => Value::String("b".to_owned()),
+                Value::String("c".to_owned()) => Value::String("d".to_owned()),
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+            ]);
+
+            let (t, v): (String, BTreeMap<String, String>) =
+                de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                map![
+                    "a".to_owned() => "b".to_owned(),
+                    "c".to_owned() => "d".to_owned(),
+                ]
+            );
+        }
+
+        #[test]
+        fn struct_unit_map() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+            ]);
+
+            let (t, v): (String, UnitStruct) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, UnitStruct);
+        }
+
+        #[test]
+        fn struct_unit_seq() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Seq(vec![Value::String("foo".to_owned())]);
+
+            let (t, v): (String, UnitStruct) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, UnitStruct);
+        }
+
+        #[test]
+        fn struct_newtype_nonprimitive() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+            ]);
+
+            let (t, v): (String, NewtypeStruct<Struct<String>>) =
+                de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                NewtypeStruct(Struct {
+                    foo: "bar".to_owned(),
+                })
+            );
+        }
+
+        #[test]
+        fn struct_tuple() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("foo".to_owned()),
+                Value::I32(1),
+                Value::I32(2),
+                Value::I32(3),
+                Value::I32(4),
+            ]);
+
+            let (t, v): (String, TupleStruct<i32, i32, i32, i32>) =
+                de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, TupleStruct(1, 2, 3, 4));
+        }
+
+        #[test]
+        fn struct_normal() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+            ]);
+
+            let (t, v): (String, Struct<String>) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn enum_internal_unit() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("Unit".to_owned()),
+            ]);
+
+            let (t, v): (String, EnumTaggedInternal) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumTaggedInternal::Unit);
+        }
+
+        #[test]
+        fn enum_internal_newtype_nonprimitive() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("NewtypeC".to_owned()),
+                Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+            ]);
+
+            let (t, v): (String, EnumTaggedInternal) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                EnumTaggedInternal::NewtypeC(Struct {
+                    foo: "bar".to_owned(),
+                })
+            );
+        }
+
+        #[test]
+        fn enum_internal_struct() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("Struct".to_owned()),
+                Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+            ]);
+
+            let (t, v): (String, EnumTaggedInternal) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                EnumTaggedInternal::Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn enum_adjacent_unit() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("Unit".to_owned()),
+            ]);
+
+            let (t, v): (String, EnumTaggedAdjacent) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumTaggedAdjacent::Unit);
+        }
+
+        #[test]
+        fn enum_adjacent_newtype_primitive() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("NewtypeP".to_owned()),
+                Value::String("c".to_owned()) => Value::I32(42),
+            ]);
+
+            let (t, v): (String, EnumTaggedAdjacent) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumTaggedAdjacent::NewtypeP(42));
+        }
+
+        #[test]
+        fn enum_adjacent_newtype_nonprimitive() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("NewtypeC".to_owned()),
+                Value::String("c".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v): (String, EnumTaggedAdjacent) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                EnumTaggedAdjacent::NewtypeC(Struct {
+                    foo: "bar".to_owned(),
+                })
+            );
+        }
+
+        #[test]
+        fn enum_adjacent_adjacent_tuple() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("Tuple".to_owned()),
+                Value::String("c".to_owned()) => Value::Seq(vec![
+                    Value::I32(3),
+                    Value::I32(2),
+                    Value::I32(1),
+                ]),
+            ]);
+
+            let (t, v): (String, EnumTaggedAdjacent) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumTaggedAdjacent::Tuple(3, 2, 1));
+        }
+
+        #[test]
+        fn enum_adjacent_adjacent_struct() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("t".to_owned()) => Value::String("Struct".to_owned()),
+                Value::String("c".to_owned()) => Value::Map(map![
+                    Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+                ]),
+            ]);
+
+            let (t, v): (String, EnumTaggedAdjacent) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(
+                v,
+                EnumTaggedAdjacent::Struct {
+                    foo: "bar".to_owned(),
+                }
+            );
+        }
+
+        #[test]
+        fn enum_untagged_newtype_nonprimitive() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("foo".to_owned()) => Value::String("bar".to_owned()),
+            ]);
+
+            let (t, v): (String, EnumUntagged) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }));
+        }
+
+        #[test]
+        fn enum_untagged_tuple() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Seq(vec![
+                Value::String("foo".to_owned()),
+                Value::I32(3),
+                Value::I32(2),
+                Value::I32(1),
+            ]);
+
+            let (t, v): (String, EnumUntagged) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumUntagged::Tuple(3, 2, 1));
+        }
+
+        #[test]
+        fn enum_untagged_newtype_struct() {
+            use serde_tagged::de::WithTag;
+            use serde_tagged::de::internal::deserialize as de;
+
+            let value = Value::Map(map![
+                Value::String("tag".to_owned()) => Value::String("foo".to_owned()),
+                Value::String("baz".to_owned()) => Value::String("bar".to_owned()),
+            ]);
+
+            let (t, v): (String, EnumUntagged) = de(value, "tag", WithTag::new()).unwrap();
+
+            assert_eq!(t, "foo");
+            assert_eq!(v, EnumUntagged::Struct { baz: "bar".to_owned() });
         }
     }
 }

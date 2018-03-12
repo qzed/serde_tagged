@@ -204,6 +204,37 @@ pub mod json {
                 serde_json::from_slice(&buffer)
             }
         }
+
+        /// Functions for internal tagging.
+        pub mod internal {
+            use serde::Serialize;
+            use serde_json::{self, Result, Value};
+            use serde_tagged::ser::internal;
+
+
+            /// Serialize the tagged value.
+            pub fn serialize<T, V>(
+                tag_key: &'static str,
+                tag_value: &T,
+                value: &V,
+            ) -> Result<Value>
+            where
+                T: Serialize + ?Sized,
+                V: Serialize + ?Sized,
+            {
+                let mut buffer = Vec::with_capacity(128);
+                {
+                    let mut json_ser = serde_json::Serializer::new(&mut buffer);
+                    internal::serialize(
+                        &mut json_ser,
+                        tag_key,
+                        tag_value,
+                        value,
+                    )?;
+                }
+                serde_json::from_slice(&buffer)
+            }
+        }
     }
 }
 
@@ -588,6 +619,59 @@ pub mod value {
                     tag_key,
                     tag_value,
                     value_key,
+                    value,
+                })
+            }
+        }
+
+        /// Functions for adjacent tagging using structs.
+        pub mod internal {
+            use serde::{Serialize, Serializer};
+            use serde_tagged::ser::internal;
+            use serde_value::{to_value, SerializerError, Value};
+
+            type Result<T> = ::std::result::Result<T, SerializerError>;
+
+            pub fn serialize<T, V>(
+                tag_key: &'static str,
+                tag_value: &T,
+                value: &V,
+            ) -> Result<Value>
+            where
+                T: Serialize + ?Sized,
+                V: Serialize + ?Sized,
+            {
+                struct Wrapper<'a, T, V>
+                where
+                    T: Serialize + ?Sized + 'a,
+                    V: Serialize + ?Sized + 'a,
+                {
+                    tag_key:   &'static str,
+                    tag_value: &'a T,
+                    value:     &'a V,
+                }
+
+                impl<'a, T, V> Serialize for Wrapper<'a, T, V>
+                where
+                    T: Serialize + ?Sized,
+                    V: Serialize + ?Sized,
+                {
+                    fn serialize<S>(&self, serializer: S) -> ::std::result::Result<S::Ok, S::Error>
+                    where
+                        S: Serializer,
+                    {
+                        internal::serialize(
+                            serializer,
+                            self.tag_key,
+                            self.tag_value,
+                            self.value,
+                        )
+                    }
+                }
+
+                to_value(Wrapper {
+                    tag_key,
+                    tag_value,
                     value,
                 })
             }

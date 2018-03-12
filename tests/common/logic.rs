@@ -68,7 +68,7 @@ macro_rules! generate_tests_ser_2 {
         $args:tt
     ) => {
         $(
-            generate_tests_ser_1!(@mod $serialize, $modname, $args);
+            generate_tests_ser_2!(@mod $serialize, $modname, $args);
         )*
     };
     (@mod
@@ -78,7 +78,6 @@ macro_rules! generate_tests_ser_2 {
             case: $name:ident,
             tag_k: $tag_key:expr,
             tag_v: $tag_val:expr,
-            key: $val_key:expr,
             value: $value:expr,
             expect: $expect:expr
             $(,)*
