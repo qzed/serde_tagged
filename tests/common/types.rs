@@ -32,44 +32,44 @@ pub struct Struct<V> {
 
 
 /// An externally tagged enum.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum EnumTaggedExternal {
     Unit,
     NewtypeP(i32),
-    NewtypeC(Struct<&'static str>),
+    NewtypeC(Struct<String>),
     Tuple(i32, i32, i32),
-    Struct { foo: &'static str },
+    Struct { foo: String },
 }
 
 /// An internally tagged enum.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(tag = "t")]
 pub enum EnumTaggedInternal {
     Unit,
-    NewtypeC(Struct<&'static str>),
-    Struct { foo: &'static str },
+    NewtypeC(Struct<String>),
+    Struct { foo: String },
 }
 
 /// An adjacently tagged enum.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(tag = "t", content = "c")]
 pub enum EnumTaggedAdjacent {
     Unit,
     NewtypeP(i32),
-    NewtypeC(Struct<&'static str>),
+    NewtypeC(Struct<String>),
     Tuple(i32, i32, i32),
-    Struct { foo: &'static str },
+    Struct { foo: String },
 }
 
 /// An untagged tagged enum.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum EnumUntagged {
     Unit,
     NewtypeP(i32),
-    NewtypeC(Struct<&'static str>),
+    NewtypeC(Struct<String>),
     Tuple(i32, i32, i32),
-    Struct { foo: &'static str },
+    Struct { baz: String },
 }
 
 
