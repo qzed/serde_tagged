@@ -7,6 +7,10 @@
 //! This format is similar to the internally-tagged enum format provided by
 //! serde, however allows for various tag types (not only `str` and `u32`).
 //!
+//! # Warning
+//!
+//! Deserialization of internally tagged values requires a self-describing
+//! data format.
 //!
 //! # Supported types
 //!
@@ -55,7 +59,6 @@
 //!
 //! Primitive types and externally tagged enums are not supported.
 //!
-//!
 //! # Examples serializing to JSON
 //!
 //! ## A Simple struct
@@ -100,6 +103,16 @@ use serde;
 use ser::HasDelegate;
 
 
+/// Embeds a tag into the specified value and then serializes it using the
+/// provided serializer.
+///
+/// Due to the tag being embedded into the value, not all value-types are
+/// supported. The specified serializer performs the actual serialization and
+/// thus controls the data format. For more information on this trag-format and
+/// the supported values, see the [module documentation](::ser::internal).
+///
+/// This method is a convenience function that creates and uses the
+/// [`Serializer`](Serializer) internally.
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
     tag_key: &'static str,
@@ -115,6 +128,16 @@ where
 }
 
 
+/// A serializer that embeds a tag into to the provided value and then
+/// serializes it.
+///
+/// Due to the tag being embedded into the value, not all value-types are
+/// supported. The provided serializer performs the actual serialization and
+/// thus controls the data format. For more information on this trag-format and
+/// the supported values, see the [module documentation](::ser::internal).
+///
+/// Due to the tag being embedded into the value, not all value-types are
+/// supported. For more details see the [module documentation](::ser::internal).
 pub struct Serializer<'a, S, T: ?Sized + 'a> {
     delegate: S,
     tag_key:  &'static str,
@@ -126,6 +149,8 @@ where
     S: serde::Serializer,
     T: serde::Serialize + 'a,
 {
+    /// Creates a new Serializer with the specified tag-key, tag and underlying
+    /// serializer.
     pub fn new(delegate: S, tag_key: &'static str, tag: &'a T) -> Self {
         Serializer {
             delegate,

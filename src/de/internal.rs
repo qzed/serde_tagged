@@ -2,6 +2,11 @@
 //!
 //! See [`ser::internal`](::ser::internal) for a description of this tagging
 //! format.
+//!
+//! # Warning
+//!
+//! Deserialization of internally tagged values requires a self-describing
+//! data format.
 
 use de::seed::SeedFactory;
 use util::de::content::{Content, ContentDeserializer, ContentVisitor};
@@ -12,6 +17,18 @@ use std::marker::PhantomData;
 use serde;
 
 
+/// Deserialize an internally tagged value.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+///
+/// See [`de`](::de) for more information on
+/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+///
+/// See [`deserialize_seed`](deserialize_seed) for a version that allows you to
+/// pass a `DeserializeSeed` to deserialize the tag. This version is equivalent
+/// to `deserialize_seed(deserializer, tag_key, seed_factory, PhantomData<T>)`
 pub fn deserialize<'de, T, D, F>(
     deserializer: D,
     tag_key: &'static str,
@@ -25,6 +42,15 @@ where
     deserialize_seed(deserializer, tag_key, seed_factory, PhantomData::<T>)
 }
 
+
+/// Deserialize an internally tagged value with the given tag-seed.
+///
+/// The deserializer controls the underlying data format while the seed-factory
+/// specifies the instructions (depending on the tag) on how the value should be
+/// deserialized.
+///
+/// See [`de`](::de) for more information on
+/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
 pub fn deserialize_seed<'de, D, F, S>(
     deserializer: D,
     tag_key: &'static str,
@@ -40,6 +66,19 @@ where
 }
 
 
+/// A visitor that can be used to deserialize an externally tagged value.
+///
+/// This visitor handles an externally tagged value, which is represented by a
+/// map containing a single entry, where the key is the tag and the value is the
+/// value that should be deserialized. Thus it will return an error if the
+/// visited type is not a map.
+///
+/// The [`SeedFactory`](::de::SeedFactory) provided to this visitor
+/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
+/// which then determines how the value is going to be deserialized.
+///
+/// See [`de`](::de) for more information on
+/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
 pub struct Visitor<F, S> {
     seed_factory: F,
     tag_seed:     S,
@@ -47,6 +86,8 @@ pub struct Visitor<F, S> {
 }
 
 impl<F, S> Visitor<F, S> {
+    /// Creates a new visitor with the given tag-key and
+    /// [`SeedFactory`](::de::SeedFactory).
     pub fn new(tag_key: &'static str, seed_factory: F, tag_seed: S) -> Self {
         Visitor {
             seed_factory,

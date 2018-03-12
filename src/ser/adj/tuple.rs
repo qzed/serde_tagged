@@ -74,6 +74,7 @@ use util::ser::forward;
 /// documentation](::ser::adj::tuple).
 ///
 /// # Note
+///
 /// You should prefer this method to the [`Serializer`](Serializer).
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
@@ -124,6 +125,7 @@ where
 /// documentation](::ser::adj::tuple).
 ///
 /// # Warning
+///
 /// You should prefer the [`serialize`](serialize) function over this serializer
 /// implementation. To serialize a tuple, the serializer implementation may need
 /// to allocate memory on the heap. This can be avoided in the
