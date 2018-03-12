@@ -12,6 +12,11 @@
 //! Deserialization of internally tagged values requires a self-describing
 //! data format.
 //!
+//! Furthermore, neither [`serialize`](serialize) nor the
+//! [`Serializer`](Serializer) check for collision of the tag-key with
+//! field-names or map-keys of the value with the tag-key. It is up to the
+//! caller to make sure that such collisions do not occur.
+//!
 //! # Supported types
 //!
 //! Only the following types (of [Serde's data model][datamodel]) are supported
@@ -113,6 +118,12 @@ use ser::HasDelegate;
 ///
 /// This method is a convenience function that creates and uses the
 /// [`Serializer`](Serializer) internally.
+/// 
+/// # Warning
+/// 
+/// This function does not provide any checks regarding collisions of the
+/// `tag_key` with field-names or map-keys. The responsibility for such checks
+/// reside with the caller.
 pub fn serialize<S, T: ?Sized, V: ?Sized>(
     serializer: S,
     tag_key: &'static str,
@@ -138,6 +149,12 @@ where
 ///
 /// Due to the tag being embedded into the value, not all value-types are
 /// supported. For more details see the [module documentation](::ser::internal).
+/// 
+/// # Warning
+/// 
+/// This serializer does not provide any checks regarding collisions of the
+/// `tag_key` with field-names or map-keys. The responsibility for such checks
+/// reside with the caller.
 pub struct Serializer<'a, S, T: ?Sized + 'a> {
     delegate: S,
     tag_key:  &'static str,

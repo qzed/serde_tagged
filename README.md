@@ -1,11 +1,13 @@
 # Serde Tagged
 
-[![Build Status]][travis] [![Coverage]][codecov]
+[![Build Status]][travis] [![Coverage]][codecov] [![crates.io]][crates.io] [![docs.rs]][docs.rs]
 
 [Build Status]: https://api.travis-ci.org/qzed/serde_tagged.svg?branch=master
 [travis]: https://travis-ci.org/qzed/serde_tagged
 [Coverage]: https://codecov.io/gh/qzed/serde_tagged/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/qzed/serde_tagged
+[crates.io]: https://img.shields.io/crates/v/serde_tagged.svg
+[docs.rs]: https://docs.rs/serde_tagged/badge.svg
 
 Tag values during serialization, retreive tags during deserialization.
 
@@ -19,19 +21,6 @@ The tagging-formats are largely similar to the [enum tagging-formats already use
 
 <a name="myfootnote1">[1]</a>:
 Some data formats may however impose restrictions, e.g. JSON objects can only contain strings as keys, which in turn restricts the tag type that can be used with the external tagging-format to strings for a JSON backend.
-
-## Currently under development
-
-This crate is currently under development, thus it is not on `crates.io` yet.
-Further documentation and examples will follow.
-
-If you still want to try this crate, just add the following line under `[dependencies]` in your `Cargo.toml` file.
-
-```toml
-serde_tagged = { git = "https://github.com/qzed/serde_tagged", branch = "master" }
-```
-
-For some examples, have a look at the `examples` directory.
 
 ## Tagging formats
 
@@ -98,6 +87,18 @@ Illustrated, this yields
 ```
 
 The representation of this tagging format in the data format largely depends on the latter, thus it can be either compact (msgpack, bincode) or verbose (JSON).
+
+## Usage
+
+Hava a look at the [examples][examples] directory.
+A good starting point would be the [trait-object example][examples-trait_obj].
+This example explains all the relevant details regarding de-/serialization of trait-objects using the external tagging format (other formats can be used quite similar).
+Of course you can not only serialize and deserialize trait-objects, but any serializable and deserializable value with a tag.
+Also, have a look at the [API documentation][api-doc].
+
+[examples]: https://github.com/qzed/serde_tagged/tree/master/examples
+[examples-trait_obj]: https://github.com/qzed/serde_tagged/blob/master/examples/trait_objects.rs
+[api-doc]: https://docs.rs/serde_tagged
 
 ## Optional features
 
