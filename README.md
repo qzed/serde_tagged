@@ -20,7 +20,6 @@ The tagging-formats are largely similar to the [enum tagging-formats already use
 <a name="myfootnote1">[1]</a>:
 Some data formats may however impose restrictions, e.g. JSON objects can only contain strings as keys, which in turn restricts the tag type that can be used with the external tagging-format to strings for a JSON backend.
 
-
 ## Currently under development
 
 This crate is currently under development, thus it is not on `crates.io` yet.
@@ -34,7 +33,6 @@ serde_tagged = { git = "https://github.com/qzed/serde_tagged", branch = "master"
 
 For some examples, have a look at the `examples` directory.
 
-
 ## Tagging formats
 
 `serde_tagged` supports multiple tagging formats.
@@ -44,7 +42,7 @@ Here is a short overview:
 
 The external tagging format applies tags using a map with a single entry, where a tag is the key and the value the value of the entry. In a somewhat illustrative form, this would yield
 
-```
+```text
 { <tag> => <value> }
 ```
 
@@ -55,10 +53,8 @@ However, for configuration files and primarily text based data formats you might
 
 ### Internal tagging
 
-(currently in development)
-
 This format tags values internally, meaning that the tag is embedded into the value.
-Embedding a tag does however not work with all value types (e.g. primitives such as `i32`) thus this format requires a fallback for those types.
+Embedding a tag does however not work with all value types (e.g. primitives such as `i32`).
 
 A big benefit of this format is that it is (subjectively) more readable in configuration files.
 A TOML configuration file using this tagging scheme could look somewhat like this:
@@ -77,7 +73,7 @@ Parsing this format, however, requires allocations so you might want to choose a
 The tuple-based adjacent format is similar to the external format compact, easy to deserialize due to its predefined tag value order, however, arguably less readable.
 Tag and value pairs are stored as tuples, i.e.
 
-```
+```text
 ( <tag>, <value> )
 ```
 
@@ -86,7 +82,7 @@ Tag and value pairs are stored as tuples, i.e.
 The map-based adjacent tagging format applies tags using two map entries, where one entry contains a mapping from tag-key to tag and the other entry a mapping from value-key to value.
 Illustrated, this yields
 
-```
+```text
 { <tag-key> => <tag>, <value-key> => <value> }
 ```
 
@@ -97,25 +93,23 @@ This format again makes more sense when used in a human-readable data format, ho
 The struct-based adjacent tagging format is similar to the map-based adjacent tagging format, however, here the tagged value is serialized as struct where the keys are the names of the struct fields.
 Illustrated, this yields
 
-```
+```text
 { <tag-key>: <tag>, <value-key>: <value> }
 ```
 
 The representation of this tagging format in the data format largely depends on the latter, thus it can be either compact (msgpack, bincode) or verbose (JSON).
-
 
 ## Optional features
 
 By default, this crate is built with the `erased` feature enabled (which requires `erased-serde` as dependency).
 This feature is intended to simplify the deserialization of type-erased trait objects by providing types and traits to simplify interactions with `erased-serde`.
 
-
 ## License
 
 Licensed under either of
 
- * Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+* Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
 
