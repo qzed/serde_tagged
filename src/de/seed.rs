@@ -4,6 +4,8 @@ use std;
 use std::collections::{BTreeMap, HashMap};
 use std::marker::PhantomData;
 
+use util::TagString;
+
 use serde;
 
 
@@ -165,125 +167,23 @@ where
 }
 
 
-impl<'a, 'de, V, S> SeedFactory<'de, &'a str> for BTreeMap<&'static str, S>
+impl<'de, V, S> SeedFactory<'de, TagString<'de>> for BTreeMap<&'static str, S>
 where
     S: serde::de::DeserializeSeed<'de, Value = V>,
 {
     type Value = V;
     type Seed = S;
 
-    fn seed<E>(mut self, tag: &'a str) -> Result<Self::Seed, E>
+    fn seed<E>(mut self, tag: TagString<'de>) -> Result<Self::Seed, E>
     where
         E: serde::de::Error,
     {
-        self.remove(tag)
+        self.remove(tag.as_ref())
             .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
     }
 }
 
-impl<'a, 'de, V, S, H> SeedFactory<'de, &'a str> for HashMap<&'static str, S, H>
-where
-    S: serde::de::DeserializeSeed<'de, Value = V>,
-    H: std::hash::BuildHasher,
-{
-    type Value = V;
-    type Seed = S;
-
-    fn seed<E>(mut self, tag: &'a str) -> Result<Self::Seed, E>
-    where
-        E: serde::de::Error,
-    {
-        self.remove(tag)
-            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
-    }
-}
-
-
-impl<'a, 'b, 'de, V, S> SeedFactory<'de, &'a str> for &'b mut BTreeMap<&'static str, S>
-where
-    &'b mut S: serde::de::DeserializeSeed<'de, Value = V>,
-{
-    type Value = V;
-    type Seed = &'b mut S;
-
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
-    where
-        E: serde::de::Error,
-    {
-        self.get_mut(tag)
-            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
-    }
-}
-
-impl<'a, 'b, 'de, V, S, H> SeedFactory<'de, &'a str> for &'b mut HashMap<&'static str, S, H>
-where
-    &'b mut S: serde::de::DeserializeSeed<'de, Value = V>,
-    H: std::hash::BuildHasher,
-{
-    type Value = V;
-    type Seed = &'b mut S;
-
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
-    where
-        E: serde::de::Error,
-    {
-        self.get_mut(tag)
-            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
-    }
-}
-
-
-impl<'a, 'b, 'de, V, S> SeedFactory<'de, &'a str> for &'b BTreeMap<&'static str, S>
-where
-    &'b S: serde::de::DeserializeSeed<'de, Value = V>,
-{
-    type Value = V;
-    type Seed = &'b S;
-
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
-    where
-        E: serde::de::Error,
-    {
-        self.get(tag)
-            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
-    }
-}
-
-impl<'a, 'b, 'de, V, S, H> SeedFactory<'de, &'a str> for &'b HashMap<&'static str, S, H>
-where
-    &'b S: serde::de::DeserializeSeed<'de, Value = V>,
-    H: std::hash::BuildHasher,
-{
-    type Value = V;
-    type Seed = &'b S;
-
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
-    where
-        E: serde::de::Error,
-    {
-        self.get(tag)
-            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
-    }
-}
-
-
-impl<'a, 'de, V, S> SeedFactory<'de, &'a str> for BTreeMap<String, S>
-where
-    S: serde::de::DeserializeSeed<'de, Value = V>,
-{
-    type Value = V;
-    type Seed = S;
-
-    fn seed<E>(mut self, tag: &'a str) -> Result<Self::Seed, E>
-    where
-        E: serde::de::Error,
-    {
-        self.remove(tag)
-            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
-    }
-}
-
-impl<'a, 'de, V, S, H> SeedFactory<'de, &'a str> for HashMap<String, S, H>
+impl<'de, V, S, H> SeedFactory<'de, TagString<'de>> for HashMap<&'static str, S, H>
 where
     S: serde::de::DeserializeSeed<'de, Value = V>,
     H: std::hash::BuildHasher,
@@ -291,79 +191,181 @@ where
     type Value = V;
     type Seed = S;
 
-    fn seed<E>(mut self, tag: &'a str) -> Result<Self::Seed, E>
+    fn seed<E>(mut self, tag: TagString<'de>) -> Result<Self::Seed, E>
     where
         E: serde::de::Error,
     {
-        self.remove(tag)
+        self.remove(tag.as_ref())
             .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
     }
 }
 
 
-impl<'a, 'b, 'de, V, S> SeedFactory<'de, &'a str> for &'b mut BTreeMap<String, S>
+impl<'r, 'de, V, S> SeedFactory<'de, TagString<'de>> for &'r mut BTreeMap<&'static str, S>
 where
-    &'b mut S: serde::de::DeserializeSeed<'de, Value = V>,
+    &'r mut S: serde::de::DeserializeSeed<'de, Value = V>,
 {
     type Value = V;
-    type Seed = &'b mut S;
+    type Seed = &'r mut S;
 
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
     where
         E: serde::de::Error,
     {
-        self.get_mut(tag)
+        self.get_mut(tag.as_ref())
             .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
     }
 }
 
-impl<'a, 'b, 'de, V, S, H> SeedFactory<'de, &'a str> for &'b mut HashMap<String, S, H>
+impl<'r, 'de, V, S, H> SeedFactory<'de, TagString<'de>> for &'r mut HashMap<&'static str, S, H>
 where
-    &'b mut S: serde::de::DeserializeSeed<'de, Value = V>,
+    &'r mut S: serde::de::DeserializeSeed<'de, Value = V>,
     H: std::hash::BuildHasher,
 {
     type Value = V;
-    type Seed = &'b mut S;
+    type Seed = &'r mut S;
 
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
     where
         E: serde::de::Error,
     {
-        self.get_mut(tag)
+        self.get_mut(tag.as_ref())
             .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
     }
 }
 
 
-impl<'a, 'b, 'de, V, S> SeedFactory<'de, &'a str> for &'b BTreeMap<String, S>
+impl<'r, 'de, V, S> SeedFactory<'de, TagString<'de>> for &'r BTreeMap<&'static str, S>
 where
-    &'b S: serde::de::DeserializeSeed<'de, Value = V>,
+    &'r S: serde::de::DeserializeSeed<'de, Value = V>,
 {
     type Value = V;
-    type Seed = &'b S;
+    type Seed = &'r S;
 
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
     where
         E: serde::de::Error,
     {
-        self.get(tag)
+        self.get(tag.as_ref())
             .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
     }
 }
 
-impl<'a, 'b, 'de, V, S, H> SeedFactory<'de, &'a str> for &'b HashMap<String, S, H>
+impl<'r, 'de, V, S, H> SeedFactory<'de, TagString<'de>> for &'r HashMap<&'static str, S, H>
 where
-    &'b S: serde::de::DeserializeSeed<'de, Value = V>,
+    &'r S: serde::de::DeserializeSeed<'de, Value = V>,
     H: std::hash::BuildHasher,
 {
     type Value = V;
-    type Seed = &'b S;
+    type Seed = &'r S;
 
-    fn seed<E>(self, tag: &'a str) -> Result<Self::Seed, E>
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
     where
         E: serde::de::Error,
     {
-        self.get(tag)
+        self.get(tag.as_ref())
+            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
+    }
+}
+
+
+impl<'de, V, S> SeedFactory<'de, TagString<'de>> for BTreeMap<String, S>
+where
+    S: serde::de::DeserializeSeed<'de, Value = V>,
+{
+    type Value = V;
+    type Seed = S;
+
+    fn seed<E>(mut self, tag: TagString<'de>) -> Result<Self::Seed, E>
+    where
+        E: serde::de::Error,
+    {
+        self.remove(tag.as_ref())
+            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
+    }
+}
+
+impl<'de, V, S, H> SeedFactory<'de, TagString<'de>> for HashMap<String, S, H>
+where
+    S: serde::de::DeserializeSeed<'de, Value = V>,
+    H: std::hash::BuildHasher,
+{
+    type Value = V;
+    type Seed = S;
+
+    fn seed<E>(mut self, tag: TagString<'de>) -> Result<Self::Seed, E>
+    where
+        E: serde::de::Error,
+    {
+        self.remove(tag.as_ref())
+            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
+    }
+}
+
+
+impl<'r, 'de, V, S> SeedFactory<'de, TagString<'de>> for &'r mut BTreeMap<String, S>
+where
+    &'r mut S: serde::de::DeserializeSeed<'de, Value = V>,
+{
+    type Value = V;
+    type Seed = &'r mut S;
+
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
+    where
+        E: serde::de::Error,
+    {
+        self.get_mut(tag.as_ref())
+            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
+    }
+}
+
+impl<'r, 'de, V, S, H> SeedFactory<'de, TagString<'de>> for &'r mut HashMap<String, S, H>
+where
+    &'r mut S: serde::de::DeserializeSeed<'de, Value = V>,
+    H: std::hash::BuildHasher,
+{
+    type Value = V;
+    type Seed = &'r mut S;
+
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
+    where
+        E: serde::de::Error,
+    {
+        self.get_mut(tag.as_ref())
+            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
+    }
+}
+
+
+impl<'r, 'de, V, S> SeedFactory<'de, TagString<'de>> for &'r BTreeMap<String, S>
+where
+    &'r S: serde::de::DeserializeSeed<'de, Value = V>,
+{
+    type Value = V;
+    type Seed = &'r S;
+
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
+    where
+        E: serde::de::Error,
+    {
+        self.get(tag.as_ref())
+            .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
+    }
+}
+
+impl<'r, 'de, V, S, H> SeedFactory<'de, TagString<'de>> for &'r HashMap<String, S, H>
+where
+    &'r S: serde::de::DeserializeSeed<'de, Value = V>,
+    H: std::hash::BuildHasher,
+{
+    type Value = V;
+    type Seed = &'r S;
+
+    fn seed<E>(self, tag: TagString<'de>) -> Result<Self::Seed, E>
+    where
+        E: serde::de::Error,
+    {
+        self.get(tag.as_ref())
             .ok_or_else(|| serde::de::Error::custom("Unknown tag"))
     }
 }
