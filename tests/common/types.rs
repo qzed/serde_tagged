@@ -4,7 +4,7 @@
 // issue with this crate (https://github.com/arcnmx/serde-value/issues/18).
 #![allow(unused)]
 // Yes, we use `foo` and `bar` here... please don't complain...
-#![cfg_attr(feature = "cargo-clippy", allow(blacklisted_name))]
+#![allow(clippy::blacklisted_name)]
 
 use std::collections::BTreeMap;
 use std::fmt::Display;

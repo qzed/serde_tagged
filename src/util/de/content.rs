@@ -839,14 +839,14 @@ where
             Content::Some(ref v) => visitor.visit_some(ContentRefDeserializer::new(v)),
             Content::Newtype(ref v) => visitor.visit_newtype_struct(ContentRefDeserializer::new(v)),
             Content::Seq(ref v) => {
-                let seq = v.into_iter().map(ContentRefDeserializer::new);
+                let seq = v.iter().map(ContentRefDeserializer::new);
                 let mut seq_visitor = de::value::SeqDeserializer::new(seq);
                 let value = visitor.visit_seq(&mut seq_visitor)?;
                 seq_visitor.end()?;
                 Ok(value)
             },
             Content::Map(ref v) => {
-                let map = v.into_iter().map(|&(ref k, ref v)| {
+                let map = v.iter().map(|&(ref k, ref v)| {
                     (
                         ContentRefDeserializer::new(k),
                         ContentRefDeserializer::new(v),
@@ -890,7 +890,7 @@ where
     {
         let (variant, value) = match *self.content {
             Content::Map(ref value) => {
-                let mut iter = value.into_iter();
+                let mut iter = value.iter();
                 let &(ref variant, ref value) = match iter.next() {
                     Some(v) => v,
                     None => {
@@ -1064,7 +1064,7 @@ where
 {
     fn new(vec: &'a [Content<'de>]) -> Self {
         SeqRefDeserializer {
-            iter: vec.into_iter(),
+            iter: vec.iter(),
             err:  PhantomData,
         }
     }
@@ -1139,7 +1139,7 @@ where
 {
     fn new(map: &'a [(Content<'de>, Content<'de>)]) -> Self {
         MapRefDeserializer {
-            iter:  map.into_iter(),
+            iter:  map.iter(),
             value: None,
             err:   PhantomData,
         }
