@@ -133,7 +133,7 @@ impl<'a> serde::Serialize for Stored + 'a {
         // the object in `SerializeErased`.
         // The `serialize` method of `serde_erased::ser::external` will apply
         // our type-id as tag to the trait-object.
-        serde_tagged::ser::external::serialize(serializer, self.type_id(), &SerializeErased(self))
+        serde_tagged::ser::external::serialize(serializer, TypeId::type_id(self), &SerializeErased(self))
     }
 }
 
