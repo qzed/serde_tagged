@@ -60,7 +60,7 @@
 //!
 //! For some examples have a look at the examples directory in the repository.
 
-#![cfg_attr(feature = "cargo-clippy", allow(redundant_field_names))]
+#![allow(clippy::redundant_field_names)]
 
 #[macro_use]
 extern crate serde;

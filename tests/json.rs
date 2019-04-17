@@ -1,6 +1,6 @@
 //! Tests using `serde_json`.
 
-#![cfg_attr(feature = "cargo-clippy", allow(unreadable_literal))]
+#![allow(clippy::unreadable_literal)]
 
 extern crate serde;
 extern crate serde_bytes;

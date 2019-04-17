@@ -91,7 +91,7 @@ where
     B: PartialOrd<str>,
 {
     fn partial_cmp(&self, other: &B) -> Option<std::cmp::Ordering> {
-        other.partial_cmp(&**self).map(|ord| ord.reverse())
+        other.partial_cmp(&**self).map(std::cmp::Ordering::reverse)
     }
 }
 
