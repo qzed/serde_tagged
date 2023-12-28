@@ -382,12 +382,12 @@ mod erased {
     /// A trait alias for mutable closures that can be used as
     /// `DeserializeSeed` in combination with `BoxFnMutSeed`.
     pub trait FnMutSeed<V>
-        : for<'de> FnMut(&mut erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
+        : for<'de> FnMut(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
     {}
 
     impl<V, F> FnMutSeed<V> for F
     where
-        F: for<'de> FnMut(&mut erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>,
+        F: for<'de> FnMut(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>,
     {}
 
 
@@ -396,7 +396,7 @@ mod erased {
     /// It additionally requires the wrapped closure to implement `Sync` which
     /// allows for easy static type-registry creation, e.g. in combination with
     /// `BTreeMap<&'static str, _>`.
-    pub struct BoxFnMutSeed<V>(Box<FnMutSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
+    pub struct BoxFnMutSeed<V>(Box<dyn FnMutSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
 
     impl<V> BoxFnMutSeed<V> {
         /// Creates a new boxed closure from the given closure.
@@ -415,7 +415,7 @@ mod erased {
         where
             D: serde::Deserializer<'de>,
         {
-            let mut de = erased_serde::Deserializer::erase(deserializer);
+            let mut de = <dyn erased_serde::Deserializer>::erase(deserializer);
             (self.0)(&mut de).map_err(serde::de::Error::custom)
         }
     }
@@ -427,7 +427,7 @@ mod erased {
         where
             D: serde::Deserializer<'de>,
         {
-            let mut de = erased_serde::Deserializer::erase(deserializer);
+            let mut de = <dyn erased_serde::Deserializer>::erase(deserializer);
             (self.0)(&mut de).map_err(serde::de::Error::custom)
         }
     }
@@ -436,12 +436,12 @@ mod erased {
     /// A trait alias for (immutable) closures that can be used as
     /// `DeserializeSeed` in combination with `BoxFnSeed`.
     pub trait FnSeed<V>
-        : for<'de> Fn(&mut erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
+        : for<'de> Fn(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
     {}
 
     impl<V, F> FnSeed<V> for F
     where
-        F: for<'de> Fn(&mut erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>,
+        F: for<'de> Fn(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>,
     {}
 
 
@@ -450,7 +450,7 @@ mod erased {
     /// It additionally requires the wrapped closure to implement `Sync` which
     /// allows for easy static type-registry creation, e.g. in combination with
     /// `BTreeMap<&'static str, _>`.
-    pub struct BoxFnSeed<V>(Box<FnSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
+    pub struct BoxFnSeed<V>(Box<dyn FnSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
 
     impl<V> BoxFnSeed<V> {
         /// Creates a new boxed closure from the given closure.
@@ -469,7 +469,7 @@ mod erased {
         where
             D: serde::Deserializer<'de>,
         {
-            let mut de = erased_serde::Deserializer::erase(deserializer);
+            let mut de = <dyn erased_serde::Deserializer>::erase(deserializer);
             (self.0)(&mut de).map_err(serde::de::Error::custom)
         }
     }
@@ -481,7 +481,7 @@ mod erased {
         where
             D: serde::Deserializer<'de>,
         {
-            let mut de = erased_serde::Deserializer::erase(deserializer);
+            let mut de = <dyn erased_serde::Deserializer>::erase(deserializer);
             (self.0)(&mut de).map_err(serde::de::Error::custom)
         }
     }
