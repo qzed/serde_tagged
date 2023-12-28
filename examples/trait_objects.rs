@@ -122,7 +122,7 @@ impl_downcast!(Stored);
 // you want to deserialize a trait object. To enforce this at compile time,
 // you could implement a custom wrapper type.
 
-impl<'a> serde::Serialize for Stored + 'a {
+impl<'a> serde::Serialize for dyn Stored + 'a {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -137,7 +137,7 @@ impl<'a> serde::Serialize for Stored + 'a {
     }
 }
 
-impl<'de> serde::Deserialize<'de> for Box<Stored> {
+impl<'de> serde::Deserialize<'de> for Box<dyn Stored> {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -163,7 +163,7 @@ impl<'de> serde::Deserialize<'de> for Box<Stored> {
 // you should have a look at the traits provided in `de`.
 
 /// The type of our `SeedFactory`.
-pub type TypeRegistry = BTreeMap<&'static str, BoxFnSeed<Box<Stored>>>;
+pub type TypeRegistry = BTreeMap<&'static str, BoxFnSeed<Box<dyn Stored>>>;
 
 /// Return the type registry required for deserialization.
 pub fn get_registry() -> &'static TypeRegistry {
@@ -188,12 +188,12 @@ mod deserialize_erased {
     use serde::Deserialize;
 
     /// Deserialize a value of type `A` as trait-object.
-    pub fn a<'de>(de: &mut Deserializer<'de>) -> Result<Box<Stored>, Error> {
+    pub fn a<'de>(de: &mut dyn Deserializer<'de>) -> Result<Box<dyn Stored>, Error> {
         Ok(Box::new(A::deserialize(de)?))
     }
 
     /// Deserialize a value of type `B` as trait-object.
-    pub fn b<'de>(de: &mut Deserializer<'de>) -> Result<Box<Stored>, Error> {
+    pub fn b<'de>(de: &mut dyn Deserializer<'de>) -> Result<Box<dyn Stored>, Error> {
         Ok(Box::new(B::deserialize(de)?))
     }
 }
@@ -209,9 +209,9 @@ fn main() {
     // ... and then transform it to trait objects.
     // We use clone here so we can later assert that de-/serialization does not
     // change anything.
-    let ser_a: Box<Stored> = a.clone();
-    let ser_b: Box<Stored> = b.clone();
-    let ser_c: Box<Stored> = c.clone();
+    let ser_a: Box<dyn Stored> = a.clone();
+    let ser_b: Box<dyn Stored> = b.clone();
+    let ser_c: Box<dyn Stored> = c.clone();
 
     // Now we can serialize our trait-objects.
     // Thanks to our `Serialize` implementation for trait objects this works
@@ -251,9 +251,9 @@ fn main() {
 
     // Now we let's deserialize our trait objects.
     // This works also just like any other type.
-    let de_a: Box<Stored> = serde_json::from_str(&ser_a).unwrap();
-    let de_b: Box<Stored> = serde_json::from_str(&ser_b).unwrap();
-    let de_c: Box<Stored> = serde_json::from_str(&ser_c).unwrap();
+    let de_a: Box<dyn Stored> = serde_json::from_str(&ser_a).unwrap();
+    let de_b: Box<dyn Stored> = serde_json::from_str(&ser_b).unwrap();
+    let de_c: Box<dyn Stored> = serde_json::from_str(&ser_c).unwrap();
 
     // Using `downcast_rs` we can get the real types ...
     let ref_a: &A = de_a.downcast_ref().unwrap();

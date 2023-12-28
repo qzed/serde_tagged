@@ -157,10 +157,11 @@ impl<'de> serde::de::Visitor<'de> for TaggedValueVisitor {
     where
         A: serde::de::SeqAccess<'de>,
     {
+        use serde::de::value::SeqAccessDeserializer;
         use serde::de::{Deserialize, Error};
-        use serde::de::value::SeqAccessDeserializer;;
 
-        let tag: Content = seq.next_element()?
+        let tag: Content = seq
+            .next_element()?
             .ok_or_else(|| Error::missing_field(self.tag_key))?;
 
         let val = Content::deserialize(SeqAccessDeserializer::new(seq))?;

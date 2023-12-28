@@ -143,7 +143,7 @@ fn main() {
     // implementations which are then used to deserialize the specific type.
     // To this end this crate provides a few convenience implementations that
     // we will use here.
-    type RegSeedFn = BoxFnSeed<Box<TypeId>>;
+    type RegSeedFn = BoxFnSeed<Box<dyn TypeId>>;
     let mut seeds = BTreeMap::new();
     seeds.insert("Message".to_owned(), RegSeedFn::new(deserialize_msg));
     seeds.insert("i64".to_owned(), RegSeedFn::new(deserialize_i64));
@@ -152,14 +152,14 @@ fn main() {
     // (current) rust compiler does not correctly identify the lifetimes and
     // complains about them.
     fn deserialize_msg<'de>(
-        de: &mut erased_serde::Deserializer<'de>,
-    ) -> Result<Box<TypeId>, erased_serde::Error> {
+        de: &mut dyn erased_serde::Deserializer<'de>,
+    ) -> Result<Box<dyn TypeId>, erased_serde::Error> {
         Ok(Box::new(Message::deserialize(de)?))
     }
 
     fn deserialize_i64<'de>(
-        de: &mut erased_serde::Deserializer<'de>,
-    ) -> Result<Box<TypeId>, erased_serde::Error> {
+        de: &mut dyn erased_serde::Deserializer<'de>,
+    ) -> Result<Box<dyn TypeId>, erased_serde::Error> {
         Ok(Box::new(i64::deserialize(de)?))
     }
 
@@ -180,7 +180,7 @@ fn main() {
 struct TypeSeedFactory;
 
 impl<'de> SeedFactory<'de, &'de str> for TypeSeedFactory {
-    type Value = Box<TypeId>;
+    type Value = Box<dyn TypeId>;
     type Seed = TypeSeed<'de>;
 
     fn seed<E>(self, tag: &'de str) -> Result<Self::Seed, E>
@@ -207,7 +207,7 @@ impl<'de> TypeSeed<'de> {
 }
 
 impl<'de> serde::de::DeserializeSeed<'de> for TypeSeed<'de> {
-    type Value = Box<TypeId>;
+    type Value = Box<dyn TypeId>;
 
     fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
     where
