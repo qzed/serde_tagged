@@ -49,9 +49,9 @@ impl<'a> From<std::borrow::Cow<'a, str>> for TagString<'a> {
     }
 }
 
-impl<'a> Into<std::borrow::Cow<'a, str>> for TagString<'a> {
-    fn into(self) -> std::borrow::Cow<'a, str> {
-        match self {
+impl<'a> From<TagString<'a>> for std::borrow::Cow<'a, str> {
+    fn from(val: TagString<'a>) -> Self {
+        match val {
             TagString::Owned(v) => std::borrow::Cow::Owned(v),
             TagString::Borrowed(v) => std::borrow::Cow::Borrowed(v),
         }
@@ -121,7 +121,7 @@ impl<'a> std::hash::Hash for TagString<'a> {
 
 impl<'a> AsRef<str> for TagString<'a> {
     fn as_ref(&self) -> &str {
-        &**self
+        self
     }
 }
 
@@ -171,6 +171,6 @@ impl<'a> serde::Serialize for TagString<'a> {
     where
         S: serde::Serializer
     {
-        serializer.serialize_str(&**self)
+        serializer.serialize_str(self)
     }
 }

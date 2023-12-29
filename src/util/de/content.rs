@@ -846,7 +846,7 @@ where
                 Ok(value)
             },
             Content::Map(ref v) => {
-                let map = v.iter().map(|&(ref k, ref v)| {
+                let map = v.iter().map(|(k, v)| {
                     (
                         ContentRefDeserializer::new(k),
                         ContentRefDeserializer::new(v),
@@ -891,7 +891,7 @@ where
         let (variant, value) = match *self.content {
             Content::Map(ref value) => {
                 let mut iter = value.iter();
-                let &(ref variant, ref value) = match iter.next() {
+                let (variant, value) = match iter.next() {
                     Some(v) => v,
                     None => {
                         return Err(de::Error::invalid_value(
@@ -1009,7 +1009,7 @@ where
         V: de::Visitor<'de>,
     {
         match self.value {
-            Some(&Content::Seq(ref v)) => {
+            Some(Content::Seq(ref v)) => {
                 de::Deserializer::deserialize_any(SeqRefDeserializer::new(v), visitor)
             },
             Some(other) => Err(de::Error::invalid_type(
@@ -1032,10 +1032,10 @@ where
         V: de::Visitor<'de>,
     {
         match self.value {
-            Some(&Content::Map(ref v)) => {
+            Some(Content::Map(ref v)) => {
                 de::Deserializer::deserialize_any(MapRefDeserializer::new(v), visitor)
             },
-            Some(&Content::Seq(ref v)) => {
+            Some(Content::Seq(ref v)) => {
                 de::Deserializer::deserialize_any(SeqRefDeserializer::new(v), visitor)
             },
             Some(other) => Err(de::Error::invalid_type(
@@ -1157,7 +1157,7 @@ where
         T: de::DeserializeSeed<'de>,
     {
         match self.iter.next() {
-            Some(&(ref key, ref value)) => {
+            Some((key, value)) => {
                 self.value = Some(value);
                 seed.deserialize(ContentRefDeserializer::new(key)).map(Some)
             },

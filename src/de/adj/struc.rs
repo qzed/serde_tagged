@@ -174,7 +174,7 @@ where
                 let tag = map.next_value_seed(self.tag_seed)?;
 
                 let value_key = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
-                    .ok_or_else(|| Error::custom(&"missing value"))?;
+                    .ok_or_else(|| Error::custom("missing value"))?;
 
                 if value_key == Key::Value {
                     Ok(map.next_value_seed(self.seed_factory.seed(tag)?)?)

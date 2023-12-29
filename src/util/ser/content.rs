@@ -155,7 +155,7 @@ impl Serialize for Content {
             Content::Map(ref entries) => {
                 use serde::ser::SerializeMap;
                 let mut map = serializer.serialize_map(Some(entries.len()))?;
-                for &(ref k, ref v) in entries {
+                for (k, v) in entries {
                     map.serialize_entry(k, v)?;
                 }
                 map.end()
@@ -163,7 +163,7 @@ impl Serialize for Content {
             Content::Struct(n, ref fields) => {
                 use serde::ser::SerializeStruct;
                 let mut s = serializer.serialize_struct(n, fields.len())?;
-                for &(k, ref v) in fields {
+                for (k, v) in fields {
                     s.serialize_field(k, v)?;
                 }
                 s.end()
@@ -171,7 +171,7 @@ impl Serialize for Content {
             Content::StructVariant(n, i, v, ref fields) => {
                 use serde::ser::SerializeStructVariant;
                 let mut sv = serializer.serialize_struct_variant(n, i, v, fields.len())?;
-                for &(k, ref v) in fields {
+                for (k, v) in fields {
                     sv.serialize_field(k, v)?;
                 }
                 sv.end()

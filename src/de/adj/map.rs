@@ -415,7 +415,7 @@ where
             Ok(Key::Value)
         } else {
             Err(serde::de::Error::custom(
-                &"invalid entry key, expected either the specified tag- or value-key",
+                "invalid entry key, expected either the specified tag- or value-key",
             ))
         }
     }
