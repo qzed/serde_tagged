@@ -393,16 +393,16 @@ mod erased {
 
     /// A boxed mutable closure that can be used as `DeserializeSeed`.
     ///
-    /// It additionally requires the wrapped closure to implement `Sync` which
+    /// It additionally requires the wrapped closure to implement `Send` and `Sync` which
     /// allows for easy static type-registry creation, e.g. in combination with
     /// `BTreeMap<&'static str, _>`.
-    pub struct BoxFnMutSeed<V>(Box<dyn FnMutSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
+    pub struct BoxFnMutSeed<V>(Box<dyn FnMutSeed<V, Output = Result<V, erased_serde::Error>> + Send + Sync>);
 
     impl<V> BoxFnMutSeed<V> {
         /// Creates a new boxed closure from the given closure.
         pub fn new<F>(func: F) -> Self
         where
-            F: FnMutSeed<V> + Sync + 'static,
+            F: FnMutSeed<V> + Send + Sync + 'static,
         {
             BoxFnMutSeed(Box::new(func))
         }
@@ -447,16 +447,16 @@ mod erased {
 
     /// A boxed (immutable) closure that can be used as `DeserializeSeed`.
     ///
-    /// It additionally requires the wrapped closure to implement `Sync` which
+    /// It additionally requires the wrapped closure to implement `Send` and `Sync` which
     /// allows for easy static type-registry creation, e.g. in combination with
     /// `BTreeMap<&'static str, _>`.
-    pub struct BoxFnSeed<V>(Box<dyn FnSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
+    pub struct BoxFnSeed<V>(Box<dyn FnSeed<V, Output = Result<V, erased_serde::Error>> + Send + Sync>);
 
     impl<V> BoxFnSeed<V> {
         /// Creates a new boxed closure from the given closure.
         pub fn new<F>(func: F) -> Self
         where
-            F: FnSeed<V> + Sync + 'static,
+            F: FnSeed<V> + Send + Sync + 'static,
         {
             BoxFnSeed(Box::new(func))
         }
