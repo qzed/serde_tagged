@@ -60,20 +60,26 @@ fn main() {
     };
 
     let ser = serialize_to_string_external("Type", &value_1);
-    assert_json_equal(&ser, r###"
+    assert_json_equal(
+        &ser,
+        r###"
     {
         "Type": {
             "foo": "bar",
             "baz": 42
         }
     }
-    "###);
+    "###,
+    );
 
     // You can serialize everything that implements `Serialize` with a tag.
     let ser = serialize_to_string_external("Int", &42_i32);
-    assert_json_equal(&ser, r###"
+    assert_json_equal(
+        &ser,
+        r###"
     {
         "Int": 42
     }
-    "###);
+    "###,
+    );
 }

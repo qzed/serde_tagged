@@ -1,9 +1,9 @@
 //! An example for de-/serialization of trait objects.
-//! 
+//!
 //! Serializes trait-objects by enhancing the stored information with a tag,
 //! then later deserializes the stored tag, based on which a deserializer will
 //! be chosen for the value.
-//! 
+//!
 //! The data-structures in this example are straightforward, meaning that
 //! using an enum would probably make more sense here. However, enums can not
 //! be extended, e.g. by a user of your library, thus sometimes trait-objects
@@ -100,10 +100,7 @@ pub trait Stored: erased_serde::Serialize + TypeId + std::fmt::Debug + Downcast 
 
 // In this case, we also want to automatically implement it for all types which
 // meet our requirements.
-impl<T> Stored for T
-where
-    T: erased_serde::Serialize + TypeId + std::fmt::Debug + Downcast,
-{}
+impl<T> Stored for T where T: erased_serde::Serialize + TypeId + std::fmt::Debug + Downcast {}
 
 // We also want a way to access the actual object.
 // For this we can use `downcast_rs` (or a similar library).
@@ -133,7 +130,11 @@ impl<'a> serde::Serialize for dyn Stored + 'a {
         // the object in `SerializeErased`.
         // The `serialize` method of `serde_erased::ser::external` will apply
         // our type-id as tag to the trait-object.
-        serde_tagged::ser::external::serialize(serializer, TypeId::type_id(self), &SerializeErased(self))
+        serde_tagged::ser::external::serialize(
+            serializer,
+            TypeId::type_id(self),
+            &SerializeErased(self),
+        )
     }
 }
 
@@ -202,7 +203,9 @@ mod deserialize_erased {
 // We have finally set up everything, now we can test it.
 fn main() {
     // Let's begin by creating our test data ...
-    let a = Box::new(A { foo: "bar".to_owned() });
+    let a = Box::new(A {
+        foo: "bar".to_owned(),
+    });
     let b = Box::new(B::Str("Hello World".to_owned()));
     let c = Box::new(B::Int(42));
 
@@ -224,29 +227,38 @@ fn main() {
     // above.
 
     // We specified external tagging, so we expect the following:
-    assert_json_equal(&ser_a, r###"
+    assert_json_equal(
+        &ser_a,
+        r###"
     {
         "A": {
             "foo": "bar"
         }
     }
-    "###);
+    "###,
+    );
 
-    assert_json_equal(&ser_b, r###"
+    assert_json_equal(
+        &ser_b,
+        r###"
     {
         "B": {
             "Str": "Hello World"
         }
     }
-    "###);
+    "###,
+    );
 
-    assert_json_equal(&ser_c, r###"
+    assert_json_equal(
+        &ser_c,
+        r###"
     {
         "B": {
             "Int": 42
         }
     }
-    "###);
+    "###,
+    );
 
 
     // Now we let's deserialize our trait objects.

@@ -175,7 +175,7 @@ fn main() {
 
 
 /// A seed factory for a fixed set of types.
-/// 
+///
 /// This simply creates a new `TypeSeed` with the given tag.
 struct TypeSeedFactory;
 
@@ -193,7 +193,7 @@ impl<'de> SeedFactory<'de, &'de str> for TypeSeedFactory {
 
 
 /// A `DeserializeSeed` implementation for a fixed set of types.
-/// 
+///
 /// Decides which type should be deserialized by using a simple match statement
 /// on the tag.
 struct TypeSeed<'de> {

@@ -12,14 +12,14 @@ use std;
 
 
 /// A type that can be used to as a potentially temporary string-based tag.
-/// 
+///
 /// This type can be constructed (and deserialiezd) from both an owned string
 /// and a borroewd string. While there are similarities to `Cow<str>`, this type
 /// will always be deserialized as `Borrowed` if the deserializer allows this.
 /// Unlike `&'de str`, this type can, however, also be deserialized from an
 /// owned string or a temporary string not fulfilling the required lifetime
 /// bound.
-/// 
+///
 /// The intended use of this type is as a temporary tag store/reference to be
 /// passed on to a string-based `SeedFactory` implementation.
 #[derive(Clone, Debug)]
@@ -169,7 +169,7 @@ impl<'de> serde::Deserialize<'de> for TagString<'de> {
 impl<'a> serde::Serialize for TagString<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer
+        S: serde::Serializer,
     {
         serializer.serialize_str(self)
     }

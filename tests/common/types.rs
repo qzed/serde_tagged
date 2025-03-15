@@ -74,7 +74,7 @@ pub enum EnumUntagged {
 
 
 /// A type that serializes its contents using `serialize_seq`.
-/// 
+///
 /// Note: `Vec` and other types use `collect_seq`.
 #[derive(Debug, PartialEq)]
 pub struct SerializeSeq<'a, V: 'a>(pub &'a V);
@@ -102,7 +102,7 @@ where
 
 /// A type that serializes its contents using `serialize_seq` and does not
 /// provide a length estimate.
-/// 
+///
 /// Note: `Vec` and other types use `collect_seq`.
 #[derive(Debug, PartialEq)]
 pub struct SerializeSeqLenHidden<'a, V: 'a>(pub &'a V);
@@ -130,7 +130,7 @@ where
 
 
 /// A type that serializes its contents using `serialize_map`.
-/// 
+///
 /// Note: `BTreeMap` and other types use `collect_map`.
 #[derive(Debug, PartialEq)]
 pub struct SerializeMap<'a, V: 'a>(pub &'a V);
@@ -159,7 +159,7 @@ where
 
 /// A type that serializes its contents using `serialize_map` and does not
 /// provide a length estimate.
-/// 
+///
 /// Note: `BTreeMap` and other types use `collect_map`.
 #[derive(Debug, PartialEq)]
 pub struct SerializeMapLenHidden<'a, V: 'a>(pub &'a V);

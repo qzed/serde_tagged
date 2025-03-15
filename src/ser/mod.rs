@@ -8,7 +8,7 @@ pub mod internal;
 use serde;
 
 /// A trait to provide access to a delegate serializer.
-/// 
+///
 /// The delegate is expected to be responsible for the data-format of a
 /// serializer that implements this trait.
 pub trait HasDelegate {
