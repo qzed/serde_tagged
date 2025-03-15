@@ -3,7 +3,7 @@
 //! See [`ser::external`](::ser::external) for a description of this tagging
 //! format.
 
-use de::seed::SeedFactory;
+use crate::de::seed::SeedFactory;
 
 use std::fmt;
 use std::marker::PhantomData;
@@ -107,7 +107,8 @@ where
             _ => {},
         }
 
-        let tag = map.next_key_seed(self.tag_seed)?
+        let tag = map
+            .next_key_seed(self.tag_seed)?
             .ok_or_else(|| Error::invalid_length(0, &"a map with exactly one entry"))?;
 
         map.next_value_seed(self.seed_factory.seed(tag)?)

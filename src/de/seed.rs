@@ -4,7 +4,7 @@ use std;
 use std::collections::{BTreeMap, HashMap};
 use std::marker::PhantomData;
 
-use util::TagString;
+use crate::util::TagString;
 
 use serde;
 
@@ -381,14 +381,17 @@ mod erased {
 
     /// A trait alias for mutable closures that can be used as
     /// `DeserializeSeed` in combination with `BoxFnMutSeed`.
-    pub trait FnMutSeed<V>
-        : for<'de> FnMut(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
-    {}
+    pub trait FnMutSeed<V>:
+        for<'de> FnMut(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
+    {
+    }
 
-    impl<V, F> FnMutSeed<V> for F
-    where
-        F: for<'de> FnMut(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>,
-    {}
+    impl<V, F> FnMutSeed<V> for F where
+        F: for<'de> FnMut(
+            &mut dyn erased_serde::Deserializer<'de>,
+        ) -> Result<V, erased_serde::Error>
+    {
+    }
 
 
     /// A boxed mutable closure that can be used as `DeserializeSeed`.
@@ -396,7 +399,9 @@ mod erased {
     /// It additionally requires the wrapped closure to implement `Sync` which
     /// allows for easy static type-registry creation, e.g. in combination with
     /// `BTreeMap<&'static str, _>`.
-    pub struct BoxFnMutSeed<V>(Box<dyn FnMutSeed<V, Output = Result<V, erased_serde::Error>> + Sync>);
+    pub struct BoxFnMutSeed<V>(
+        Box<dyn FnMutSeed<V, Output = Result<V, erased_serde::Error>> + Sync>,
+    );
 
     impl<V> BoxFnMutSeed<V> {
         /// Creates a new boxed closure from the given closure.
@@ -435,14 +440,15 @@ mod erased {
 
     /// A trait alias for (immutable) closures that can be used as
     /// `DeserializeSeed` in combination with `BoxFnSeed`.
-    pub trait FnSeed<V>
-        : for<'de> Fn(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
-    {}
+    pub trait FnSeed<V>:
+        for<'de> Fn(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
+    {
+    }
 
-    impl<V, F> FnSeed<V> for F
-    where
-        F: for<'de> Fn(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>,
-    {}
+    impl<V, F> FnSeed<V> for F where
+        F: for<'de> Fn(&mut dyn erased_serde::Deserializer<'de>) -> Result<V, erased_serde::Error>
+    {
+    }
 
 
     /// A boxed (immutable) closure that can be used as `DeserializeSeed`.

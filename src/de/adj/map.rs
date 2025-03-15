@@ -10,8 +10,8 @@
 //! deserialization of map-based adjacently tagged values is only supported for
 //! self-describing formats.
 
-use de::seed::SeedFactory;
-use util::de::content::{Content, ContentDeserializer};
+use crate::de::seed::SeedFactory;
+use crate::util::de::content::{Content, ContentDeserializer};
 
 use std;
 use std::marker::PhantomData;
@@ -166,14 +166,16 @@ where
             _ => {},
         }
 
-        let key_1 = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+        let key_1 = map
+            .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
             .ok_or_else(|| Error::invalid_length(0, &self))?;
 
         // if first key is for tag: directly deserialize value
         if key_1 == Key::Tag {
             let tag = map.next_value_seed(self.tag_seed)?;
 
-            let value_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let value_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &"a map with exactly two entries"))?;
 
             if value_key == Key::Value {
@@ -186,7 +188,8 @@ where
         } else {
             let value: Content = map.next_value()?;
 
-            let tag_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let tag_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &self))?;
 
             let tag = if tag_key == Key::Tag {
@@ -272,10 +275,7 @@ where
     K: std::cmp::PartialEq<&'a Kc>,
 {
     deserializer.deserialize_map(KnownVisitor::<K, _, _, _>::new(
-        tag_seed,
-        value_seed,
-        tag_key,
-        value_key,
+        tag_seed, value_seed, tag_key, value_key,
     ))
 }
 
@@ -343,13 +343,15 @@ where
             _ => {},
         }
 
-        let key_1 = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+        let key_1 = map
+            .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
             .ok_or_else(|| Error::invalid_length(0, &self))?;
 
         if key_1 == Key::Tag {
             let tag = map.next_value_seed(self.tag_seed)?;
 
-            let value_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let value_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &"a map with exactly two entries"))?;
 
             if value_key == Key::Value {
@@ -360,7 +362,8 @@ where
         } else {
             let value = map.next_value_seed(self.value_seed)?;
 
-            let tag_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let tag_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &"a map with exactly two entries"))?;
 
             if tag_key == Key::Tag {

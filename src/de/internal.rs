@@ -8,8 +8,8 @@
 //! Deserialization of internally tagged values requires a self-describing
 //! data format.
 
-use de::seed::SeedFactory;
-use util::de::content::{Content, ContentDeserializer, ContentVisitor};
+use crate::de::seed::SeedFactory;
+use crate::util::de::content::{Content, ContentDeserializer, ContentVisitor};
 
 use std;
 use std::marker::PhantomData;

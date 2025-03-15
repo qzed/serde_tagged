@@ -105,7 +105,7 @@
 
 use serde;
 
-use ser::HasDelegate;
+use crate::ser::HasDelegate;
 
 
 /// Embeds a tag into the specified value and then serializes it using the
@@ -118,9 +118,9 @@ use ser::HasDelegate;
 ///
 /// This method is a convenience function that creates and uses the
 /// [`Serializer`](Serializer) internally.
-/// 
+///
 /// # Warning
-/// 
+///
 /// This function does not provide any checks regarding collisions of the
 /// `tag_key` with field-names or map-keys. The responsibility for such checks
 /// reside with the caller.
@@ -149,9 +149,9 @@ where
 ///
 /// Due to the tag being embedded into the value, not all value-types are
 /// supported. For more details see the [module documentation](::ser::internal).
-/// 
+///
 /// # Warning
-/// 
+///
 /// This serializer does not provide any checks regarding collisions of the
 /// `tag_key` with field-names or map-keys. The responsibility for such checks
 /// reside with the caller.

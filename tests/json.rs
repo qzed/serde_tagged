@@ -23,12 +23,12 @@ mod ser {
 
     /// Tests for serialization of externally-tagged values.
     mod external {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_bytes::Bytes;
 
         generate_tests_ser_1! {
-            use ::common::formats::json::ser::external::serialize_wrapped : wrapped,
-            use ::common::formats::json::ser::external::serialize_with_serializer : with_serializer,
+            use crate::common::formats::json::ser::external::serialize_wrapped : wrapped,
+            use crate::common::formats::json::ser::external::serialize_with_serializer : with_serializer,
 
             with {
                 { case: bool, tag: "<tag>", value: true, expect: json!({"<tag>": true}) },
@@ -247,12 +247,12 @@ mod ser {
 
     /// Tests for serialization of tuple-based adjacently-tagged values.
     mod adj_tuple {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_bytes::Bytes;
 
         generate_tests_ser_1! {
-            use ::common::formats::json::ser::adj_tuple::serialize_wrapped : wrapped,
-            use ::common::formats::json::ser::adj_tuple::serialize_with_serializer : with_serializer,
+            use crate::common::formats::json::ser::adj_tuple::serialize_wrapped : wrapped,
+            use crate::common::formats::json::ser::adj_tuple::serialize_with_serializer : with_serializer,
 
             with {
                 { case: bool, tag: "<tag>", value: true, expect: json!(["<tag>", true]) },
@@ -471,12 +471,12 @@ mod ser {
 
     /// Tests for serialization of map-based adjacently-tagged values.
     mod adj_map {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_bytes::Bytes;
 
         generate_tests_ser_3! {
-            use ::common::formats::json::ser::adj_map::serialize_wrapped : wrapped,
-            use ::common::formats::json::ser::adj_map::serialize_with_serializer : with_serializer,
+            use crate::common::formats::json::ser::adj_map::serialize_wrapped : wrapped,
+            use crate::common::formats::json::ser::adj_map::serialize_with_serializer : with_serializer,
 
             with {
                 {
@@ -992,12 +992,12 @@ mod ser {
 
     /// Tests for serialization of struct-based adjacently-tagged values.
     mod adj_struc {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_bytes::Bytes;
 
         generate_tests_ser_3! {
-            use ::common::formats::json::ser::adj_struc::serialize_wrapped : wrapped,
-            use ::common::formats::json::ser::adj_struc::serialize_with_serializer : with_serializer,
+            use crate::common::formats::json::ser::adj_struc::serialize_wrapped : wrapped,
+            use crate::common::formats::json::ser::adj_struc::serialize_with_serializer : with_serializer,
 
             with {
                 {
@@ -1513,11 +1513,11 @@ mod ser {
 
     /// Tests for serialization of internally-tagged values.
     mod internal {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_bytes::Bytes;
 
         generate_tests_ser_2! {
-            use ::common::formats::json::ser::internal::serialize: serialize,
+            use crate::common::formats::json::ser::internal::serialize: serialize,
 
             with {
                 {
@@ -1709,173 +1709,175 @@ mod ser {
         #[test]
         #[should_panic]
         fn i8() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_i8).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn i16() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_i16).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn i32() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_i32).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn i64() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_i64).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn u8() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_u8).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn u16() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_u16).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn u32() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_u32).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn u64() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &42_u64).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn f32() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &2.0_f32).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn f64() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &2.0_f64).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn char() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &('c')).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn str() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", "test").unwrap();
         }
 
         #[test]
         #[should_panic]
         fn bytes() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &Bytes::new(&[0, 1, 2, 3])).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn none() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &None as &Option<i32>).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn some() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &Some(42_i32)).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn unit() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &()).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_external_unit() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &EnumTaggedExternal::Unit).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_external_newtype_primitive() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &EnumTaggedExternal::NewtypeP(42)).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_external_newtype_nonprimitive() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize(
                 "tag",
                 "<tag>",
                 &EnumTaggedExternal::NewtypeC(Struct {
                     foo: "bar".to_owned(),
                 }),
-            ).unwrap();
+            )
+            .unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_external_tuple() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &EnumTaggedExternal::Tuple(3, 4, 5)).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_external_struct() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize(
                 "tag",
                 "<tag>",
                 &EnumTaggedExternal::Struct {
                     foo: "bar".to_owned(),
                 },
-            ).unwrap();
+            )
+            .unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_untagged_unit() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &EnumUntagged::Unit).unwrap();
         }
 
         #[test]
         #[should_panic]
         fn enum_untagged_newtype_primitive() {
-            use common::formats::json::ser::internal::serialize;
+            use crate::common::formats::json::ser::internal::serialize;
             let _v = serialize("tag", "<tag>", &EnumUntagged::NewtypeP(42)).unwrap();
         }
     }
@@ -1886,7 +1888,7 @@ mod de {
 
     /// Tests for deserialization of externally-tagged values.
     mod external {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_json;
 
         #[test]
@@ -1915,8 +1917,8 @@ mod de {
 
         #[test]
         fn without_tag() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::external::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             {
@@ -1939,8 +1941,8 @@ mod de {
 
         #[test]
         fn with_tag() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::external::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -1965,8 +1967,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_map_empty() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::external::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "{}";
 
@@ -1977,8 +1979,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_map_len() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::external::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"{
                 "a": "b",
@@ -1992,8 +1994,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_type() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::external::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "[]";
 
@@ -2004,7 +2006,7 @@ mod de {
 
     /// Tests for deserialization of tuple-based adjacently-tagged values.
     mod adj_tuple {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_json;
 
         #[test]
@@ -2034,8 +2036,8 @@ mod de {
 
         #[test]
         fn without_tag() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::adj::tuple::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             [
@@ -2059,8 +2061,8 @@ mod de {
 
         #[test]
         fn with_tag() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::tuple::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             [
@@ -2086,8 +2088,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_tuple_empty() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::tuple::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "[]";
 
@@ -2098,8 +2100,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_tuple_len() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::tuple::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
                 [ "a", "b", "c", "d" ]
@@ -2112,8 +2114,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_type() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::tuple::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "{}";
 
@@ -2124,7 +2126,7 @@ mod de {
 
     /// Tests for deserialization of map-based adjacently-tagged values.
     mod adj_map {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_json;
 
         #[test]
@@ -2177,8 +2179,8 @@ mod de {
 
         #[test]
         fn without_tag_a() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             {
@@ -2201,8 +2203,8 @@ mod de {
 
         #[test]
         fn without_tag_b() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             {
@@ -2225,8 +2227,8 @@ mod de {
 
         #[test]
         fn with_tag_a() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2250,8 +2252,8 @@ mod de {
 
         #[test]
         fn with_tag_b() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2276,8 +2278,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_map_empty() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "{}";
 
@@ -2289,8 +2291,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_map_len() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"{
                 "t": "b",
@@ -2306,8 +2308,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_keys() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"{
                 "t": "b",
@@ -2322,8 +2324,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_type() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::map::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "[]";
 
@@ -2433,7 +2435,7 @@ mod de {
 
     /// Tests for deserialization of struct-based adjacently-tagged values.
     mod adj_struc {
-        use common::types::*;
+        use crate::common::types::*;
         use serde_json;
 
         #[test]
@@ -2507,8 +2509,8 @@ mod de {
 
         #[test]
         fn without_tag_a() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             {
@@ -2531,8 +2533,8 @@ mod de {
 
         #[test]
         fn without_tag_b() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             {
@@ -2555,8 +2557,8 @@ mod de {
 
         #[test]
         fn without_tag_seq() {
-            use serde_tagged::de::WithoutTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithoutTag;
 
             let json = r###"
             [ "tag", { "foo": "bar" } ]
@@ -2576,8 +2578,8 @@ mod de {
 
         #[test]
         fn with_tag_a() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2601,8 +2603,8 @@ mod de {
 
         #[test]
         fn with_tag_b() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2626,8 +2628,8 @@ mod de {
 
         #[test]
         fn with_tag_seq() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             [ "tag", { "foo": "bar" } ]
@@ -2649,8 +2651,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_map_empty() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "{}";
 
@@ -2661,8 +2663,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_seq_empty() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "[]";
 
@@ -2673,8 +2675,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_map_len() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"{
                 "t": "b",
@@ -2689,8 +2691,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_keys() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"{
                 "t": "b",
@@ -2704,8 +2706,8 @@ mod de {
         #[test]
         #[should_panic]
         fn error_type() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::adj::struc::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = "null";
 
@@ -2844,15 +2846,15 @@ mod de {
 
     /// Tests for deserialization of internally-tagged values.
     mod internal {
-        use common::types::*;
+        use crate::common::types::*;
 
         use serde_json;
         use std::collections::BTreeMap;
 
         #[test]
         fn seq() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
                 ["foo", 1, 2, 3, 4]
@@ -2867,8 +2869,8 @@ mod de {
 
         #[test]
         fn map() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2894,8 +2896,8 @@ mod de {
 
         #[test]
         fn struct_unit_map() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2912,8 +2914,8 @@ mod de {
 
         #[test]
         fn struct_unit_seq() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             [ "foo" ]
@@ -2928,8 +2930,8 @@ mod de {
 
         #[test]
         fn struct_newtype_nonprimitive() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2953,8 +2955,8 @@ mod de {
 
         #[test]
         fn struct_tuple() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             [ "foo", 1, 2, 3, 4 ]
@@ -2970,8 +2972,8 @@ mod de {
 
         #[test]
         fn struct_normal() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -2994,8 +2996,8 @@ mod de {
 
         #[test]
         fn enum_internal_unit() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3013,8 +3015,8 @@ mod de {
 
         #[test]
         fn enum_internal_newtype_nonprimitive() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3038,8 +3040,8 @@ mod de {
 
         #[test]
         fn enum_internal_struct() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3063,8 +3065,8 @@ mod de {
 
         #[test]
         fn enum_adjacent_unit() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3082,8 +3084,8 @@ mod de {
 
         #[test]
         fn enum_adjacent_newtype_primitive() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3102,8 +3104,8 @@ mod de {
 
         #[test]
         fn enum_adjacent_newtype_nonprimitive() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3127,8 +3129,8 @@ mod de {
 
         #[test]
         fn enum_adjacent_adjacent_tuple() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3147,8 +3149,8 @@ mod de {
 
         #[test]
         fn enum_adjacent_adjacent_struct() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3172,8 +3174,8 @@ mod de {
 
         #[test]
         fn enum_untagged_tuple() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
                 [ "foo", 3, 2, 1]
@@ -3188,8 +3190,8 @@ mod de {
 
         #[test]
         fn enum_untagged_newtype_nonprimitive() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3202,13 +3204,18 @@ mod de {
             let (t, v): (&str, EnumUntagged) = de(&mut jde, "tag", WithTag::new()).unwrap();
 
             assert_eq!(t, "foo");
-            assert_eq!(v, EnumUntagged::NewtypeC(Struct { foo: "bar".to_owned() }));
+            assert_eq!(
+                v,
+                EnumUntagged::NewtypeC(Struct {
+                    foo: "bar".to_owned(),
+                })
+            );
         }
 
         #[test]
         fn enum_untagged_newtype_struct() {
-            use serde_tagged::de::WithTag;
             use serde_tagged::de::internal::deserialize as de;
+            use serde_tagged::de::WithTag;
 
             let json = r###"
             {
@@ -3221,7 +3228,12 @@ mod de {
             let (t, v): (&str, EnumUntagged) = de(&mut jde, "tag", WithTag::new()).unwrap();
 
             assert_eq!(t, "foo");
-            assert_eq!(v, EnumUntagged::Struct { baz: "bar".to_owned() });
+            assert_eq!(
+                v,
+                EnumUntagged::Struct {
+                    baz: "bar".to_owned(),
+                }
+            );
         }
     }
 }

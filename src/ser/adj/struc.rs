@@ -90,9 +90,9 @@ use std::fmt::Display;
 
 use serde;
 
-use ser::HasDelegate;
-use util::ser::content::{Content, ContentSerializer};
-use util::ser::forward;
+use crate::ser::HasDelegate;
+use crate::util::ser::content::{Content, ContentSerializer};
+use crate::util::ser::forward;
 
 
 /// Serializes the specified tag-key, tag, value-key and value as struct.

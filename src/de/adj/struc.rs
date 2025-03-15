@@ -10,8 +10,8 @@
 //! deserialization of struct-based adjacently tagged values is only supported
 //! for self-describing formats.
 
-use de::seed::SeedFactory;
-use util::de::content::{Content, ContentDeserializer};
+use crate::de::seed::SeedFactory;
+use crate::util::de::content::{Content, ContentDeserializer};
 
 use std;
 use std::marker::PhantomData;
@@ -166,14 +166,16 @@ where
         use serde::de::DeserializeSeed;
         use serde::de::Error;
 
-        let key_1 = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
+        let key_1 = map
+            .next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
             .ok_or_else(|| Error::invalid_length(0, &self))?;
 
         match key_1 {
             Key::Tag => {
                 let tag = map.next_value_seed(self.tag_seed)?;
 
-                let value_key = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
+                let value_key = map
+                    .next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
                     .ok_or_else(|| Error::custom("missing value"))?;
 
                 if value_key == Key::Value {
@@ -185,7 +187,8 @@ where
             Key::Value => {
                 let value: Content = map.next_value()?;
 
-                let tag_key = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
+                let tag_key = map
+                    .next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
                     .ok_or_else(|| Error::missing_field(self.value_key))?;
 
                 let tag = if tag_key == Key::Tag {
@@ -208,10 +211,12 @@ where
     {
         use serde::de::Error;
 
-        let tag = seq.next_element_seed(self.tag_seed)?
+        let tag = seq
+            .next_element_seed(self.tag_seed)?
             .ok_or_else(|| Error::invalid_length(0, &"a struct with exactly two fields"))?;
 
-        let value = seq.next_element_seed(self.seed_factory.seed(tag)?)?
+        let value = seq
+            .next_element_seed(self.seed_factory.seed(tag)?)?
             .ok_or_else(|| Error::invalid_length(1, &"a struct with exactly two fields"))?;
 
         Ok(value)
@@ -354,14 +359,16 @@ where
     {
         use serde::de::Error;
 
-        let key_1 = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
+        let key_1 = map
+            .next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
             .ok_or_else(|| Error::invalid_length(0, &self))?;
 
         match key_1 {
             Key::Tag => {
                 let tag = map.next_value_seed(self.tag_seed)?;
 
-                let value_key = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
+                let value_key = map
+                    .next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
                     .ok_or_else(|| Error::custom("missing value field"))?;
 
                 if value_key == Key::Value {
@@ -373,7 +380,8 @@ where
             Key::Value => {
                 let value = map.next_value_seed(self.value_seed)?;
 
-                let tag_key = map.next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
+                let tag_key = map
+                    .next_key_seed(KeySeed::new(self.tag_key, self.value_key))?
                     .ok_or_else(|| Error::custom("missing tag field"))?;
 
                 if tag_key == Key::Tag {
@@ -391,10 +399,12 @@ where
     {
         use serde::de::Error;
 
-        let tag = seq.next_element_seed(self.tag_seed)?
+        let tag = seq
+            .next_element_seed(self.tag_seed)?
             .ok_or_else(|| Error::invalid_length(0, &"a struct with exactly two fields"))?;
 
-        let value = seq.next_element_seed(self.value_seed)?
+        let value = seq
+            .next_element_seed(self.value_seed)?
             .ok_or_else(|| Error::invalid_length(1, &"a struct with exactly two fields"))?;
 
         Ok((tag, value))

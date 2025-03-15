@@ -3,7 +3,7 @@
 //! See [`ser::adj::tuple`](::ser::adj::tuple) for a description of this tagging
 //! format.
 
-use de::seed::SeedFactory;
+use crate::de::seed::SeedFactory;
 
 use std::fmt;
 use std::marker::PhantomData;
@@ -110,7 +110,8 @@ where
             _ => {},
         }
 
-        let tag = seq.next_element_seed(self.tag_seed)?
+        let tag = seq
+            .next_element_seed(self.tag_seed)?
             .ok_or_else(|| Error::invalid_length(0, &"a tuple with exactly two elements"))?;
 
         seq.next_element_seed(self.seed_factory.seed(tag)?)?
