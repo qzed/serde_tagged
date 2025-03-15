@@ -30,10 +30,10 @@ script:
 
 jobs:
   allow_failures:
-    - rust: nightly-2019-04-17
+    - rust: nightly-2025-03-14
   include:
     - stage: clippy lints
-      rust: nightly-2019-04-17
+      rust: nightly-2025-03-14
       before_install:
         - rustup component add clippy
       script:
