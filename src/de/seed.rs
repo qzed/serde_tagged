@@ -425,7 +425,7 @@ mod erased {
         }
     }
 
-    impl<'de, 'b, V> serde::de::DeserializeSeed<'de> for &'b mut BoxFnMutSeed<V> {
+    impl<'de, V> serde::de::DeserializeSeed<'de> for &mut BoxFnMutSeed<V> {
         type Value = V;
 
         fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
@@ -480,7 +480,7 @@ mod erased {
         }
     }
 
-    impl<'de, 'b, V> serde::de::DeserializeSeed<'de> for &'b BoxFnSeed<V> {
+    impl<'de, V> serde::de::DeserializeSeed<'de> for &BoxFnSeed<V> {
         type Value = V;
 
         fn deserialize<D>(self, deserializer: D) -> Result<Self::Value, D::Error>

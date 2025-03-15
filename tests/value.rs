@@ -22,7 +22,7 @@ mod ser {
     /// Tests for serialization of externally-tagged values.
     mod external {
         use crate::common::types::*;
-        use serde_bytes;
+
         use serde_value::Value;
         use serde_value::Value::*;
 
@@ -294,7 +294,7 @@ mod ser {
     /// Tests for serialization of tuple-based adjacently-tagged values.
     mod adj_tuple {
         use crate::common::types::*;
-        use serde_bytes;
+
         use serde_value::Value;
         use serde_value::Value::*;
 
@@ -567,7 +567,7 @@ mod ser {
     /// Tests for serialization of map-based adjacently-tagged values.
     mod adj_map {
         use crate::common::types::*;
-        use serde_bytes;
+
         use serde_value::Value;
         use serde_value::Value::*;
         use std::option;
@@ -972,7 +972,7 @@ mod ser {
     /// Tests for serialization of struct-based adjacently-tagged values.
     mod adj_struc {
         use crate::common::types::*;
-        use serde_bytes;
+
         use serde_value::Value;
         use serde_value::Value::*;
         use std::option;
@@ -1377,7 +1377,7 @@ mod ser {
     /// Tests for serialization of internally-tagged values.
     mod internal {
         use crate::common::types::*;
-        use serde_bytes;
+
         use serde_value::Value::*;
         use std::option;
 

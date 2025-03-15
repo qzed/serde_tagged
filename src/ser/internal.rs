@@ -124,7 +124,7 @@ use crate::ser::HasDelegate;
 /// This function does not provide any checks regarding collisions of the
 /// `tag_key` with field-names or map-keys. The responsibility for such checks
 /// reside with the caller.
-pub fn serialize<S, T: ?Sized, V: ?Sized>(
+pub fn serialize<S, T, V>(
     serializer: S,
     tag_key: &'static str,
     tag: &T,
@@ -132,8 +132,8 @@ pub fn serialize<S, T: ?Sized, V: ?Sized>(
 ) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
-    T: serde::Serialize,
-    V: serde::Serialize,
+    T: serde::Serialize + ?Sized,
+    V: serde::Serialize + ?Sized,
 {
     value.serialize(Serializer::new(serializer, tag_key, tag))
 }
@@ -155,16 +155,19 @@ where
 /// This serializer does not provide any checks regarding collisions of the
 /// `tag_key` with field-names or map-keys. The responsibility for such checks
 /// reside with the caller.
-pub struct Serializer<'a, S, T: ?Sized + 'a> {
+pub struct Serializer<'a, S, T>
+where
+    T: ?Sized + 'a,
+{
     delegate: S,
     tag_key:  &'static str,
     tag:      &'a T,
 }
 
-impl<'a, S, T: ?Sized> Serializer<'a, S, T>
+impl<'a, S, T> Serializer<'a, S, T>
 where
     S: serde::Serializer,
-    T: serde::Serialize + 'a,
+    T: serde::Serialize + ?Sized + 'a,
 {
     /// Creates a new Serializer with the specified tag-key, tag and underlying
     /// serializer.
@@ -181,10 +184,10 @@ where
     }
 }
 
-impl<'a, S, T: ?Sized> HasDelegate for Serializer<'a, S, T>
+impl<'a, S, T> HasDelegate for Serializer<'a, S, T>
 where
     S: serde::Serializer,
-    T: serde::Serialize,
+    T: serde::Serialize + ?Sized,
 {
     type Ok = S::Ok;
     type Error = S::Error;
@@ -195,10 +198,10 @@ where
     }
 }
 
-impl<'a, S, T: ?Sized> serde::Serializer for Serializer<'a, S, T>
+impl<'a, S, T> serde::Serializer for Serializer<'a, S, T>
 where
     S: serde::Serializer,
-    T: serde::Serialize + 'a,
+    T: serde::Serialize + ?Sized + 'a,
 {
     type Ok = S::Ok;
     type Error = S::Error;
@@ -271,9 +274,9 @@ where
         Err(self.unsupported("an optional"))
     }
 
-    fn serialize_some<V: ?Sized>(self, _value: &V) -> Result<Self::Ok, Self::Error>
+    fn serialize_some<V>(self, _value: &V) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         Err(self.unsupported("an optional"))
     }
@@ -291,7 +294,7 @@ where
         Err(self.unsupported("a unit-variant"))
     }
 
-    fn serialize_newtype_variant<V: ?Sized>(
+    fn serialize_newtype_variant<V>(
         self,
         _name: &'static str,
         _variant_index: u32,
@@ -299,7 +302,7 @@ where
         _value: &V,
     ) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         Err(self.unsupported("a newtype-variant"))
     }
@@ -356,13 +359,13 @@ where
         state.end()
     }
 
-    fn serialize_newtype_struct<V: ?Sized>(
+    fn serialize_newtype_struct<V>(
         self,
         _name: &'static str,
         value: &V,
     ) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         value.serialize(self)
     }

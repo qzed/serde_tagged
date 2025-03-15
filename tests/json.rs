@@ -1889,7 +1889,7 @@ mod de {
     /// Tests for deserialization of externally-tagged values.
     mod external {
         use crate::common::types::*;
-        use serde_json;
+
 
         #[test]
         fn without_tag_phantom() {
@@ -2007,7 +2007,7 @@ mod de {
     /// Tests for deserialization of tuple-based adjacently-tagged values.
     mod adj_tuple {
         use crate::common::types::*;
-        use serde_json;
+
 
         #[test]
         fn without_tag_phantom() {
@@ -2127,7 +2127,7 @@ mod de {
     /// Tests for deserialization of map-based adjacently-tagged values.
     mod adj_map {
         use crate::common::types::*;
-        use serde_json;
+
 
         #[test]
         fn without_tag_phantom_a() {
@@ -2436,7 +2436,7 @@ mod de {
     /// Tests for deserialization of struct-based adjacently-tagged values.
     mod adj_struc {
         use crate::common::types::*;
-        use serde_json;
+
 
         #[test]
         fn without_tag_phantom_a() {
@@ -2848,7 +2848,7 @@ mod de {
     mod internal {
         use crate::common::types::*;
 
-        use serde_json;
+
         use std::collections::BTreeMap;
 
         #[test]

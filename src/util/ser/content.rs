@@ -265,9 +265,9 @@ where
         Ok(Content::None)
     }
 
-    fn serialize_some<T: ?Sized>(self, value: &T) -> Result<Content, E>
+    fn serialize_some<T>(self, value: &T) -> Result<Content, E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         Ok(Content::Some(Box::new(value.serialize(self)?)))
     }
@@ -289,13 +289,9 @@ where
         Ok(Content::UnitVariant(name, variant_index, variant))
     }
 
-    fn serialize_newtype_struct<T: ?Sized>(
-        self,
-        name: &'static str,
-        value: &T,
-    ) -> Result<Content, E>
+    fn serialize_newtype_struct<T>(self, name: &'static str, value: &T) -> Result<Content, E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         Ok(Content::NewtypeStruct(
             name,
@@ -303,7 +299,7 @@ where
         ))
     }
 
-    fn serialize_newtype_variant<T: ?Sized>(
+    fn serialize_newtype_variant<T>(
         self,
         name: &'static str,
         variant_index: u32,
@@ -311,7 +307,7 @@ where
         value: &T,
     ) -> Result<Content, E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         Ok(Content::NewtypeVariant(
             name,
@@ -408,9 +404,9 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), E>
+    fn serialize_element<T>(&mut self, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<E>::new())?;
         self.elements.push(value);
@@ -434,9 +430,9 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), E>
+    fn serialize_element<T>(&mut self, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<E>::new())?;
         self.elements.push(value);
@@ -461,9 +457,9 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), E>
+    fn serialize_field<T>(&mut self, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<E>::new())?;
         self.fields.push(value);
@@ -490,9 +486,9 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), E>
+    fn serialize_field<T>(&mut self, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<E>::new())?;
         self.fields.push(value);
@@ -522,18 +518,18 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_key<T: ?Sized>(&mut self, key: &T) -> Result<(), E>
+    fn serialize_key<T>(&mut self, key: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let key = key.serialize(ContentSerializer::<E>::new())?;
         self.key = Some(key);
         Ok(())
     }
 
-    fn serialize_value<T: ?Sized>(&mut self, value: &T) -> Result<(), E>
+    fn serialize_value<T>(&mut self, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let key = self
             .key
@@ -548,10 +544,10 @@ where
         Ok(Content::Map(self.entries))
     }
 
-    fn serialize_entry<K: ?Sized, V: ?Sized>(&mut self, key: &K, value: &V) -> Result<(), E>
+    fn serialize_entry<K, V>(&mut self, key: &K, value: &V) -> Result<(), E>
     where
-        K: Serialize,
-        V: Serialize,
+        K: Serialize + ?Sized,
+        V: Serialize + ?Sized,
     {
         let key = key.serialize(ContentSerializer::<E>::new())?;
         let value = value.serialize(ContentSerializer::<E>::new())?;
@@ -573,9 +569,9 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_field<T: ?Sized>(&mut self, key: &'static str, value: &T) -> Result<(), E>
+    fn serialize_field<T>(&mut self, key: &'static str, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<E>::new())?;
         self.fields.push((key, value));
@@ -602,9 +598,9 @@ where
     type Ok = Content;
     type Error = E;
 
-    fn serialize_field<T: ?Sized>(&mut self, key: &'static str, value: &T) -> Result<(), E>
+    fn serialize_field<T>(&mut self, key: &'static str, value: &T) -> Result<(), E>
     where
-        T: Serialize,
+        T: Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<E>::new())?;
         self.fields.push((key, value));
