@@ -92,7 +92,7 @@ where
     }
 }
 
-/// A [`SeedFactory`](SeedFactory) implementation that can be used to retreive
+/// A [`SeedFactory`](SeedFactory) implementation that can be used to retrieve
 /// a tag and value of known type.
 ///
 /// This implementation creates a seed which deserializes a tagged value with

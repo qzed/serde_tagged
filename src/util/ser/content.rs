@@ -44,7 +44,7 @@
 // Changes made to the original module:
 // - re-formatted code using rustfmt (appearance, replaced try! with ?)
 // - changed import, absolute and relative paths for compatibility
-// - removed types and respecitve impls for:
+// - removed types and respective impls for:
 //   - `SerializeTupleVariantAsMapValue`
 //   - `SerializeStructVariantAsMapValue`
 // - changed visibility of types and constructor-functions to `pub`

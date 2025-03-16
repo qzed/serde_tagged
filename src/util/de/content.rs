@@ -46,7 +46,7 @@
 // - re-formatted code using rustfmt (appearance, replaced try! with ?)
 // - changed import, absolute and relative paths for compatibility
 // - removed some comments
-// - removed types and respecitve impls for:
+// - removed types and respective impls for:
 //   - `TagOrContent`
 //   - `TagOrContentVisitor`
 //   - `TaggedContent`

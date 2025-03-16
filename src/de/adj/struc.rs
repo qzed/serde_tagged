@@ -315,7 +315,7 @@ where
 /// `name` is the name with which the struct that will be serialized.
 ///
 /// This visitor is intended for use of known values, i.e. when no tag-specific
-/// deserialization mehtod is required. Thus it does not need to cache values
+/// deserialization method is required. Thus it does not need to cache values
 /// which can improve the performance.
 ///
 /// # Note

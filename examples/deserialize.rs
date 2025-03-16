@@ -96,7 +96,7 @@ fn main() {
     println!("Deserialized: value: {:?}", v);
 
 
-    // We can also deserialize a known value and retreive the tag, e.g. in case
+    // We can also deserialize a known value and retrieve the tag, e.g. in case
     // we want to use it for something other than indicating the type of the
     // following value.
     println!();

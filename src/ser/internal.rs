@@ -40,12 +40,12 @@
 //!     as first (and only) field under the specified name.
 //! - __newtype struct__ _only if it contains a value that can be serialized
 //!   with this format_
-//!   * A tuple struct contianing only a single value (e.g.
+//!   * A tuple struct containing only a single value (e.g.
 //!     `struct Newtype(i32)`).
 //!   * The struct will be serialized as tuple struct and the tag will be added
 //!     as first element of the tuple.
 //! - __tuple struct__
-//!   * A struct contianing multiple unnamed members (e.g.
+//!   * A struct containing multiple unnamed members (e.g.
 //!     `struct Tuple(i32, i32)`).
 //!   * The tag will be added as first element of the tuple.
 //! - __internally tagged enum__: any variant
