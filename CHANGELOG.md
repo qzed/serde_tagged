@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## 0.4.0 (2025-03-16)
 
 * Update crate to edition 2024.
 
