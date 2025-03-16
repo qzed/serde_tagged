@@ -7,8 +7,8 @@
 //! # Warning
 //!
 //! If the deserialization-process depends on the tag (i.e. with
-//! [`deserialize`](::de::adj::map::deserialize) and/or
-//! [`Visitor`](::de::adj::map::Visitor)), deserialization of map-based
+//! [`deserialize`](crate::de::adj::map::deserialize) and/or
+//! [`Visitor`](crate::de::adj::map::Visitor)), deserialization of map-based
 //! adjacently tagged values is only supported for self-describing formats.
 //!
 //! # Examples serializing to JSON
@@ -27,7 +27,8 @@
 //! # }
 //! ```
 //!
-//! with a tag-key of `"t"`, a tag value of `"bar"`, and a value-key of `"c"` will produce
+//! with a tag-key of `"t"`, a tag value of `"bar"`, and a value-key of `"c"`
+//! will produce
 //!
 //! ```json
 //! {
@@ -59,7 +60,8 @@
 //! # }
 //! ```
 //!
-//! with a tag-key of `"t"`, a tag value of `"my-tag"`, and a value-key of `"c"` will produce
+//! with a tag-key of `"t"`, a tag value of `"my-tag"`, and a value-key of `"c"`
+//! will produce
 //!
 //! ```json
 //! {
@@ -67,15 +69,14 @@
 //!     "c": { "bar": "baz" }
 //! }
 //! ```
-//!
 
 use std::fmt::Display;
 
 use serde;
 
-use ser::HasDelegate;
-use util::ser::content::{Content, ContentSerializer};
-use util::ser::forward;
+use crate::ser::HasDelegate;
+use crate::util::ser::content::{Content, ContentSerializer};
+use crate::util::ser::forward;
 
 
 /// Serializes the specified tag-key, tag, value-key and value as map.
@@ -85,11 +86,11 @@ use util::ser::forward;
 /// entry contains a mapping from the value-key to the value. The specified
 /// serializer performs the actual serialization and thus controls the data
 /// format. For more information on this tag-format, see the
-/// [module documentation](::ser::adj::map).
+/// [module documentation](crate::ser::adj::map).
 ///
 /// # Note
 ///
-/// You should prefer this method to the [`Serializer`](Serializer).
+/// You should prefer this method to the [`Serializer`].
 pub fn serialize<S, Tk, Tv, Vk, V>(
     serializer: S,
     tag_key: &Tk,
@@ -115,7 +116,13 @@ where
     tagged.serialize(serializer)
 }
 
-struct Tagged<'a, Tk: ?Sized + 'a, Tv: ?Sized + 'a, Vk: ?Sized + 'a, V: ?Sized + 'a> {
+struct Tagged<'a, Tk, Tv, Vk, V>
+where
+    Tk: ?Sized + 'a,
+    Tv: ?Sized + 'a,
+    Vk: ?Sized + 'a,
+    V: ?Sized + 'a,
+{
     tag_key:   &'a Tk,
     tag_value: &'a Tv,
     value_key: &'a Vk,
@@ -151,15 +158,20 @@ where
 /// entry contains a mapping from the value-key to the value. The specified
 /// serializer performs the actual serialization and thus controls the data
 /// format. For more information on this tag-format, see the
-/// [module documentation](::ser::adj::map).
+/// [module documentation](crate::ser::adj::map).
 ///
 /// # Warning
 ///
-/// You should prefer the [`serialize`](serialize) function over this serializer
+/// You should prefer the [`serialize`] function over this serializer
 /// implementation. To serialize map-entries, the serializer implementation may
 /// need to allocate memory on the heap. This can be avoided in the
-/// [`serialize`](serialize) function.
-pub struct Serializer<'a, S, Tk: ?Sized + 'a, Tv: ?Sized + 'a, Vk: ?Sized + 'a> {
+/// [`serialize`] function.
+pub struct Serializer<'a, S, Tk, Tv, Vk>
+where
+    Tk: serde::Serialize + ?Sized,
+    Tv: serde::Serialize + ?Sized,
+    Vk: serde::Serialize + ?Sized,
+{
     delegate:  S,
     tag_key:   &'a Tk,
     tag_value: &'a Tv,
@@ -184,9 +196,9 @@ where
         }
     }
 
-    fn serialize_as_map_value<V: ?Sized>(self, value: &V) -> Result<S::Ok, S::Error>
+    fn serialize_as_map_value<V>(self, value: &V) -> Result<S::Ok, S::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         use serde::ser::SerializeMap;
 
@@ -291,9 +303,9 @@ where
         self.serialize_as_map_value(&forward::None)
     }
 
-    fn serialize_some<V: ?Sized>(self, value: &V) -> Result<Self::Ok, Self::Error>
+    fn serialize_some<V>(self, value: &V) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         self.serialize_as_map_value(&forward::Some(value))
     }
@@ -315,18 +327,18 @@ where
         self.serialize_as_map_value(&forward::UnitVariant(name, variant_index, variant))
     }
 
-    fn serialize_newtype_struct<V: ?Sized>(
+    fn serialize_newtype_struct<V>(
         self,
         name: &'static str,
         value: &V,
     ) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         self.serialize_as_map_value(&forward::NewtypeStruct(name, value))
     }
 
-    fn serialize_newtype_variant<V: ?Sized>(
+    fn serialize_newtype_variant<V>(
         self,
         name: &'static str,
         variant_index: u32,
@@ -334,7 +346,7 @@ where
         value: &V,
     ) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         self.serialize_as_map_value(&forward::NewtypeVariant(
             name,
@@ -463,9 +475,9 @@ where
         self.serialize_as_map_value(&forward::CollectMap::new(iter))
     }
 
-    fn collect_str<V: ?Sized>(self, value: &V) -> Result<Self::Ok, Self::Error>
+    fn collect_str<V>(self, value: &V) -> Result<Self::Ok, Self::Error>
     where
-        V: Display,
+        V: Display + ?Sized,
     {
         self.serialize_as_map_value(&forward::CollectStr(value))
     }
@@ -502,9 +514,9 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
+    fn serialize_element<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::ser::Serialize,
+        T: serde::ser::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.elements.push(value);
@@ -542,9 +554,9 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_element<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
+    fn serialize_element<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::ser::Serialize,
+        T: serde::ser::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.elements.push(value);
@@ -585,9 +597,9 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
+    fn serialize_field<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::ser::Serialize,
+        T: serde::ser::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.elements.push(value);
@@ -638,9 +650,9 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_field<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
+    fn serialize_field<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::ser::Serialize,
+        T: serde::ser::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.elements.push(value);
@@ -683,18 +695,18 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_key<T: ?Sized>(&mut self, key: &T) -> Result<(), Self::Error>
+    fn serialize_key<T>(&mut self, key: &T) -> Result<(), Self::Error>
     where
-        T: serde::Serialize,
+        T: serde::Serialize + ?Sized,
     {
         let key = key.serialize(ContentSerializer::<S::Error>::new())?;
         self.elements.push((key, Content::None));
         Ok(())
     }
 
-    fn serialize_value<T: ?Sized>(&mut self, value: &T) -> Result<(), Self::Error>
+    fn serialize_value<T>(&mut self, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::Serialize,
+        T: serde::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.elements.last_mut().unwrap().1 = value;
@@ -734,13 +746,9 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_field<T: ?Sized>(
-        &mut self,
-        name: &'static str,
-        value: &T,
-    ) -> Result<(), Self::Error>
+    fn serialize_field<T>(&mut self, name: &'static str, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::Serialize,
+        T: serde::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.fields.push((name, value));
@@ -791,13 +799,9 @@ where
     type Ok = S::Ok;
     type Error = S::Error;
 
-    fn serialize_field<T: ?Sized>(
-        &mut self,
-        name: &'static str,
-        value: &T,
-    ) -> Result<(), Self::Error>
+    fn serialize_field<T>(&mut self, name: &'static str, value: &T) -> Result<(), Self::Error>
     where
-        T: serde::Serialize,
+        T: serde::Serialize + ?Sized,
     {
         let value = value.serialize(ContentSerializer::<S::Error>::new())?;
         self.fields.push((name, value));

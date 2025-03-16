@@ -1,9 +1,9 @@
 //! Deserialization of adjacently tagged values using tuples.
 //!
-//! See [`ser::adj::tuple`](::ser::adj::tuple) for a description of this tagging
-//! format.
+//! See [`ser::adj::tuple`](crate::ser::adj::tuple) for a description of this
+//! tagging format.
 
-use de::seed::SeedFactory;
+use crate::de::seed::SeedFactory;
 
 use std::fmt;
 use std::marker::PhantomData;
@@ -17,11 +17,11 @@ use serde;
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
-/// See [`deserialize_seed`](deserialize_seed) for a version that allows you to
-/// pass a `DeserializeSeed` implementation to deserialize the tag. This version
+/// See [`deserialize_seed`] for a version that allows you to pass a
+/// `DeserializeSeed` implementation to deserialize the tag. This version
 /// is equivalent to `deserialize_seed(deserializer, seed_factory,
 /// PhantomData<T>)`
 pub fn deserialize<'de, T, D, F>(deserializer: D, seed_factory: F) -> Result<F::Value, D::Error>
@@ -40,8 +40,8 @@ where
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 pub fn deserialize_seed<'de, D, F, S>(
     deserializer: D,
     seed_factory: F,
@@ -65,20 +65,19 @@ where
 /// return an error if the visited type is not a tuple (i.e. sequence) with two
 /// elements.
 ///
-/// The [`SeedFactory`](::de::SeedFactory) provided to this visitor
-/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
-/// which then determines how the value is going to be deserialized.
+/// The [`SeedFactory`] provided to this visitor provides a
+/// `serde::de::DeserializeSeed` implementation depending on the tag, which then
+/// determines how the value is going to be deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 pub struct Visitor<F, S> {
     seed_factory: F,
     tag_seed:     S,
 }
 
 impl<F, S> Visitor<F, S> {
-    /// Creates a new visitor with the given
-    /// [`SeedFactory`](::de::SeedFactory).
+    /// Creates a new visitor with the given [`SeedFactory`].
     pub fn new(seed_factory: F, tag_seed: S) -> Self {
         Visitor {
             seed_factory,
@@ -110,7 +109,8 @@ where
             _ => {},
         }
 
-        let tag = seq.next_element_seed(self.tag_seed)?
+        let tag = seq
+            .next_element_seed(self.tag_seed)?
             .ok_or_else(|| Error::invalid_length(0, &"a tuple with exactly two elements"))?;
 
         seq.next_element_seed(self.seed_factory.seed(tag)?)?

@@ -1,3 +1,6 @@
+edition = "2024"
+style_edition = "2021"
+
 blank_lines_upper_bound = 2
 
 condense_wildcard_suffixes = true
@@ -8,8 +11,6 @@ imports_layout = "HorizontalVertical"
 match_block_trailing_comma = true
 
 reorder_imports = true
-reorder_imports_in_group = true
-reorder_imported_names = true
 
 reorder_modules = true
 

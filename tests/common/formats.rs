@@ -213,11 +213,7 @@ pub mod json {
 
 
             /// Serialize the tagged value.
-            pub fn serialize<T, V>(
-                tag_key: &'static str,
-                tag_value: &T,
-                value: &V,
-            ) -> Result<Value>
+            pub fn serialize<T, V>(tag_key: &'static str, tag_value: &T, value: &V) -> Result<Value>
             where
                 T: Serialize + ?Sized,
                 V: Serialize + ?Sized,
@@ -225,12 +221,7 @@ pub mod json {
                 let mut buffer = Vec::with_capacity(128);
                 {
                     let mut json_ser = serde_json::Serializer::new(&mut buffer);
-                    internal::serialize(
-                        &mut json_ser,
-                        tag_key,
-                        tag_value,
-                        value,
-                    )?;
+                    internal::serialize(&mut json_ser, tag_key, tag_value, value)?;
                 }
                 serde_json::from_slice(&buffer)
             }
@@ -632,11 +623,7 @@ pub mod value {
 
             type Result<T> = ::std::result::Result<T, SerializerError>;
 
-            pub fn serialize<T, V>(
-                tag_key: &'static str,
-                tag_value: &T,
-                value: &V,
-            ) -> Result<Value>
+            pub fn serialize<T, V>(tag_key: &'static str, tag_value: &T, value: &V) -> Result<Value>
             where
                 T: Serialize + ?Sized,
                 V: Serialize + ?Sized,
@@ -660,12 +647,7 @@ pub mod value {
                     where
                         S: Serializer,
                     {
-                        internal::serialize(
-                            serializer,
-                            self.tag_key,
-                            self.tag_value,
-                            self.value,
-                        )
+                        internal::serialize(serializer, self.tag_key, self.tag_value, self.value)
                     }
                 }
 

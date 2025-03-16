@@ -96,7 +96,7 @@ fn main() {
     println!("Deserialized: value: {:?}", v);
 
 
-    // We can also deserialize a known value and retreive the tag, e.g. in case
+    // We can also deserialize a known value and retrieve the tag, e.g. in case
     // we want to use it for something other than indicating the type of the
     // following value.
     println!();
@@ -175,7 +175,7 @@ fn main() {
 
 
 /// A seed factory for a fixed set of types.
-/// 
+///
 /// This simply creates a new `TypeSeed` with the given tag.
 struct TypeSeedFactory;
 
@@ -193,7 +193,7 @@ impl<'de> SeedFactory<'de, &'de str> for TypeSeedFactory {
 
 
 /// A `DeserializeSeed` implementation for a fixed set of types.
-/// 
+///
 /// Decides which type should be deserialized by using a simple match statement
 /// on the tag.
 struct TypeSeed<'de> {

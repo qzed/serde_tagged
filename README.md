@@ -1,9 +1,9 @@
 # Serde Tagged
 
-[![Build Status]][travis] [![Coverage]][codecov] [![crates.io]][crates-io] [![docs.rs]][docs-rs]
+[![Build Status]][github_actions] [![Coverage]][codecov] [![crates.io]][crates-io] [![docs.rs]][docs-rs]
 
-[Build Status]: https://api.travis-ci.org/qzed/serde_tagged.svg?branch=master
-[travis]: https://travis-ci.org/qzed/serde_tagged
+[Build Status]: https://github.com/qzed/serde_tagged/workflows/CI/badge.svg
+[github_actions]: https://github.com/qzed/serde_tagged/actions/workflows/ci.yml
 [Coverage]: https://codecov.io/gh/qzed/serde_tagged/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/qzed/serde_tagged
 [crates.io]: https://img.shields.io/crates/v/serde_tagged.svg
@@ -11,13 +11,13 @@
 [docs.rs]: https://docs.rs/serde_tagged/badge.svg
 [docs-rs]: https://docs.rs/serde_tagged
 
-Tag values during serialization, retreive tags during deserialization.
+Tag values during serialization, retrieve tags during deserialization.
 
 [Serde][serde] is a powerful, efficient and generic serialization framework for the rust language.
 It does, however, not (directly) support de-/serialization of trait-objects.
-Especially deserialization of a trait-object whose type cannot be determined beforehand requires an additional layer of code to retreive said type based on information that can be stored in the data format.
+Especially deserialization of a trait-object whose type cannot be determined beforehand requires an additional layer of code to retrieve said type based on information that can be stored in the data format.
 
-This library aims to provide a framework to store tags that can contain type information in combination with a value during serialization, and retreive them during deserialization.
+This library aims to provide a framework to store tags that can contain type information in combination with a value during serialization, and retrieve them during deserialization.
 To this end, multiple tagging-formats are provided, which are independent<sup>[1](#format-restrictions)</sup> of the data format being used.
 The tagging-formats are largely similar to the [enum tagging-formats already used in serde][serde-enums].
 
@@ -92,7 +92,7 @@ The representation of this tagging format in the data format largely depends on 
 
 ## Usage
 
-Hava a look at the [examples][examples] directory.
+Have a look at the [examples][examples] directory.
 A good starting point would be the [trait-object example][examples-trait_obj].
 This example explains all the relevant details regarding de-/serialization of trait-objects using the external tagging format (other formats can be used quite similar).
 Of course you can not only serialize and deserialize trait-objects, but any serializable and deserializable value with a tag.

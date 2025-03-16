@@ -4,8 +4,8 @@
 //! serialization, thus de-/serializing trait-objects requires a considerable
 //! amount of boilerplate code to work. This library aims to help with that by
 //! providing multiple ways to store information, i.e. a tag, associated with
-//! a value and later retreive that information during deserialization.
-//! The retreived tag information can then be used to select a type-specific
+//! a value and later retrieve that information during deserialization.
+//! The retrieved tag information can then be used to select a type-specific
 //! deserializer.
 //!
 //! A tag can be almost any type, its requirements mainly depend on what you
@@ -17,24 +17,24 @@
 //! the data- and tag-format you choose (e.g. JSON only allows strings as keys
 //! in JSON-objects).
 //!
-//! This library provides multiple formats to store (and retreive) tags, that
+//! This library provides multiple formats to store (and retrieve) tags, that
 //! are somewhat similar to the way enums can be tagged in `serde`. The
 //! (currently) supported formats are:
 //!
-//! - [externally tagged](::ser::external), as in `{ <tag> => <value> }`
-//! - [internally tagged](::ser::internal) (i.e. embedded in the value)
-//! - [adjacently tagged using tuples](::ser::adj::tuple), as in
+//! - [externally tagged](crate::ser::external), as in `{ <tag> => <value> }`
+//! - [internally tagged](crate::ser::internal) (i.e. embedded in the value)
+//! - [adjacently tagged using tuples](crate::ser::adj::tuple), as in
 //!   `( <tag>, <value> )`
-//! - [adjacently tagged using maps](::ser::adj::map), as in
+//! - [adjacently tagged using maps](crate::ser::adj::map), as in
 //!   `{ <tag-key> => <tag>, <value-key> => <value> }`
-//! - [adjacently tagged using structs](::ser::adj::struc), as in
+//! - [adjacently tagged using structs](crate::ser::adj::struc), as in
 //!   `{ <tag-key>: <tag>, <value-key>: <value> }`
 //!
 //! ## A quick overview
 //!
-//! This crate is separated into two main modules: [`ser`](::ser) for
-//! serialization and [`de`](::de) for deserialization. Both modules contain
-//! further submodules, each representing a separate tagging-format.
+//! This crate is separated into two main modules: [`ser`] for serialization
+//! and [`de`] for deserialization. Both modules contain further submodules,
+//! each representing a separate tagging-format.
 //!
 //! ### Serialization
 //!

@@ -1,7 +1,7 @@
 //! Testing framework.
 
-pub mod types;
 pub mod formats;
+pub mod types;
 
 #[macro_use]
 pub mod logic;

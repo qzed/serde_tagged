@@ -1,17 +1,16 @@
 //! Deserialization of adjacently tagged values using maps.
 //!
-//! See [`ser::adj::map`](::ser::adj::map) for a description of this tagging
-//! format.
+//! See [`ser::adj::map`](crate::ser::adj::map) for a description of this
+//! tagging format.
 //!
 //! # Warning
 //!
-//! If the deserialization-process depends on the tag (i.e. with
-//! [`deserialize`](deserialize) and/or [`Visitor`](Visitor)),
-//! deserialization of map-based adjacently tagged values is only supported for
-//! self-describing formats.
+//! If the deserialization-process depends on the tag (i.e. with [`deserialize`]
+//! and/or [`Visitor`]), deserialization of map-based adjacently tagged values
+//! is only supported for self-describing formats.
 
-use de::seed::SeedFactory;
-use util::de::content::{Content, ContentDeserializer};
+use crate::de::seed::SeedFactory;
+use crate::util::de::content::{Content, ContentDeserializer};
 
 use std;
 use std::marker::PhantomData;
@@ -25,10 +24,10 @@ use serde;
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
-/// See [`deserialize_seed`](deserialize_seed) for a version that allows you to
+/// See [`deserialize_seed`] for a version that allows you to
 /// pass a `DeserializeSeed` implementation to deserialize the tag. This version
 /// is equivalent to `deserialize_seed(deserializer, seed_factory,
 /// PhantomData<T>)`
@@ -36,8 +35,7 @@ use serde;
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer [`deserialize_known`](deserialize_known) to this
-/// method.
+/// tag, you should prefer [`deserialize_known`] to this method.
 pub fn deserialize<'de, 'k, T, K, Kc: ?Sized, D, F>(
     deserializer: D,
     tag_key: &'k Kc,
@@ -67,14 +65,13 @@ where
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer [`deserialize_known_seed`](deserialize_known_seed) to
-/// this method.
+/// tag, you should prefer [`deserialize_known_seed`] to this method.
 pub fn deserialize_seed<'de, 'k, K, Kc: ?Sized, D, F, S>(
     deserializer: D,
     tag_key: &'k Kc,
@@ -107,17 +104,17 @@ where
 /// value-key to value. Thus this visitor will return an error if the visited
 /// type is not a map with two entries.
 ///
-/// The [`SeedFactory`](::de::SeedFactory) provided to this visitor
-/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
-/// which then determines how the value is going to be deserialized.
+/// The [`SeedFactory`] provided to this visitor provides a
+/// `serde::de::DeserializeSeed` implementation depending on the tag, which then
+/// determines how the value is going to be deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer [`KnownVisitor`](KnownVisitor) to this visitor.
+/// tag, you should prefer [`KnownVisitor`] to this visitor.
 pub struct Visitor<'a, K, Kc: ?Sized + 'a, F, S> {
     seed_factory: F,
     tag_seed:     S,
@@ -127,8 +124,8 @@ pub struct Visitor<'a, K, Kc: ?Sized + 'a, F, S> {
 }
 
 impl<'a, K, Kc: ?Sized, F, S> Visitor<'a, K, Kc, F, S> {
-    /// Creates a new visitor with the given
-    /// [`SeedFactory`](::de::SeedFactory), tag-key and value-key.
+    /// Creates a new visitor with the given [`SeedFactory`], tag-key and
+    /// value-key.
     pub fn new(tag_key: &'a Kc, value_key: &'a Kc, seed_factory: F, tag_seed: S) -> Self {
         Visitor {
             seed_factory,
@@ -166,14 +163,16 @@ where
             _ => {},
         }
 
-        let key_1 = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+        let key_1 = map
+            .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
             .ok_or_else(|| Error::invalid_length(0, &self))?;
 
         // if first key is for tag: directly deserialize value
         if key_1 == Key::Tag {
             let tag = map.next_value_seed(self.tag_seed)?;
 
-            let value_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let value_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &"a map with exactly two entries"))?;
 
             if value_key == Key::Value {
@@ -186,7 +185,8 @@ where
         } else {
             let value: Content = map.next_value()?;
 
-            let tag_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let tag_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &self))?;
 
             let tag = if tag_key == Key::Tag {
@@ -208,19 +208,18 @@ where
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
-/// See [`deserialize_known_seed`](deserialize_known_seed) for a version that
-/// allows you to pass `DeserializeSeed` implementations to deserialize the tag
-/// and value. This version is equivalent to
-/// `deserialize_known_seed(deserializer, seed_factory, PhantomData<T>,
-/// PhantomData<V>)`
+/// See [`deserialize_known_seed`] for a version that allows you to pass
+/// `DeserializeSeed` implementations to deserialize the tag and value. This
+/// version is equivalent to `deserialize_known_seed(deserializer, seed_factory,
+/// PhantomData<T>, PhantomData<V>)`
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer this method to [`deserialize`](deserialize).
+/// tag, you should prefer this method to [`deserialize`].
 pub fn deserialize_known<'de, 'a, T, V, K, Kc: ?Sized, D>(
     deserializer: D,
     tag_key: &'a Kc,
@@ -243,20 +242,20 @@ where
 }
 
 
-/// Deserialize a map-based adjacently tagged value of known type with the given seeds.
+/// Deserialize a map-based adjacently tagged value of known type with the given
+/// seeds.
 ///
 /// The deserializer controls the underlying data format while the seed-factory
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer this method to
-/// [`deserialize_known`](deserialize_known).
+/// tag, you should prefer this method to [`deserialize_known`].
 pub fn deserialize_known_seed<'de, 'a, K, Kc: ?Sized, D, T, V>(
     deserializer: D,
     tag_key: &'a Kc,
@@ -272,10 +271,7 @@ where
     K: std::cmp::PartialEq<&'a Kc>,
 {
     deserializer.deserialize_map(KnownVisitor::<K, _, _, _>::new(
-        tag_seed,
-        value_seed,
-        tag_key,
-        value_key,
+        tag_seed, value_seed, tag_key, value_key,
     ))
 }
 
@@ -290,13 +286,13 @@ where
 /// type is not a map with two entries.
 ///
 /// This visitor is intended for use of known values, i.e. when no tag-specific
-/// deserialization mehtod is required. Thus it does not need to cache values
+/// deserialization method is required. Thus it does not need to cache values
 /// which can improve the performance.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer this visitor to [`Visitor`](Visitor).
+/// tag, you should prefer this visitor to [`Visitor`].
 pub struct KnownVisitor<'a, K, Kc: ?Sized + 'a, T, V> {
     tag_seed:   T,
     value_seed: V,
@@ -343,13 +339,15 @@ where
             _ => {},
         }
 
-        let key_1 = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+        let key_1 = map
+            .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
             .ok_or_else(|| Error::invalid_length(0, &self))?;
 
         if key_1 == Key::Tag {
             let tag = map.next_value_seed(self.tag_seed)?;
 
-            let value_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let value_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &"a map with exactly two entries"))?;
 
             if value_key == Key::Value {
@@ -360,7 +358,8 @@ where
         } else {
             let value = map.next_value_seed(self.value_seed)?;
 
-            let tag_key = map.next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
+            let tag_key = map
+                .next_key_seed(KeySeed::<_, K>::new(self.tag_key, self.value_key))?
                 .ok_or_else(|| Error::invalid_length(1, &"a map with exactly two entries"))?;
 
             if tag_key == Key::Tag {

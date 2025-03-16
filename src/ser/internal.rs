@@ -12,8 +12,8 @@
 //! Deserialization of internally tagged values requires a self-describing
 //! data format.
 //!
-//! Furthermore, neither [`serialize`](serialize) nor the
-//! [`Serializer`](Serializer) check for collision of the tag-key with
+//! Furthermore, neither [`serialize`] nor the
+//! [`Serializer`] check for collision of the tag-key with
 //! field-names or map-keys of the value with the tag-key. It is up to the
 //! caller to make sure that such collisions do not occur.
 //!
@@ -40,12 +40,12 @@
 //!     as first (and only) field under the specified name.
 //! - __newtype struct__ _only if it contains a value that can be serialized
 //!   with this format_
-//!   * A tuple struct contianing only a single value (e.g.
+//!   * A tuple struct containing only a single value (e.g.
 //!     `struct Newtype(i32)`).
 //!   * The struct will be serialized as tuple struct and the tag will be added
 //!     as first element of the tuple.
 //! - __tuple struct__
-//!   * A struct contianing multiple unnamed members (e.g.
+//!   * A struct containing multiple unnamed members (e.g.
 //!     `struct Tuple(i32, i32)`).
 //!   * The tag will be added as first element of the tuple.
 //! - __internally tagged enum__: any variant
@@ -56,8 +56,8 @@
 //!     attribute.
 //!   * The tag will be added as entry with the specified name as key to the
 //!     generated mapping.
-//! - __untagged enum__: _tuple_, _non-primitive newtype_, and _struct_
-//!   variants only
+//! - __untagged enum__: _tuple_, _non-primitive newtype_, and _struct_ variants
+//!   only
 //!   * An enum with the `#[serde(untagged)]` attribute.
 //!   * The tag will be embedded using the previously elaborated rules
 //!     corresponding to the respective variant type.
@@ -101,11 +101,10 @@
 //!
 //!
 //! [datamodel]: https://serde.rs/data-model.html
-//!
 
 use serde;
 
-use ser::HasDelegate;
+use crate::ser::HasDelegate;
 
 
 /// Embeds a tag into the specified value and then serializes it using the
@@ -114,17 +113,17 @@ use ser::HasDelegate;
 /// Due to the tag being embedded into the value, not all value-types are
 /// supported. The specified serializer performs the actual serialization and
 /// thus controls the data format. For more information on this trag-format and
-/// the supported values, see the [module documentation](::ser::internal).
+/// the supported values, see the [module documentation](crate::ser::internal).
 ///
 /// This method is a convenience function that creates and uses the
-/// [`Serializer`](Serializer) internally.
-/// 
+/// [`Serializer`] internally.
+///
 /// # Warning
-/// 
+///
 /// This function does not provide any checks regarding collisions of the
 /// `tag_key` with field-names or map-keys. The responsibility for such checks
 /// reside with the caller.
-pub fn serialize<S, T: ?Sized, V: ?Sized>(
+pub fn serialize<S, T, V>(
     serializer: S,
     tag_key: &'static str,
     tag: &T,
@@ -132,8 +131,8 @@ pub fn serialize<S, T: ?Sized, V: ?Sized>(
 ) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
-    T: serde::Serialize,
-    V: serde::Serialize,
+    T: serde::Serialize + ?Sized,
+    V: serde::Serialize + ?Sized,
 {
     value.serialize(Serializer::new(serializer, tag_key, tag))
 }
@@ -145,26 +144,30 @@ where
 /// Due to the tag being embedded into the value, not all value-types are
 /// supported. The provided serializer performs the actual serialization and
 /// thus controls the data format. For more information on this trag-format and
-/// the supported values, see the [module documentation](::ser::internal).
+/// the supported values, see the [module documentation](crate::ser::internal).
 ///
 /// Due to the tag being embedded into the value, not all value-types are
-/// supported. For more details see the [module documentation](::ser::internal).
-/// 
+/// supported. For more details see the [module
+/// documentation](crate::ser::internal).
+///
 /// # Warning
-/// 
+///
 /// This serializer does not provide any checks regarding collisions of the
 /// `tag_key` with field-names or map-keys. The responsibility for such checks
 /// reside with the caller.
-pub struct Serializer<'a, S, T: ?Sized + 'a> {
+pub struct Serializer<'a, S, T>
+where
+    T: ?Sized + 'a,
+{
     delegate: S,
     tag_key:  &'static str,
     tag:      &'a T,
 }
 
-impl<'a, S, T: ?Sized> Serializer<'a, S, T>
+impl<'a, S, T> Serializer<'a, S, T>
 where
     S: serde::Serializer,
-    T: serde::Serialize + 'a,
+    T: serde::Serialize + ?Sized + 'a,
 {
     /// Creates a new Serializer with the specified tag-key, tag and underlying
     /// serializer.
@@ -181,10 +184,10 @@ where
     }
 }
 
-impl<'a, S, T: ?Sized> HasDelegate for Serializer<'a, S, T>
+impl<'a, S, T> HasDelegate for Serializer<'a, S, T>
 where
     S: serde::Serializer,
-    T: serde::Serialize,
+    T: serde::Serialize + ?Sized,
 {
     type Ok = S::Ok;
     type Error = S::Error;
@@ -195,10 +198,10 @@ where
     }
 }
 
-impl<'a, S, T: ?Sized> serde::Serializer for Serializer<'a, S, T>
+impl<'a, S, T> serde::Serializer for Serializer<'a, S, T>
 where
     S: serde::Serializer,
-    T: serde::Serialize + 'a,
+    T: serde::Serialize + ?Sized + 'a,
 {
     type Ok = S::Ok;
     type Error = S::Error;
@@ -271,9 +274,9 @@ where
         Err(self.unsupported("an optional"))
     }
 
-    fn serialize_some<V: ?Sized>(self, _value: &V) -> Result<Self::Ok, Self::Error>
+    fn serialize_some<V>(self, _value: &V) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         Err(self.unsupported("an optional"))
     }
@@ -291,7 +294,7 @@ where
         Err(self.unsupported("a unit-variant"))
     }
 
-    fn serialize_newtype_variant<V: ?Sized>(
+    fn serialize_newtype_variant<V>(
         self,
         _name: &'static str,
         _variant_index: u32,
@@ -299,7 +302,7 @@ where
         _value: &V,
     ) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         Err(self.unsupported("a newtype-variant"))
     }
@@ -356,13 +359,13 @@ where
         state.end()
     }
 
-    fn serialize_newtype_struct<V: ?Sized>(
+    fn serialize_newtype_struct<V>(
         self,
         _name: &'static str,
         value: &V,
     ) -> Result<Self::Ok, Self::Error>
     where
-        V: serde::Serialize,
+        V: serde::Serialize + ?Sized,
     {
         value.serialize(self)
     }
