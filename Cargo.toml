@@ -30,3 +30,13 @@ downcast-rs = "2.0.1"
 [features]
 default = ["erased"]
 erased = ["erased-serde"]
+
+# Needed to prevent examples from failing compilation when we compile without
+# default features.
+[[example]]
+name = "deserialize"
+required-features = ["erased"]
+
+[[example]]
+name = "trait_objects"
+required-features = ["erased"]
