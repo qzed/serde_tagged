@@ -54,7 +54,6 @@
 //! ```json
 //! [ "my-tag", { "bar": "baz" } ]
 //! ```
-//!
 
 use std::fmt::Display;
 
@@ -71,11 +70,11 @@ use crate::util::ser::forward;
 /// be the tag and the second element the tuple. The specified serializer
 /// performs the actual serialization and thus controls the data format. For
 /// more information on this tag-format, see the [module
-/// documentation](::ser::adj::tuple).
+/// documentation](crate::ser::adj::tuple).
 ///
 /// # Note
 ///
-/// You should prefer this method to the [`Serializer`](Serializer).
+/// You should prefer this method to the [`Serializer`].
 pub fn serialize<S, T, V>(serializer: S, tag: &T, value: &V) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
@@ -122,14 +121,14 @@ where
 /// be the tag and the second element the tuple. The specified serializer
 /// performs the actual serialization and thus controls the data format. For
 /// more information on this tag-format, see the [module
-/// documentation](::ser::adj::tuple).
+/// documentation](crate::ser::adj::tuple).
 ///
 /// # Warning
 ///
-/// You should prefer the [`serialize`](serialize) function over this serializer
+/// You should prefer the [`serialize`] function over this serializer
 /// implementation. To serialize a tuple, the serializer implementation may need
 /// to allocate memory on the heap. This can be avoided in the
-/// [`serialize`](serialize) function.
+/// [`serialize`] function.
 pub struct Serializer<'a, S, T>
 where
     T: ?Sized + 'a,

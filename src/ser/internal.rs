@@ -12,8 +12,8 @@
 //! Deserialization of internally tagged values requires a self-describing
 //! data format.
 //!
-//! Furthermore, neither [`serialize`](serialize) nor the
-//! [`Serializer`](Serializer) check for collision of the tag-key with
+//! Furthermore, neither [`serialize`] nor the
+//! [`Serializer`] check for collision of the tag-key with
 //! field-names or map-keys of the value with the tag-key. It is up to the
 //! caller to make sure that such collisions do not occur.
 //!
@@ -56,8 +56,8 @@
 //!     attribute.
 //!   * The tag will be added as entry with the specified name as key to the
 //!     generated mapping.
-//! - __untagged enum__: _tuple_, _non-primitive newtype_, and _struct_
-//!   variants only
+//! - __untagged enum__: _tuple_, _non-primitive newtype_, and _struct_ variants
+//!   only
 //!   * An enum with the `#[serde(untagged)]` attribute.
 //!   * The tag will be embedded using the previously elaborated rules
 //!     corresponding to the respective variant type.
@@ -101,7 +101,6 @@
 //!
 //!
 //! [datamodel]: https://serde.rs/data-model.html
-//!
 
 use serde;
 
@@ -114,10 +113,10 @@ use crate::ser::HasDelegate;
 /// Due to the tag being embedded into the value, not all value-types are
 /// supported. The specified serializer performs the actual serialization and
 /// thus controls the data format. For more information on this trag-format and
-/// the supported values, see the [module documentation](::ser::internal).
+/// the supported values, see the [module documentation](crate::ser::internal).
 ///
 /// This method is a convenience function that creates and uses the
-/// [`Serializer`](Serializer) internally.
+/// [`Serializer`] internally.
 ///
 /// # Warning
 ///
@@ -145,10 +144,11 @@ where
 /// Due to the tag being embedded into the value, not all value-types are
 /// supported. The provided serializer performs the actual serialization and
 /// thus controls the data format. For more information on this trag-format and
-/// the supported values, see the [module documentation](::ser::internal).
+/// the supported values, see the [module documentation](crate::ser::internal).
 ///
 /// Due to the tag being embedded into the value, not all value-types are
-/// supported. For more details see the [module documentation](::ser::internal).
+/// supported. For more details see the [module
+/// documentation](crate::ser::internal).
 ///
 /// # Warning
 ///

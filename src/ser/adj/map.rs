@@ -7,8 +7,8 @@
 //! # Warning
 //!
 //! If the deserialization-process depends on the tag (i.e. with
-//! [`deserialize`](::de::adj::map::deserialize) and/or
-//! [`Visitor`](::de::adj::map::Visitor)), deserialization of map-based
+//! [`deserialize`](crate::de::adj::map::deserialize) and/or
+//! [`Visitor`](crate::de::adj::map::Visitor)), deserialization of map-based
 //! adjacently tagged values is only supported for self-describing formats.
 //!
 //! # Examples serializing to JSON
@@ -27,7 +27,8 @@
 //! # }
 //! ```
 //!
-//! with a tag-key of `"t"`, a tag value of `"bar"`, and a value-key of `"c"` will produce
+//! with a tag-key of `"t"`, a tag value of `"bar"`, and a value-key of `"c"`
+//! will produce
 //!
 //! ```json
 //! {
@@ -59,7 +60,8 @@
 //! # }
 //! ```
 //!
-//! with a tag-key of `"t"`, a tag value of `"my-tag"`, and a value-key of `"c"` will produce
+//! with a tag-key of `"t"`, a tag value of `"my-tag"`, and a value-key of `"c"`
+//! will produce
 //!
 //! ```json
 //! {
@@ -67,7 +69,6 @@
 //!     "c": { "bar": "baz" }
 //! }
 //! ```
-//!
 
 use std::fmt::Display;
 
@@ -85,11 +86,11 @@ use crate::util::ser::forward;
 /// entry contains a mapping from the value-key to the value. The specified
 /// serializer performs the actual serialization and thus controls the data
 /// format. For more information on this tag-format, see the
-/// [module documentation](::ser::adj::map).
+/// [module documentation](crate::ser::adj::map).
 ///
 /// # Note
 ///
-/// You should prefer this method to the [`Serializer`](Serializer).
+/// You should prefer this method to the [`Serializer`].
 pub fn serialize<S, Tk, Tv, Vk, V>(
     serializer: S,
     tag_key: &Tk,
@@ -157,14 +158,14 @@ where
 /// entry contains a mapping from the value-key to the value. The specified
 /// serializer performs the actual serialization and thus controls the data
 /// format. For more information on this tag-format, see the
-/// [module documentation](::ser::adj::map).
+/// [module documentation](crate::ser::adj::map).
 ///
 /// # Warning
 ///
-/// You should prefer the [`serialize`](serialize) function over this serializer
+/// You should prefer the [`serialize`] function over this serializer
 /// implementation. To serialize map-entries, the serializer implementation may
 /// need to allocate memory on the heap. This can be avoided in the
-/// [`serialize`](serialize) function.
+/// [`serialize`] function.
 pub struct Serializer<'a, S, Tk, Tv, Vk>
 where
     Tk: serde::Serialize + ?Sized,

@@ -1,4 +1,5 @@
-//! `DeserializeSeed` implementations for tagged value deserialization and creation thereof.
+//! `DeserializeSeed` implementations for tagged value deserialization and
+//! creation thereof.
 
 use std;
 use std::collections::{BTreeMap, HashMap};

@@ -1,14 +1,13 @@
 //! Deserialization of adjacently tagged values using structs.
 //!
-//! See [`ser::adj::struc`](::ser::adj::struc) for a description of this tagging
-//! format.
+//! See [`ser::adj::struc`](crate::ser::adj::struc) for a description of this
+//! tagging format.
 //!
 //! # Warning
 //!
-//! If the deserialization-process depends on the tag (i.e. with
-//! [`deserialize`](deserialize) and/or [`Visitor`](Visitor)),
-//! deserialization of struct-based adjacently tagged values is only supported
-//! for self-describing formats.
+//! If the deserialization-process depends on the tag (i.e. with [`deserialize`]
+//! and/or [`Visitor`]), deserialization of struct-based adjacently tagged
+//! values is only supported for self-describing formats.
 
 use crate::de::seed::SeedFactory;
 use crate::util::de::content::{Content, ContentDeserializer};
@@ -27,19 +26,18 @@ use serde;
 ///
 /// `name` is the name with which the struct that will be serialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
-/// See [`deserialize_seed`](deserialize_seed) for a version that allows you to
-/// pass a `DeserializeSeed` implementation to deserialize the tag. This version
+/// See [`deserialize_seed`] for a version that allows you to pass a
+/// `DeserializeSeed` implementation to deserialize the tag. This version
 /// is equivalent to `deserialize_seed(deserializer, seed_factory,
 /// PhantomData<T>)`
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer [`deserialize_known`](deserialize_known) to this
-/// method.
+/// tag, you should prefer [`deserialize_known`] to this method.
 pub fn deserialize<'de, T, D, F>(
     deserializer: D,
     name: &'static str,
@@ -71,14 +69,13 @@ where
 ///
 /// `name` is the name with which the struct that will be serialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer [`deserialize_known_seed`](deserialize_known_seed) to
-/// this method.
+/// tag, you should prefer [`deserialize_known_seed`] to this method.
 pub fn deserialize_seed<'de, D, F, S>(
     deserializer: D,
     name: &'static str,
@@ -112,17 +109,17 @@ where
 ///
 /// `name` is the name with which the struct that will be serialized.
 ///
-/// The [`SeedFactory`](::de::SeedFactory) provided to this visitor
-/// provides a `serde::de::DeserializeSeed` implementation depending on the tag,
-/// which then determines how the value is going to be deserialized.
+/// The [`SeedFactory`] provided to this visitor provides a
+/// `serde::de::DeserializeSeed` implementation depending on the tag, which then
+/// determines how the value is going to be deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer [`KnownVisitor`](KnownVisitor) to this visitor.
+/// tag, you should prefer [`KnownVisitor`] to this visitor.
 pub struct Visitor<F, S> {
     seed_factory: F,
     tag_seed:     S,
@@ -131,8 +128,8 @@ pub struct Visitor<F, S> {
 }
 
 impl<F, S> Visitor<F, S> {
-    /// Creates a new visitor with the given
-    /// [`SeedFactory`](::de::SeedFactory), tag-key and value-key.
+    /// Creates a new visitor with the given [`SeedFactory`], tag-key and
+    /// value-key.
     pub fn new(
         tag_key: &'static str,
         value_key: &'static str,
@@ -232,19 +229,18 @@ where
 ///
 /// `name` is the name with which the struct that will be serialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
-/// See [`deserialize_known_seed`](deserialize_known_seed) for a version that
-/// allows you to pass `DeserializeSeed` implementations to deserialize the tag
-/// and value. This version is equivalent to
-/// `deserialize_known_seed(deserializer, seed_factory, PhantomData<T>,
-/// PhantomData<V>)`
+/// See [`deserialize_known_seed`] for a version that allows you to pass
+/// `DeserializeSeed` implementations to deserialize the tag and value. This
+/// version is equivalent to `deserialize_known_seed(deserializer, seed_factory,
+/// PhantomData<T>, PhantomData<V>)`
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer this method to [`deserialize`](deserialize).
+/// tag, you should prefer this method to [`deserialize`].
 pub fn deserialize_known<'de, T, V, D>(
     deserializer: D,
     name: &'static str,
@@ -267,20 +263,20 @@ where
 }
 
 
-/// Deserialize a struct-based adjacently tagged value of known type with the given seeds.
+/// Deserialize a struct-based adjacently tagged value of known type with the
+/// given seeds.
 ///
 /// The deserializer controls the underlying data format while the seed-factory
 /// specifies the instructions (depending on the tag) on how the value should be
 /// deserialized.
 ///
-/// See [`de`](::de) for more information on
-/// [`SeedFactory`](::de::SeedFactory) and implementations thereof.
+/// See [`de`](crate::de) for more information on [`SeedFactory`] and
+/// implementations thereof.
 ///
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer this method to
-/// [`deserialize_known`](deserialize_known).
+/// tag, you should prefer this method to [`deserialize_known`].
 pub fn deserialize_known_seed<'de, T, V, D>(
     deserializer: D,
     name: &'static str,
@@ -321,7 +317,7 @@ where
 /// # Note
 ///
 /// If you do not need to choose a specific deserialization-method based on the
-/// tag, you should prefer this visitor to [`Visitor`](Visitor).
+/// tag, you should prefer this visitor to [`Visitor`].
 pub struct KnownVisitor<T, V> {
     tag_seed:   T,
     value_seed: V,
@@ -330,8 +326,8 @@ pub struct KnownVisitor<T, V> {
 }
 
 impl<T, V> KnownVisitor<T, V> {
-    /// Creates a new visitor with the given
-    /// [`SeedFactory`](::de::SeedFactory), tag-key and value-key.
+    /// Creates a new visitor with the given [`SeedFactory`], tag-key and
+    /// value-key.
     pub fn new(tag_seed: T, value_seed: V, tag_key: &'static str, value_key: &'static str) -> Self {
         KnownVisitor {
             tag_seed,

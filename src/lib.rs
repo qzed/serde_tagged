@@ -21,20 +21,20 @@
 //! are somewhat similar to the way enums can be tagged in `serde`. The
 //! (currently) supported formats are:
 //!
-//! - [externally tagged](::ser::external), as in `{ <tag> => <value> }`
-//! - [internally tagged](::ser::internal) (i.e. embedded in the value)
-//! - [adjacently tagged using tuples](::ser::adj::tuple), as in
+//! - [externally tagged](crate::ser::external), as in `{ <tag> => <value> }`
+//! - [internally tagged](crate::ser::internal) (i.e. embedded in the value)
+//! - [adjacently tagged using tuples](crate::ser::adj::tuple), as in
 //!   `( <tag>, <value> )`
-//! - [adjacently tagged using maps](::ser::adj::map), as in
+//! - [adjacently tagged using maps](crate::ser::adj::map), as in
 //!   `{ <tag-key> => <tag>, <value-key> => <value> }`
-//! - [adjacently tagged using structs](::ser::adj::struc), as in
+//! - [adjacently tagged using structs](crate::ser::adj::struc), as in
 //!   `{ <tag-key>: <tag>, <value-key>: <value> }`
 //!
 //! ## A quick overview
 //!
-//! This crate is separated into two main modules: [`ser`](::ser) for
-//! serialization and [`de`](::de) for deserialization. Both modules contain
-//! further submodules, each representing a separate tagging-format.
+//! This crate is separated into two main modules: [`ser`] for serialization
+//! and [`de`] for deserialization. Both modules contain further submodules,
+//! each representing a separate tagging-format.
 //!
 //! ### Serialization
 //!

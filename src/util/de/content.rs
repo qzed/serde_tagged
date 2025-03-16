@@ -62,7 +62,8 @@
 //   - `InPlaceSeed`
 // - removed unused imports
 // - fixed clippy warnings
-// - add special case for empty `Content::Seq` to `ContentDeserializer::deserialize_unit_struct`
+// - add special case for empty `Content::Seq` to
+//   `ContentDeserializer::deserialize_unit_struct`
 // - changed visibility of `ContentVisitor` and its `new` function to public
 //
 

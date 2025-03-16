@@ -12,9 +12,10 @@
 //! # Warning
 //!
 //! If the deserialization-process depends on the tag (i.e. with
-//! [`deserialize`](::de::adj::struc::deserialize) and/or
-//! [`Visitor`](::de::adj::struc::Visitor)), deserialization of struct-based
-//! adjacently tagged values is only supported for self-describing formats.
+//! [`deserialize`](crate::de::adj::struc::deserialize) and/or
+//! [`Visitor`](crate::de::adj::struc::Visitor)), deserialization of
+//! struct-based adjacently tagged values is only supported for self-describing
+//! formats.
 //!
 //! # Examples serializing to JSON
 //!
@@ -84,7 +85,6 @@
 //!     "c": { "bar": "baz" }
 //! }
 //! ```
-//!
 
 use std::fmt::Display;
 
@@ -103,11 +103,11 @@ use crate::util::ser::forward;
 /// value-key and contains the given value. The specified serializer performs
 /// the actual serialization and thus controls the data format. For more
 /// information on this tag-format, see the [module
-/// documentation](::ser::adj::struc).
+/// documentation](crate::ser::adj::struc).
 ///
 /// # Note
 ///
-/// You should prefer this method to the [`Serializer`](Serializer).
+/// You should prefer this method to the [`Serializer`].
 pub fn serialize<S, T, V>(
     serializer: S,
     name: &'static str,
@@ -173,14 +173,14 @@ where
 /// value-key and contains the given value. The specified serializer performs
 /// the actual serialization and thus controls the data format. For more
 /// information on this tag-format, see the [module
-/// documentation](::ser::adj::struc).
+/// documentation](crate::ser::adj::struc).
 ///
 /// # Warning
 ///
-/// You should prefer the [`serialize`](serialize) function over this serializer
+/// You should prefer the [`serialize`] function over this serializer
 /// implementation. To serialize struct-entries, the serializer implementation
 /// may need to allocate memory on the heap. This can be avoided in the
-/// [`serialize`](serialize) function.
+/// [`serialize`] function.
 pub struct Serializer<'a, S, T>
 where
     T: ?Sized + 'a,
